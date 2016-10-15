@@ -22,11 +22,11 @@ Usage
 -----
 CLI
 ^^^
-Extract information from a video file:
+Extract information from a video file::
 
     $ knowit FooBar.mkv
     For: FooBar.mkv
-    KnowIt found: {
+    {
         "duration": "0:20:31.071000",
         "video": [
             {
@@ -74,7 +74,7 @@ the ``--user`` flag.
 
 External dependencies
 -------------------------
-This product uses `MediaInfo <http://mediaarea.net/MediaInfo>`_ library, Copyright (c) 2002-2016 `MediaArea.net SARL<mailto:Info@MediaArea.net>`_.
+This product uses `MediaInfo <http://mediaarea.net/MediaInfo>`_ library, Copyright (c) 2002-2016 `MediaArea.net SARL<mailto:Info@MediaArea.net>`_
 Binaries for Windows and MacOS are included. Linux distributions need to manually install MediaInfo.
 KnowIt supports MKV regardless if MediaInfo is installed.
 MediaInfo increases the number of supported formats and the number of extracted information.

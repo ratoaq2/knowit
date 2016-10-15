@@ -24,8 +24,10 @@ def build_argument_parser():
     return opts
 
 
-def knowit(filepath, options):
-    info = api.knowit(filepath, vars(options))
+def knowit(video_path, options):
+    """Extract video metadata."""
+    info = api.knowit(video_path, vars(options))
+    print('For: {0}'.format(video_path))
     print(json.dumps(info, cls=StringEncoder, indent=4, ensure_ascii=False))
 
 
