@@ -2,7 +2,7 @@
 """Know your media files better."""
 
 __title__ = 'knowit'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __short_version__ = '.'.join(__version__.split('.')[:2])
 __author__ = 'Rato AQ2'
 __license__ = 'MIT'
