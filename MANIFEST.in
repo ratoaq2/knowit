@@ -1,0 +1,2 @@
+include LICENSE HISTORY.rst requirements.txt 
+recursive-include knowit *.txt *.py *.dylib *.dll
