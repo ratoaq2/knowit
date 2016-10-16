@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from . import OrderedDict
 from .providers.enzyme import EnzymeProvider
 from .providers.mediainfo import MediaInfoProvider
@@ -25,6 +25,6 @@ def knowit(video_path, options):
             continue
 
         if provider.accepts(video_path):
-            return provider.describe(video_path)
+            return provider.describe(video_path, options)
 
     return dict()

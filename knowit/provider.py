@@ -1,23 +1,30 @@
 # -*- coding: utf-8 -*-
+import logging
+
+from six import binary_type, text_type
+
 from . import OrderedDict
+
+
+logger = logging.getLogger(__name__)
+
+visible_chars_table = dict.fromkeys(range(32))
 
 
 class Provider(object):
     """Base class for all providers."""
 
+    def __init__(self, mapping):
+        """Init method."""
+        self.mapping = mapping
+
     def accepts(self, video_path):
         """Whether or not the video is supported by this provider."""
         raise NotImplementedError
 
-    def describe(self, video_path):
+    def describe(self, video_path, options):
         """Read video metadata information."""
         raise NotImplementedError
-
-    def _getmapping(self, key):
-        raise NotImplementedError
-
-    def _getformatting(self):
-        return dict()
 
     def _describe_tracks(self, general_track, video_tracks, audio_tracks, subtitle_tracks):
         props = self._describe_general(general_track)
@@ -53,7 +60,8 @@ class Provider(object):
         :return:
         :rtype: dict
         """
-        return self._describe_track(track, self._getmapping('general'))
+        logger.debug('Handling general track')
+        return self._describe_track(track, self.mapping['general'])
 
     def _describe_video_track(self, track):
         """Describe video track to a dict.
@@ -62,7 +70,8 @@ class Provider(object):
         :return:
         :rtype: dict
         """
-        return self._describe_track(track, self._getmapping('video'))
+        logger.debug('Handling video track')
+        return self._describe_track(track, self.mapping['video'])
 
     def _describe_audio_track(self, track):
         """Describe audio track to a dict.
@@ -71,7 +80,8 @@ class Provider(object):
         :return:
         :rtype: dict
         """
-        return self._describe_track(track, self._getmapping('audio'))
+        logger.debug('Handling audio track')
+        return self._describe_track(track, self.mapping['audio'])
 
     def _describe_subtitle_track(self, track):
         """Describe subtitle track to a dict.
@@ -80,7 +90,8 @@ class Provider(object):
         :return:
         :rtype: dict
         """
-        return self._describe_track(track, self._getmapping('subtitle'))
+        logger.debug('Handling subtitle track')
+        return self._describe_track(track, self.mapping['subtitle'])
 
     def _describe_track(self, track, mapping):
         """Describe track to a dict.
@@ -92,16 +103,20 @@ class Provider(object):
         :rtype: dict
         """
         props = OrderedDict()
-        f = self._getformatting()
-        for k, v in mapping.items():
-            self._enrich(track, k, props, v, f.get(k))
+        for name, prop in mapping.items():
+            self._enrich(props, name, track, prop)
 
         return props
 
     @staticmethod
-    def _enrich(source, source_key, target, target_key=None, value_formatter=None):
+    def _enrich(props, name, source, prop):
         if source is not None:
-            value = getattr(source, source_key) if not callable(target_key) else target_key(source)
+            value = getattr(source, prop.name)
             if value is not None:
-                target[target_key or source_key] = (
-                    value_formatter(value) if value_formatter is not None else value)
+                logger.debug('Adding %s with value %r', name, value)
+                if isinstance(value, binary_type):
+                    value = text_type(value)
+                if isinstance(value, text_type):
+                    value = value.translate(visible_chars_table)
+
+                props[name] = prop.handler.handle(value, props) if prop.handler is not None else value

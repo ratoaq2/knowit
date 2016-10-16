@@ -22,7 +22,7 @@ def find_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 setup_requirements = ['pytest-runner'] if {'pytest', 'test', 'ptr'}.intersection(sys.argv) else []
-install_requirements = ['enzyme>=0.4.1', 'pymediainfo>=2.1.5', 'six>=1.9.0']
+install_requirements = ['babelfish>=0.5.2', 'enzyme>=0.4.1', 'pymediainfo>=2.1.5', 'six>=1.9.0']
 test_requirements = ['flake8_docstrings', 'flake8-import-order', 'pydocstyle!=1.1.0', 'pep8-naming',
                      'pytest>=2.8', 'pytest-flake8']
 
