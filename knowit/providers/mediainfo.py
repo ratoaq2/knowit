@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import logging
 import os
 import sys
@@ -6,8 +8,11 @@ import sys
 from pymediainfo import MediaInfo
 
 from .. import OrderedDict
-from ..properties import AudioCodec, Duration, Language, Property, ScanType, VideoCodec, YesNo
-from ..provider import Provider
+from ..properties import (
+    AudioChannels, AudioCodec, AudioCompression, BitRateMode, Duration, Float, Integer,
+    Language, MultiHandler, Property, ScanType, SubtitleFormat, VideoCodec, YesNo
+)
+from ..provider import MalformedFileError, Provider
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +36,13 @@ def load_native():
         if os_family == 'unix':
             from ctypes import CDLL
             logger.debug('Loading native mediainfo library')
-            CDLL('libmediainfo.so.0')
+            so_name = 'libmediainfo.so.0'
+            for location in ('/usr/local/mediainfo/lib', ):
+                candidate = os.path.join(location, so_name)
+                if os.path.isfile(candidate):
+                    so_name = candidate
+                    break
+            CDLL(so_name)
             MEDIA_INFO_AVAILABLE = True
         else:
             os_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '../native', os_family))
@@ -67,50 +78,50 @@ class MediaInfoProvider(Provider):
                 ('duration', Property('duration', Duration())),
             ]),
             'video': OrderedDict([
-                ('number', Property('track_id')),
+                ('number', Property('track_id', Integer('video track number'))),
                 ('name', Property('name')),
                 ('language', Property('language', Language())),
                 ('duration', Property('duration', Duration())),
-                ('size', Property('stream_size')),
-                ('width', Property('width')),
-                ('height', Property('height')),
+                ('size', Property('stream_size', Integer('video stream size'))),
+                ('width', Property('width', Integer('width'))),
+                ('height', Property('height', Integer('height'))),
                 ('scan_type', Property('scan_type', ScanType())),
-                ('aspect_ratio', Property('display_aspect_ratio')),
-                ('frame_rate', Property('frame_rate')),
-                ('bit_rate', Property('bit_rate')),
-                ('bit_depth', Property('bit_depth')),
+                ('aspect_ratio', Property('display_aspect_ratio', Float('aspect ratio'))),
+                ('frame_rate', Property('frame_rate', Float('frame rate'))),
+                ('bit_rate', Property('bit_rate', Integer('video bit rate'))),
+                ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
                 ('codec', Property('codec', VideoCodec())),
                 ('profile', Property('codec_profile')),
                 ('encoder', Property('encoded_library_name')),
                 ('media_type', Property('internet_media_type')),
-                ('forced', Property('forced', YesNo())),
-                ('default', Property('default', YesNo())),
-                ('enabled', Property('enabled', YesNo())),
+                ('forced', Property('forced', YesNo(hide_value=False))),
+                ('default', Property('default', YesNo(hide_value=False))),
+                ('enabled', Property('enabled', YesNo(hide_value=True))),
             ]),
             'audio': OrderedDict([
-                ('number', Property('track_id')),
+                ('number', Property('track_id', Integer('audio track number'))),
                 ('name', Property('title')),
                 ('language', Property('language', Language())),
                 ('duration', Property('duration', Duration())),
-                ('size', Property('stream_size')),
-                ('codec', Property('codec', AudioCodec())),
-                ('channels', Property('channel_s')),
-                ('bit_rate', Property('bit_rate')),
-                ('bit_rate_mode', Property('bit_rate_mode')),
-                ('sample_rate', Property('sampling_rate')),
-                ('compression_mode', Property('compression_mode')),
-                ('forced', Property('forced', YesNo())),
-                ('default', Property('default', YesNo())),
-                ('enabled', Property('enabled', YesNo())),
+                ('size', Property('stream_size', Integer('audio stream size'))),
+                ('codec', Property('codec', MultiHandler(AudioCodec()))),
+                ('channels', Property('channel_s', MultiHandler(AudioChannels()))),
+                ('bit_rate', Property('bit_rate', MultiHandler(Integer('audio bit rate')))),
+                ('bit_rate_mode', Property('bit_rate_mode', MultiHandler(BitRateMode()))),
+                ('sample_rate', Property('sampling_rate', MultiHandler(Integer('audio sample rate')))),
+                ('compression', Property('compression_mode', MultiHandler(AudioCompression()))),
+                ('forced', Property('forced', YesNo(hide_value=False))),
+                ('default', Property('default', YesNo(hide_value=False))),
+                ('enabled', Property('enabled', YesNo(hide_value=True))),
             ]),
             'subtitle': OrderedDict([
-                ('number', Property('track_id')),
+                ('number', Property('track_id', Integer('subtitle track number'))),
                 ('name', Property('title')),
                 ('language', Property('language', Language())),
-                ('format', Property('format')),
-                ('forced', Property('forced', YesNo())),
-                ('default', Property('default', YesNo())),
-                ('enabled', Property('enabled', YesNo())),
+                ('format', Property('codec_id', SubtitleFormat())),
+                ('forced', Property('forced', YesNo(hide_value=False))),
+                ('default', Property('default', YesNo(hide_value=False))),
+                ('enabled', Property('enabled', YesNo(hide_value=True))),
             ]),
         })
 
@@ -138,4 +149,11 @@ class MediaInfoProvider(Provider):
             elif track.track_type == 'Text':
                 subtitle_tracks.append(track)
 
-        return self._describe_tracks(general_tracks[0], video_tracks, audio_tracks, subtitle_tracks)
+        result = self._describe_tracks(general_tracks[0] if general_tracks else [],
+                                       video_tracks, audio_tracks, subtitle_tracks)
+        if not result:
+            logger.warning("Invalid file '%s'", video_path)
+            if options['fail_on_error']:
+                raise MalformedFileError
+
+        return result

@@ -7,9 +7,22 @@ import os
 import sys
 from argparse import ArgumentParser
 
+try:
+    from scandir import walk
+except ImportError:
+    from os import walk
+
 from six import text_type
 
 from . import VIDEO_EXTENSIONS, api
+
+
+logging.basicConfig(stream=sys.stdout, format='%(message)s')
+logging.getLogger('CONSOLE').setLevel(logging.INFO)
+logging.getLogger('knowit').setLevel(logging.ERROR)
+logging.getLogger('enzyme').setLevel(logging.ERROR)
+
+console = logging.getLogger('CONSOLE')
 
 
 def build_argument_parser():
@@ -25,6 +38,10 @@ def build_argument_parser():
     provider_opts.add_argument('-p', '--provider', dest='provider', default=None,
                                help='The provider to be used: enzyme or mediainfo.')
 
+    input_opts = opts.add_argument_group("Input")
+    input_opts.add_argument('-E', '--fail-on-error', action='store_true', dest='fail_on_error', default=False,
+                            help='Fail when errors are found on the media file.')
+
     output_opts = opts.add_argument_group("Output")
     output_opts.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
                              help='Display debug output')
@@ -38,10 +55,10 @@ def build_argument_parser():
 
 def knowit(video_path, options):
     """Extract video metadata."""
-    print('For: {0}'.format(video_path))
+    console.info('For: %s', video_path)
     info = api.knowit(video_path, vars(options))
     if not options.no_output:
-        print(json.dumps(info, cls=StringEncoder, indent=4, ensure_ascii=False))
+        console.info(json.dumps(info, cls=StringEncoder, indent=4, ensure_ascii=False))
 
 
 class StringEncoder(json.JSONEncoder):
@@ -62,24 +79,25 @@ def main(args=None):
     options = argument_parser.parse_args(args)
 
     if options.verbose:
-        logging.basicConfig(stream=sys.stdout, format='%(message)s')
-        logging.getLogger().setLevel(logging.INFO)
+        logging.getLogger('knowit').setLevel(logging.INFO)
         logging.getLogger('enzyme').setLevel(logging.WARNING)
 
     paths = []
 
-    for candidate in options.videopath:
-        if os.path.isfile(candidate):
-            paths.append(candidate.decode(sys.getfilesystemencoding()))
-        if os.path.isdir(candidate):
-            for root, directories, filenames in os.walk(candidate):
+    for path in options.videopath:
+        if os.path.isfile(path):
+            paths.append(path)
+        if os.path.isdir(path):
+            for root, directories, filenames in walk(path):
                 for filename in filenames:
                     if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
                         fullpath = os.path.join(root, filename)
-                        paths.append(fullpath.decode(sys.getfilesystemencoding()))
+                        paths.append(fullpath)
 
     if paths:
+        encoding = 'utf-8' if os.name != 'nt' else sys.getfilesystemencoding()
         for videopath in paths:
+            videopath = text_type(videopath, encoding)
             knowit(videopath, options)
     else:
         argument_parser.print_help()

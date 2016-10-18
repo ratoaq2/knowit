@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Know your media files better."""
+from __future__ import unicode_literals
 
 __title__ = 'knowit'
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 __short_version__ = '.'.join(__version__.split('.')[:2])
 __author__ = 'Rato AQ2'
 __license__ = 'MIT'

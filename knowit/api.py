@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from . import OrderedDict
 from .providers.enzyme import EnzymeProvider
 from .providers.mediainfo import MediaInfoProvider
@@ -21,7 +23,7 @@ def knowit(video_path, options):
     :rtype: dict
     """
     for name, provider in available_providers.items():
-        if (options.get('provider') or name) != name:
+        if name != (options['provider'] or name):
             continue
 
         if provider.accepts(video_path):

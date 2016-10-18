@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import logging
 
 from six import binary_type, text_type
 
 from . import OrderedDict
+from .properties import is_unknown
 
 
 logger = logging.getLogger(__name__)
@@ -117,6 +120,30 @@ class Provider(object):
                 if isinstance(value, binary_type):
                     value = text_type(value)
                 if isinstance(value, text_type):
-                    value = value.translate(visible_chars_table)
+                    value = value.translate(visible_chars_table).strip()
+                    if is_unknown(value):
+                        return
 
-                props[name] = prop.handler.handle(value, props) if prop.handler is not None else value
+                context = dict()
+                result = prop.handler.handle(value, context) if prop.handler else value
+                if result is not None and not is_unknown(result):
+                    props[name] = result
+                props.update(context)
+
+
+class ProviderError(Exception):
+    """Base class for provider exceptions."""
+
+    pass
+
+
+class MalformedFileError(ProviderError):
+    """Malformed File error."""
+
+    pass
+
+
+class UnsupportedFileFormatError(ProviderError):
+    """Unsupported File Format error."""
+
+    pass
