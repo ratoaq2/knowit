@@ -7,14 +7,10 @@ import os
 import sys
 from argparse import ArgumentParser
 
-try:
-    from scandir import walk
-except ImportError:
-    from os import walk
-
 from six import text_type
 
 from . import VIDEO_EXTENSIONS, api
+from .provider import ProviderError
 
 
 logging.basicConfig(stream=sys.stdout, format='%(message)s')
@@ -22,6 +18,7 @@ logging.getLogger('CONSOLE').setLevel(logging.INFO)
 logging.getLogger('knowit').setLevel(logging.ERROR)
 logging.getLogger('enzyme').setLevel(logging.ERROR)
 
+logger = logging.getLogger('enzyme')
 console = logging.getLogger('CONSOLE')
 
 
@@ -84,21 +81,30 @@ def main(args=None):
 
     paths = []
 
+    encoding = sys.getfilesystemencoding()
     for path in options.videopath:
         if os.path.isfile(path):
-            paths.append(path)
+            paths.append(path.decode(encoding))
         if os.path.isdir(path):
-            for root, directories, filenames in walk(path):
+            for root, directories, filenames in os.walk(path):
                 for filename in filenames:
                     if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
-                        fullpath = os.path.join(root, filename)
+                        if os.name == 'nt':
+                            fullpath = os.path.join(root, filename.decode(encoding))
+                        else:
+                            fullpath = os.path.join(root, filename).decode(encoding)
                         paths.append(fullpath)
 
     if paths:
-        encoding = 'utf-8' if os.name != 'nt' else sys.getfilesystemencoding()
         for videopath in paths:
-            videopath = text_type(videopath, encoding)
-            knowit(videopath, options)
+            try:
+                knowit(videopath, options)
+            except ProviderError:
+                logger.exception('Error when processing video')
+            except OSError:
+                logger.exception('OS error when processing video')
+            except UnicodeError:
+                logger.exception('Character encoding error when processing video')
     else:
         argument_parser.print_help()
 

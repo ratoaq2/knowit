@@ -8,6 +8,7 @@ import enzyme
 from .. import OrderedDict
 from ..properties import AudioCodec, Integer, Language, Property, VideoCodec, YesNo
 from ..provider import MalformedFileError, Provider
+from ..rules import AudioChannelsRule, ResolutionRule
 from ..utils import todict
 
 
@@ -31,6 +32,7 @@ class EnzymeProvider(Provider):
                 ('width', Property('width', Integer('width'))),
                 ('height', Property('height', Integer('height'))),
                 ('scan_type', Property('interlaced', YesNo('Interlaced', 'Progressive'))),
+                ('resolution', ResolutionRule()),
                 # ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
                 ('codec', Property('codec_id', VideoCodec())),
                 ('forced', Property('forced', YesNo(hide_value=False))),
@@ -42,7 +44,8 @@ class EnzymeProvider(Provider):
                 ('name', Property('name')),
                 ('language', Property('language', Language())),
                 ('codec', Property('codec_id', AudioCodec())),
-                ('channels', Property('channels', Integer('audio channels'))),
+                ('channels_count', Property('channels', Integer('audio channels'))),
+                ('channels', AudioChannelsRule()),
                 ('forced', Property('forced', YesNo(hide_value=False))),
                 ('default', Property('default', YesNo(hide_value=False))),
                 ('enabled', Property('enabled', YesNo(hide_value=True))),

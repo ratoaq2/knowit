@@ -13,6 +13,7 @@ from ..properties import (
     Language, MultiHandler, Property, ScanType, SubtitleFormat, VideoCodec, YesNo
 )
 from ..provider import MalformedFileError, Provider
+from ..rules import AudioChannelsRule, ResolutionRule
 
 
 logger = logging.getLogger(__name__)
@@ -87,6 +88,7 @@ class MediaInfoProvider(Provider):
                 ('height', Property('height', Integer('height'))),
                 ('scan_type', Property('scan_type', ScanType())),
                 ('aspect_ratio', Property('display_aspect_ratio', Float('aspect ratio'))),
+                ('resolution', ResolutionRule()),
                 ('frame_rate', Property('frame_rate', Float('frame rate'))),
                 ('bit_rate', Property('bit_rate', Integer('video bit rate'))),
                 ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
@@ -105,7 +107,8 @@ class MediaInfoProvider(Provider):
                 ('duration', Property('duration', Duration())),
                 ('size', Property('stream_size', Integer('audio stream size'))),
                 ('codec', Property('codec', MultiHandler(AudioCodec()))),
-                ('channels', Property('channel_s', MultiHandler(AudioChannels()))),
+                ('channels_count', Property('channel_s', MultiHandler(AudioChannels()))),
+                ('channels', AudioChannelsRule()),
                 ('bit_rate', Property('bit_rate', MultiHandler(Integer('audio bit rate')))),
                 ('bit_rate_mode', Property('bit_rate_mode', MultiHandler(BitRateMode()))),
                 ('sample_rate', Property('sampling_rate', MultiHandler(Integer('audio sample rate')))),

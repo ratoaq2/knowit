@@ -7,6 +7,7 @@ from six import binary_type, text_type
 
 from . import OrderedDict
 from .properties import is_unknown
+from .rules import Rule
 
 
 logger = logging.getLogger(__name__)
@@ -34,18 +35,21 @@ class Provider(object):
 
         video = []
         for track in video_tracks:
-            v = self._describe_video_track(track)
-            video.append(v)
+            t = self._describe_video_track(track)
+            if t:
+                video.append(t)
 
         audio = []
         for track in audio_tracks:
-            v = self._describe_audio_track(track)
-            audio.append(v)
+            t = self._describe_audio_track(track)
+            if t:
+                audio.append(t)
 
         subtitle = []
         for track in subtitle_tracks:
-            v = self._describe_subtitle_track(track)
-            subtitle.append(v)
+            t = self._describe_subtitle_track(track)
+            if t:
+                subtitle.append(t)
 
         if video:
             props['video'] = video
@@ -114,7 +118,8 @@ class Provider(object):
     @staticmethod
     def _enrich(props, name, source, prop):
         if source is not None:
-            value = getattr(source, prop.name)
+            is_rule = isinstance(prop, Rule)
+            value = getattr(source, prop.name) if not is_rule else None
             if value is not None:
                 logger.debug('Adding %s with value %r', name, value)
                 if isinstance(value, binary_type):
@@ -129,6 +134,8 @@ class Provider(object):
                 if result is not None and not is_unknown(result):
                     props[name] = result
                 props.update(context)
+            elif is_rule:
+                prop.execute(props)
 
 
 class ProviderError(Exception):

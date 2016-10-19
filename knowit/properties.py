@@ -136,6 +136,7 @@ class VideoCodec(Handler):
         'MPEG2': 'Mpeg2',
         'MPEG-2V': 'Mpeg2',
         'MP42': 'MsMpeg4v2',
+        'MP43': 'MsMpeg4v3',
         # https://en.wikipedia.org/wiki/MPEG-4_Part_2
         'MPEG-4V': 'Mpeg4',
         'XVID': 'XviD',  # Mpeg4
@@ -147,6 +148,7 @@ class VideoCodec(Handler):
         'WMV1': 'Wmv1',
         'WMV2': 'Wmv2',
         'WMV3': 'Wmv3',
+        'WVC1': 'Wmv3',
         # https://en.wikipedia.org/wiki/VC-1
         'VC-1': 'VC1',
         'QUICKTIME': 'QuickTime',
@@ -175,6 +177,7 @@ class AudioCodec(Handler):
         'AC3': 'AC3',
         'AC3/BSID9': 'AC3',
         'AC3/BSID10': 'AC3',
+        '2000': 'AC3',
         'EAC3': 'EAC3',
         'AC3+': 'EAC3',
         'TRUEHD': 'TrueHD',
@@ -182,6 +185,7 @@ class AudioCodec(Handler):
         'DTS': 'DTS',
         'DTS-HD': 'DTS-HD',
         'AAC': 'AAC',
+        'AAC MAIN': 'AAC',
         'AAC LC': 'AAC',
         'AAC LC-SBR': 'AAC',
         'AAC LC-SBR-PS': 'AAC',
@@ -204,6 +208,7 @@ class AudioCodec(Handler):
     }
 
     audio_profiles = {
+        'AAC MAIN': 'Main',
         'AAC LC': 'LC',
         'AAC LC-SBR': 'LC',
         'AAC LC-SBR-PS': 'LC',
