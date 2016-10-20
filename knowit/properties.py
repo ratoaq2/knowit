@@ -15,13 +15,23 @@ def is_unknown(value):
     return isinstance(value, text_type) and (not value or value.lower() == 'unknown')
 
 
+def split(value, delimiter='/'):
+    if value is None:
+        return
+
+    v = text_type(value)
+    return map(text_type.strip, v.split(delimiter))
+
+
 class Property(object):
     """Property class."""
 
-    def __init__(self, name, handler=None):
+    def __init__(self, name=None, handler=None, default=None, private=False):
         """Init method."""
         self.name = name
         self.handler = handler
+        self.default = default
+        self.private = private
 
 
 class Handler(object):
@@ -43,18 +53,20 @@ class Handler(object):
 class MultiHandler(Handler):
     """Property Handler for properties with multiple values."""
 
-    def __init__(self, handler):
+    def __init__(self, handler, delimiter='/'):
         """Init method."""
         self.handler = handler
+        self.delimiter = delimiter
 
     def handle(self, value, context):
         """Handle properties with multiple values."""
-        v = text_type(value)
-        values = map(text_type.strip, v.split('/'))
+        values = (split(value[0], self.delimiter)
+                  if len(value) == 1 else value) if isinstance(value, list) else split(value, self.delimiter)
+        call = self.handler if callable(self.handler) else self.handler.handle
         if len(values) > 1:
-            return [self.handler.handle(item, context) if not is_unknown(item) else None for item in values]
+            return [call(item, context) if not is_unknown(item) else None for item in values]
 
-        return self.handler.handle(value, context)
+        return call(value, context)
 
 
 class Duration(Handler):
@@ -207,6 +219,18 @@ class AudioCodec(Handler):
         '162': 'WMAPro',
     }
 
+    def handle(self, value, context):
+        """Handle audio codec."""
+        key = text_type(value).upper()
+        if key.startswith('A_'):
+            key = key[2:]
+
+        return self._handle('audio codec', value, key, self.audio_codecs)
+
+
+class AudioProfile(Handler):
+    """Audio profile handler."""
+
     audio_profiles = {
         'AAC MAIN': 'Main',
         'AAC LC': 'LC',
@@ -215,16 +239,9 @@ class AudioCodec(Handler):
     }
 
     def handle(self, value, context):
-        """Handle audio codec and audio profiles."""
+        """Handle profiles."""
         key = text_type(value).upper()
-        if key.startswith('A_'):
-            key = key[2:]
-
-        profile = self.audio_profiles.get(key)
-        if profile:
-            context['profile'] = profile
-
-        return self._handle('audio codec', value, key, self.audio_codecs)
+        return self.audio_profiles.get(key)
 
 
 class SubtitleFormat(Handler):
@@ -233,6 +250,7 @@ class SubtitleFormat(Handler):
     formats = {
         'S_HDMV/PGS': 'PGS',
         'S_VOBSUB': 'VobSub',
+        'E0': 'VobSub',
         'S_TEXT/UTF8': 'SubRip',
         'S_TEXT/SSA': 'SubStationAlpha',
         # https://en.wikipedia.org/wiki/SubStation_Alpha
@@ -240,18 +258,23 @@ class SubtitleFormat(Handler):
         'TX3G': 'Tx3g',
     }
 
+    def handle(self, value, context):
+        """Handle subtitle format values."""
+        key = value.upper()
+        return self._handle('subtitle format', value, key, self.formats)
+
+
+class SubtitleEncoding(Handler):
+    """Subtitle Encoding handler."""
+
     encoding = {
         'S_TEXT/UTF8': 'utf-8'
     }
 
     def handle(self, value, context):
-        """Handle subtitle format values."""
+        """Handle subtitle encoding values."""
         key = value.upper()
-        encoding = self.encoding.get(key)
-        if encoding:
-            context['encoding'] = encoding
-
-        return self._handle('subtitle format', value, key, self.formats)
+        return self.encoding.get(key)
 
 
 class Language(Handler):
@@ -348,3 +371,99 @@ class Float(Handler):
             return float(text_type(value))
         except ValueError:
             logger.info('Invalid %s: %r', self.name, value)
+
+
+class ResolutionRule(Handler):
+    """Resolution rule."""
+
+    standard_resolutions = (
+        480, 720, 1080, 2160, 4320,
+    )
+    uncommon_resolutions = (
+        240, 288, 360, 576, 960, 1440,
+    )
+    square = 4. / 3
+    wide = 16. / 9
+
+    def handle(self, props, context):
+        """Execute the rule against properties."""
+        height = props.get('height')
+        width = props.get('width')
+        aspect_ratio = props.get('aspect_ratio')
+        scan_type = props.get('scan_type')
+        if width and height:
+            if not scan_type:
+                logger.info('Unable to determine resolution: No video scan type')
+                return
+
+            ratios = []
+            if aspect_ratio:
+                ratios.append(aspect_ratio)
+                ratios.append(self.wide if aspect_ratio >= self.wide else self.square)
+            else:
+                ratios.extend([self.wide, self.square])
+
+            for resolutions in (self.standard_resolutions, self.uncommon_resolutions):
+                for factor in ratios:
+                    actual = int(round(width / factor))
+                    for candidate in (actual, height):
+                        top = candidate * (1 + 1. / 3)
+                        for r in resolutions:
+                            if candidate == r:
+                                return self._select(candidate, scan_type)
+                            if candidate <= r <= top:
+                                return self._select(r, scan_type)
+
+            logger.info('Invalid resolution: %dx%d (%s)', width, height, aspect_ratio)
+
+    @staticmethod
+    def _select(resolution, scan_type):
+        return '{0}{1}'.format(resolution, scan_type[0].lower())
+
+
+class AudioChannelsRule(Handler):
+    """Audio Channel rule."""
+
+    mapping = {
+        1: '1.0',
+        2: '2.0',
+        6: '5.1',
+        8: '7.1',
+    }
+
+    def handle(self, props, context):
+        """Execute the rule against properties."""
+        count = props.get('channels_count')
+        if count is not None:
+            channels = self.mapping.get(count) if isinstance(count, int) else None
+            positions = context.get('channel_positions') or []
+            candidate = 0
+            for position in positions:
+                if not position:
+                    continue
+                c = sum([float(i) for i in position.split('/')])
+                c_count = int(c) + int(round((c - int(c)) * 10))
+                if c_count == count:
+                    return text_type(c)
+
+                candidate = max(candidate, c)
+
+            if channels:
+                return channels
+
+            if candidate:
+                return text_type(candidate)
+
+            logger.info('Invalid channels: %d', count)
+
+
+class HearingImpairedRule(Handler):
+    """Hearing Impaired rule."""
+
+    hi_re = re.compile(r'(\bcc\d\b)|(\bsdh\b)', re.IGNORECASE)
+
+    def handle(self, props, context):
+        """Hearing Impaired."""
+        name = props.get('name')
+        if name and self.hi_re.search(name):
+            return True

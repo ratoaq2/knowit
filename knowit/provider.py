@@ -7,7 +7,6 @@ from six import binary_type, text_type
 
 from . import OrderedDict
 from .properties import is_unknown
-from .rules import Rule
 
 
 logger = logging.getLogger(__name__)
@@ -110,16 +109,17 @@ class Provider(object):
         :rtype: dict
         """
         props = OrderedDict()
+        context = dict()
         for name, prop in mapping.items():
-            self._enrich(props, name, track, prop)
+            self._enrich(props, name, track, prop, context)
 
         return props
 
     @staticmethod
-    def _enrich(props, name, source, prop):
+    def _enrich(props, name, source, prop, context):
         if source is not None:
-            is_rule = isinstance(prop, Rule)
-            value = getattr(source, prop.name) if not is_rule else None
+            is_rule = prop.name is None
+            value = getattr(source, prop.name) or prop.default if not is_rule else props
             if value is not None:
                 logger.debug('Adding %s with value %r', name, value)
                 if isinstance(value, binary_type):
@@ -129,13 +129,11 @@ class Provider(object):
                     if is_unknown(value):
                         return
 
-                context = dict()
-                result = prop.handler.handle(value, context) if prop.handler else value
+                result = (prop.handler.handle(value, context) if prop.handler else value)
                 if result is not None and not is_unknown(result):
-                    props[name] = result
-                props.update(context)
-            elif is_rule:
-                prop.execute(props)
+                    if not prop.private:
+                        props[name] = result
+                    context[name] = result
 
 
 class ProviderError(Exception):

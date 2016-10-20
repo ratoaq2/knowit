@@ -9,11 +9,11 @@ from pymediainfo import MediaInfo
 
 from .. import OrderedDict
 from ..properties import (
-    AudioChannels, AudioCodec, AudioCompression, BitRateMode, Duration, Float, Integer,
-    Language, MultiHandler, Property, ScanType, SubtitleFormat, VideoCodec, YesNo
+    AudioChannels, AudioChannelsRule, AudioCodec, AudioCompression, AudioProfile, BitRateMode,
+    Duration, Float, HearingImpairedRule, Integer, Language, MultiHandler, Property,
+    ResolutionRule, ScanType, SubtitleEncoding, SubtitleFormat, VideoCodec, YesNo
 )
 from ..provider import MalformedFileError, Provider
-from ..rules import AudioChannelsRule, ResolutionRule
 
 
 logger = logging.getLogger(__name__)
@@ -86,9 +86,9 @@ class MediaInfoProvider(Provider):
                 ('size', Property('stream_size', Integer('video stream size'))),
                 ('width', Property('width', Integer('width'))),
                 ('height', Property('height', Integer('height'))),
-                ('scan_type', Property('scan_type', ScanType())),
+                ('scan_type', Property('scan_type', ScanType(), default='Progressive')),
                 ('aspect_ratio', Property('display_aspect_ratio', Float('aspect ratio'))),
-                ('resolution', ResolutionRule()),
+                ('resolution', Property(handler=ResolutionRule())),
                 ('frame_rate', Property('frame_rate', Float('frame rate'))),
                 ('bit_rate', Property('bit_rate', Integer('video bit rate'))),
                 ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
@@ -107,8 +107,11 @@ class MediaInfoProvider(Provider):
                 ('duration', Property('duration', Duration())),
                 ('size', Property('stream_size', Integer('audio stream size'))),
                 ('codec', Property('codec', MultiHandler(AudioCodec()))),
+                ('profile', Property('codec', MultiHandler(AudioProfile()))),
                 ('channels_count', Property('channel_s', MultiHandler(AudioChannels()))),
-                ('channels', AudioChannelsRule()),
+                ('channel_positions', Property('other_channel_positions',
+                                               MultiHandler(lambda x, *args: x, delimiter=' / '), private=True)),
+                ('channels', Property(handler=AudioChannelsRule())),
                 ('bit_rate', Property('bit_rate', MultiHandler(Integer('audio bit rate')))),
                 ('bit_rate_mode', Property('bit_rate_mode', MultiHandler(BitRateMode()))),
                 ('sample_rate', Property('sampling_rate', MultiHandler(Integer('audio sample rate')))),
@@ -121,7 +124,9 @@ class MediaInfoProvider(Provider):
                 ('number', Property('track_id', Integer('subtitle track number'))),
                 ('name', Property('title')),
                 ('language', Property('language', Language())),
+                ('hearing_impaired', Property(handler=HearingImpairedRule())),
                 ('format', Property('codec_id', SubtitleFormat())),
+                ('encoding', Property('codec_id', SubtitleEncoding())),
                 ('forced', Property('forced', YesNo(hide_value=False))),
                 ('default', Property('default', YesNo(hide_value=False))),
                 ('enabled', Property('enabled', YesNo(hide_value=True))),
