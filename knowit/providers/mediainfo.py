@@ -88,6 +88,7 @@ class MediaInfoProvider(Provider):
                 ('height', Property('height', Integer('height'))),
                 ('scan_type', Property('scan_type', ScanType(), default='Progressive')),
                 ('aspect_ratio', Property('display_aspect_ratio', Float('aspect ratio'))),
+                ('pixel_aspect_ratio', Property('pixel_aspect_ratio', Float('pixel aspect ratio'))),
                 ('resolution', Property(handler=ResolutionRule())),
                 ('frame_rate', Property('frame_rate', Float('frame rate'))),
                 ('bit_rate', Property('bit_rate', Integer('video bit rate'))),

@@ -27,37 +27,73 @@ Extract information from a video file::
     $ knowit FooBar.mkv
     For: FooBar.mkv
     {
-        "duration": "0:20:31.071000",
+        "duration": "2:06:09.001000",
         "video": [
             {
                 "number": 1,
-                "language": "en",
-                "duration": "0:20:31.044000",
-                "size": 385321030,
-                "width": 1280,
-                "height": 720,
+                "language": "English",
+                "duration": "2:06:09.012000",
+                "width": 1920,
+                "height": 796,
                 "scan_type": "Progressive",
-                "aspect_ratio": "1.778",
-                "frame_rate": "23.976",
-                "bit_rate": 2503986,
+                "aspect_ratio": 2.412,
+                "pixel_aspect_ratio": 1.0,
+                "resolution": "1080p",
+                "frame_rate": 23.976,
                 "bit_depth": 8,
-                "codec": "AVC",
+                "codec": "h264",
                 "profile": "High@L4.1",
                 "encoder": "x264",
-                "media_type": "video/H264"
+                "media_type": "video/H264",
+                "default": true
             }
         ],
         "audio": [
             {
                 "number": 2,
-                "duration": "0:20:31.076000",
-                "size": 59091648,
-                "codec": "AC-3",
-                "channels": 6,
-                "bit_rate": 384000,
-                "bit_rate_mode": "CBR",
+                "name": "DTS MA 5.1 16bit",
+                "language": "English",
+                "duration": "2:06:09.001000",
+                "codec": "DTS-HD",
+                "channels_count": 6,
+                "channels": "5.1",
+                "bit_rate": [
+                    null,
+                    1509000
+                ],
+                "bit_rate_mode": [
+                    "Variable",
+                    "Constant"
+                ],
                 "sample_rate": 48000,
-                "compression_mode": "Lossy"
+                "compression": [
+                    "Lossless",
+                    "Lossy"
+                ],
+                "default": true
+            },
+            {
+                "number": 3,
+                "name": "DD5.1 448Kbps",
+                "language": "Chinese",
+                "duration": "2:06:09.001000",
+                "size": 448014053,
+                "codec": "AC3",
+                "channels_count": 6,
+                "channels": "5.1",
+                "bit_rate": 448000,
+                "bit_rate_mode": "Constant",
+                "sample_rate": 48000,
+                "compression": "Lossy"
+            }
+        ],
+        "subtitle": [
+            {
+                "number": 4,
+                "language": "English",
+                "format": "SubRip",
+                "encoding": "utf-8",
+                "default": true
             }
         ]
     }
@@ -75,6 +111,9 @@ the ``--user`` flag.
 External dependencies
 -------------------------
 This product uses `MediaInfo <http://mediaarea.net/MediaInfo>`_ library, Copyright (c) 2002-2016 `MediaArea.net SARL<mailto:Info@MediaArea.net>`_
+
 Binaries for Windows and MacOS are included. Linux distributions need to manually install MediaInfo.
+
 KnowIt supports MKV regardless if MediaInfo is installed.
+
 MediaInfo increases the number of supported formats and the number of extracted information.

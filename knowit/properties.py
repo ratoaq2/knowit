@@ -189,6 +189,8 @@ class AudioCodec(Handler):
         'AC3': 'AC3',
         'AC3/BSID9': 'AC3',
         'AC3/BSID10': 'AC3',
+        'BSID9': 'AC3',
+        'BSID10': 'AC3',
         '2000': 'AC3',
         'EAC3': 'EAC3',
         'AC3+': 'EAC3',
@@ -210,6 +212,7 @@ class AudioCodec(Handler):
         'MPA1L3': 'MP3',
         'MPA2L3': 'MP3',
         'MPEG/L3': 'MP3',
+        '50': 'MP3',
         '55': 'MP3',
         'VORBIS': 'Vorbis',
         'OPUS': 'Opus',
@@ -249,6 +252,7 @@ class SubtitleFormat(Handler):
 
     formats = {
         'S_HDMV/PGS': 'PGS',
+        '144': 'PGS',
         'S_VOBSUB': 'VobSub',
         'E0': 'VobSub',
         'S_TEXT/UTF8': 'SubRip',
@@ -380,39 +384,48 @@ class ResolutionRule(Handler):
         480, 720, 1080, 2160, 4320,
     )
     uncommon_resolutions = (
-        240, 288, 360, 576, 960, 1440,
+        240, 288, 320, 360, 420, 576, 960, 1440,
     )
     square = 4. / 3
     wide = 16. / 9
 
     def handle(self, props, context):
         """Execute the rule against properties."""
-        height = props.get('height')
         width = props.get('width')
+        height = props.get('height')
         aspect_ratio = props.get('aspect_ratio')
+        par = props.get('pixel_aspect_ratio', 1)
+
         scan_type = props.get('scan_type')
         if width and height:
             if not scan_type:
                 logger.info('Unable to determine resolution: No video scan type')
                 return
 
+            margin = 0.05 if height > 480 else 0.1
             ratios = []
             if aspect_ratio:
-                ratios.append(aspect_ratio)
-                ratios.append(self.wide if aspect_ratio >= self.wide else self.square)
+                ratio = aspect_ratio / par
+                ratios.append(aspect_ratio / par)
+                if ratio >= self.wide:
+                    correction = ratio / self.wide
+                    ratios.append(self.wide)
+                else:
+                    correction = ratio / self.square
+                    ratios.append(self.square)
             else:
+                correction = 1
                 ratios.extend([self.wide, self.square])
+            correction *= (1 + margin)
 
-            for resolutions in (self.standard_resolutions, self.uncommon_resolutions):
-                for factor in ratios:
-                    actual = int(round(width / factor))
-                    for candidate in (actual, height):
-                        top = candidate * (1 + 1. / 3)
-                        for r in resolutions:
-                            if candidate == r:
-                                return self._select(candidate, scan_type)
-                            if candidate <= r <= top:
-                                return self._select(r, scan_type)
+            resolutions = list(reversed(self.uncommon_resolutions + self.standard_resolutions))
+            for factor in ratios:
+                actual = int(round(width / factor))
+                for candidate in (actual, height):
+                    top = int(round(candidate * correction))
+                    for r in resolutions:
+                        if candidate <= r <= top:
+                            return self._select(r, scan_type)
 
             logger.info('Invalid resolution: %dx%d (%s)', width, height, aspect_ratio)
 
