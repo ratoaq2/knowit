@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 __title__ = 'knowit'
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 __short_version__ = '.'.join(__version__.split('.')[:2])
 __author__ = 'Rato AQ2'
 __license__ = 'MIT'

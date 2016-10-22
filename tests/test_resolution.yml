@@ -1,0 +1,190 @@
+# https://en.wikipedia.org/wiki/Pixel_aspect_ratio
+# https://en.wikipedia.org/wiki/Low-definition_television
+# https://knowledge.kaltura.com/best-practices-multi-device-transcoding
+
+288p:
+  - width: 480
+    height: 270
+    scan_type: Progressive
+    aspect_ratio: 1.778
+    pixel_aspect_ratio: 1.0
+  - width: 480
+    height: 270
+    scan_type: Progressive
+  - width: 320
+    height: 250
+    scan_type: Progressive
+    aspect_ratio: 1.28
+    pixel_aspect_ratio: 1.0
+  - width: 320
+    height: 250
+    scan_type: Progressive
+  - width: 320
+    height: 262
+    scan_type: Progressive
+    aspect_ratio: 1.221
+    pixel_aspect_ratio: 1.0
+  - width: 320
+    height: 262
+    scan_type: Progressive
+
+360p:
+  - width: 640
+    height: 360
+    scan_type: Progressive
+    aspect_ratio: 1.778
+    pixel_aspect_ratio: 1.0
+  - width: 640
+    height: 360
+    scan_type: Progressive
+  - width: 640
+    height: 352
+    scan_type: Progressive
+    aspect_ratio: 1.818
+    pixel_aspect_ratio: 1.0
+  - width: 640
+    height: 352
+    scan_type: Progressive
+  - width: 592
+    height: 320
+    scan_type: Progressive
+    aspect_ratio: 1.85
+    pixel_aspect_ratio: 1.0
+  - width: 592
+    height: 320
+    scan_type: Progressive
+  - width: 640
+    height: 320
+    scan_type: Progressive
+  - width: 640
+    height: 352
+    scan_type: Progressive
+
+480p:
+  - width: 640
+    height: 320
+    scan_type: Progressive
+    aspect_ratio: 2.0
+    pixel_aspect_ratio: 1.092
+  - width: 752
+    height: 398
+    scan_type: Progressive
+    aspect_ratio: 1.889
+    pixel_aspect_ratio: 1.0
+  - width: 752
+    height: 398
+    scan_type: Progressive
+  - width: 720
+    height: 400
+    scan_type: Progressive
+    aspect_ratio: 1.8
+    pixel_aspect_ratio: 1.0
+  - width: 720
+    height: 400
+    scan_type: Progressive
+
+576p:
+  - width: 720
+    height: 576
+    scan_type: Progressive
+    aspect_ratio: 1.333
+    pixel_aspect_ratio: 1.067
+  - width: 720
+    height: 576
+    scan_type: Progressive
+  - width: 720
+    height: 576
+    scan_type: Progressive
+    aspect_ratio: 1.778
+    pixel_aspect_ratio: 1.422  # not sure
+  - width: 720
+    height: 576
+    scan_type: Progressive
+  - width: 640
+    height: 352
+    scan_type: Progressive
+    aspect_ratio: 1.818
+    pixel_aspect_ratio: 1.422
+
+720p:
+  - width: 1280
+    height: 720
+    scan_type: Progressive
+    aspect_ratio: 1.778
+    pixel_aspect_ratio: 1.0
+  - width: 1280
+    height: 720
+    scan_type: Progressive
+  - width: 1280
+    height: 544
+    scan_type: Progressive
+    aspect_ratio: 2.353
+    pixel_aspect_ratio: 1.0
+  - width: 1280
+    height: 544
+    scan_type: Progressive
+  - width: 1280
+    height: 542
+    scan_type: Progressive
+    aspect_ratio: 2.362
+    pixel_aspect_ratio: 1.0
+  - width: 1280
+    height: 542
+    scan_type: Progressive
+  - width: 1280
+    height: 526
+    scan_type: Progressive
+    aspect_ratio: 2.433
+    pixel_aspect_ratio: 1.0
+  - width: 1280
+    height: 526
+    scan_type: Progressive
+  - width: 1264
+    height: 718
+    scan_type: Progressive
+    aspect_ratio: 1.76
+    pixel_aspect_ratio: 1.0
+  - width: 1264
+    height: 718
+    scan_type: Progressive
+
+1080p:
+  - width: 1920
+    height: 1080
+    scan_type: Progressive
+    aspect_ratio: 1.778
+    pixel_aspect_ratio: 1.0
+  - width: 1920
+    height: 1080
+    scan_type: Progressive
+  - width: 1426
+    height: 1080
+    scan_type: Progressive
+    aspect_ratio: 1.319
+  - width: 1426
+    height: 1080
+    scan_type: Progressive
+  - width: 1920
+    height: 800
+    scan_type: Progressive
+    aspect_ratio: 2.4
+    pixel_aspect_ratio: 1.0
+  - width: 1920
+    height: 800
+    scan_type: Progressive
+  - width: 1920
+    height: 796
+    scan_type: Progressive
+    aspect_ratio: 2.412
+    pixel_aspect_ratio: 1.0
+  - width: 1920
+    height: 796
+    scan_type: Progressive
+  - width: 1920
+    height: 540
+    scan_type: Progressive
+    aspect_ratio: 3.556
+    pixel_aspect_ratio: 1.0
+  - width: 1920
+    height: 540
+    scan_type: Progressive

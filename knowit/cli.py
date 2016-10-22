@@ -7,6 +7,7 @@ import os
 import sys
 from argparse import ArgumentParser
 
+from babelfish.language import Language
 from six import text_type
 
 from . import VIDEO_EXTENSIONS, api
@@ -63,7 +64,7 @@ class StringEncoder(json.JSONEncoder):
 
     def default(self, o):
         """Convert properties to string."""
-        if hasattr(o, 'name'):
+        if isinstance(o, Language):
             return getattr(o, 'name')
 
         return text_type(o)

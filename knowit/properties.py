@@ -66,7 +66,7 @@ class MultiHandler(Handler):
         if len(values) > 1:
             return [call(item, context) if not is_unknown(item) else None for item in values]
 
-        return call(value, context)
+        return call(values[0], context)
 
 
 class Duration(Handler):
@@ -384,50 +384,51 @@ class ResolutionRule(Handler):
         480, 720, 1080, 2160, 4320,
     )
     uncommon_resolutions = (
-        240, 288, 320, 360, 420, 576, 960, 1440,
+        240, 288, 360, 576,
     )
+    resolutions = list(sorted(standard_resolutions + uncommon_resolutions))
     square = 4. / 3
     wide = 16. / 9
 
     def handle(self, props, context):
-        """Execute the rule against properties."""
+        """Return the resolution for the video.
+
+        The resolution is based on a widescreen TV (16:9)
+        1920x800 will be considered 1080p since the TV will use 1920x1080 with vertical black bars
+        1426x1080 is considered 1080p since the TV will use 1920x1080 with horizontal black bars
+
+        The calculation considers the display aspect ratio and the pixel aspect ratio (not only width and height).
+        The upper resolution is selected if there's no perfect match with the following list of resolutions:
+            240, 288, 360, 480, 576, 720, 1080, 2160, 4320
+        If no interlaced information is available, resolution will be considered Progressive.
+        """
         width = props.get('width')
         height = props.get('height')
-        aspect_ratio = props.get('aspect_ratio')
+        dar = props.get('aspect_ratio', float(width) / height)
         par = props.get('pixel_aspect_ratio', 1)
+        scan_type = props.get('scan_type', 'Progressive')
 
-        scan_type = props.get('scan_type')
         if width and height:
-            if not scan_type:
-                logger.info('Unable to determine resolution: No video scan type')
-                return
+            # Max DAR for widescreen TVs is 16:9
+            max_dar = min(dar, self.wide)
+            stretched_width = int(round(width * par / 16)) * 16  # mod-16
+            calculated_height = int(round(stretched_width / max_dar / 8)) * 8  # mod-8
 
-            margin = 0.05 if height > 480 else 0.1
-            ratios = []
-            if aspect_ratio:
-                ratio = aspect_ratio / par
-                ratios.append(aspect_ratio / par)
-                if ratio >= self.wide:
-                    correction = ratio / self.wide
-                    ratios.append(self.wide)
-                else:
-                    correction = ratio / self.square
-                    ratios.append(self.square)
-            else:
-                correction = 1
-                ratios.extend([self.wide, self.square])
-            correction *= (1 + margin)
+            last_resolution = None
+            for r in reversed(self.resolutions):
+                if r < calculated_height:
+                    break
+                last_resolution = r
 
-            resolutions = list(reversed(self.uncommon_resolutions + self.standard_resolutions))
-            for factor in ratios:
-                actual = int(round(width / factor))
-                for candidate in (actual, height):
-                    top = int(round(candidate * correction))
-                    for r in resolutions:
-                        if candidate <= r <= top:
-                            return self._select(r, scan_type)
+            if last_resolution:
+                return self._select(last_resolution, scan_type)
 
-            logger.info('Invalid resolution: %dx%d (%s)', width, height, aspect_ratio)
+            logger.info('''# Unable to detect resolution
+  - width: {0}
+    height: {1}
+    scan_type: {2}
+    aspect_ratio: {3}
+    pixel_aspect_ratio: {4}'''.format(width, height, scan_type, dar, par))
 
     @staticmethod
     def _select(resolution, scan_type):
@@ -450,6 +451,7 @@ class AudioChannelsRule(Handler):
         if count is not None:
             channels = self.mapping.get(count) if isinstance(count, int) else None
             positions = context.get('channel_positions') or []
+            positions = positions if isinstance(positions, list) else [positions]
             candidate = 0
             for position in positions:
                 if not position:

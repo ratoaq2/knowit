@@ -33,7 +33,7 @@ class EnzymeProvider(Provider):
                 ('language', Property('language', Language())),
                 ('width', Property('width', Integer('width'))),
                 ('height', Property('height', Integer('height'))),
-                ('scan_type', Property('interlaced', YesNo('Interlaced', 'Progressive'))),
+                ('scan_type', Property('interlaced', YesNo('Interlaced', 'Progressive'), default='Progressive')),
                 ('resolution', Property(handler=ResolutionRule())),
                 # ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
                 ('codec', Property('codec_id', VideoCodec())),
