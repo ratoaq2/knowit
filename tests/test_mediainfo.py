@@ -30,9 +30,11 @@ def _parameters():
 
 
 @pytest.mark.parametrize('raw,expected', _parameters())
-def test_mediainfo_provider(raw, expected):
+def test_mediainfo_provider(monkeypatch, raw, expected):
     # Given
     options = dict(provider='mediainfo', raw=False)
+    monkeypatch.setattr('knowit.providers.mediainfo.INITIALIZED', True)
+    monkeypatch.setattr('knowit.providers.mediainfo.MEDIA_INFO_AVAILABLE', True)
 
     # When
     actual = knowit.knowit(raw, options)
