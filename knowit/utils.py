@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from . import OrderedDict
+from collections import OrderedDict
+from datetime import timedelta
+
+import babelfish
+import yaml
 
 
 def todict(obj, classkey=None):
@@ -24,3 +28,30 @@ def todict(obj, classkey=None):
         return data
     else:
         return obj
+
+
+class CustomDumper(yaml.SafeDumper):
+    """Custom YAML Dumper."""
+
+    pass
+
+
+class CustomLoader(yaml.SafeLoader):
+    """Custom YAML Loader."""
+
+    pass
+
+
+def default_representer(dumper, data):
+    """Default representer."""
+    return dumper.represent_str(str(data))
+
+
+def ordered_dict_representer(dumper, data):
+    """Representer for OrderedDict."""
+    return dumper.represent_mapping('tag:yaml.org,2002:map', data.items())
+
+
+CustomDumper.add_representer(OrderedDict, ordered_dict_representer)
+CustomDumper.add_representer(babelfish.Language, default_representer)
+CustomDumper.add_representer(timedelta, default_representer)

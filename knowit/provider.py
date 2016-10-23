@@ -21,11 +21,11 @@ class Provider(object):
         """Init method."""
         self.mapping = mapping
 
-    def accepts(self, video_path):
+    def accepts(self, target):
         """Whether or not the video is supported by this provider."""
         raise NotImplementedError
 
-    def describe(self, video_path, options):
+    def describe(self, target, options):
         """Read video metadata information."""
         raise NotImplementedError
 
@@ -119,7 +119,7 @@ class Provider(object):
     def _enrich(props, name, source, prop, context):
         if source is not None:
             is_rule = prop.name is None
-            value = getattr(source, prop.name) or prop.default if not is_rule else props
+            value = source.get(prop.name) or prop.default if not is_rule else props
             if value is not None:
                 logger.debug('Adding %s with value %r', name, value)
                 if isinstance(value, binary_type):
@@ -129,7 +129,7 @@ class Provider(object):
                     if is_unknown(value):
                         return
 
-                result = (prop.handler.handle(value, context) if prop.handler else value)
+                result = prop.handler.handle(value, context) if prop.handler else value
                 if result is not None and not is_unknown(result):
                     if not prop.private:
                         props[name] = result

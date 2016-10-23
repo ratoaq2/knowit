@@ -6,7 +6,7 @@ import logging
 import re
 
 from babelfish import Error as BabelfishError, Language as BabelfishLanguage
-from six import text_type
+from six import PY3, text_type
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,10 @@ def split(value, delimiter='/'):
         return
 
     v = text_type(value)
-    return map(text_type.strip, v.split(delimiter))
+    result = map(text_type.strip, v.split(delimiter))
+    if PY3:
+        result = list(result)
+    return result
 
 
 class Property(object):
@@ -406,7 +409,7 @@ class ResolutionRule(Handler):
         height = props.get('height')
         dar = props.get('aspect_ratio', float(width) / height)
         par = props.get('pixel_aspect_ratio', 1)
-        scan_type = props.get('scan_type', 'Progressive')
+        scan_type = props.get('scan_type', 'p')[0].lower()
 
         if width and height:
             # Max DAR for widescreen TVs is 16:9
@@ -421,7 +424,7 @@ class ResolutionRule(Handler):
                 last_resolution = r
 
             if last_resolution:
-                return self._select(last_resolution, scan_type)
+                return '{0}{1}'.format(last_resolution, scan_type)
 
             logger.info('''# Unable to detect resolution
   - width: {0}
@@ -429,10 +432,6 @@ class ResolutionRule(Handler):
     scan_type: {2}
     aspect_ratio: {3}
     pixel_aspect_ratio: {4}'''.format(width, height, scan_type, dar, par))
-
-    @staticmethod
-    def _select(resolution, scan_type):
-        return '{0}{1}'.format(resolution, scan_type[0].lower())
 
 
 class AudioChannelsRule(Handler):

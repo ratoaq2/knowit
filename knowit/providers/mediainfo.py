@@ -6,6 +6,7 @@ import os
 import sys
 
 from pymediainfo import MediaInfo
+from six import string_types
 
 from .. import OrderedDict
 from ..properties import (
@@ -45,7 +46,7 @@ def load_native():
                     break
             CDLL(so_name)
             MEDIA_INFO_AVAILABLE = True
-        else:
+        else:  # pragma: no cover
             os_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '../native', os_family))
             if os_family == 'macos':
                 from ctypes import CDLL
@@ -77,6 +78,7 @@ class MediaInfoProvider(Provider):
             'general': OrderedDict([
                 ('title', Property('title')),
                 ('duration', Property('duration', Duration())),
+                ('overall_bit_rate', Property('overall_bit_rate', Integer('overall bit rate'))),
             ]),
             'video': OrderedDict([
                 ('number', Property('track_id', Integer('video track number'))),
@@ -91,6 +93,7 @@ class MediaInfoProvider(Provider):
                 ('pixel_aspect_ratio', Property('pixel_aspect_ratio', Float('pixel aspect ratio'))),
                 ('resolution', Property(handler=ResolutionRule())),
                 ('frame_rate', Property('frame_rate', Float('frame rate'))),
+                # frame_rate_mode
                 ('bit_rate', Property('bit_rate', Integer('video bit rate'))),
                 ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
                 ('codec', Property('codec', VideoCodec())),
@@ -99,7 +102,6 @@ class MediaInfoProvider(Provider):
                 ('media_type', Property('internet_media_type')),
                 ('forced', Property('forced', YesNo(hide_value=False))),
                 ('default', Property('default', YesNo(hide_value=False))),
-                ('enabled', Property('enabled', YesNo(hide_value=True))),
             ]),
             'audio': OrderedDict([
                 ('number', Property('track_id', Integer('audio track number'))),
@@ -113,13 +115,13 @@ class MediaInfoProvider(Provider):
                 ('channel_positions', Property('other_channel_positions',
                                                MultiHandler(lambda x, *args: x, delimiter=' / '), private=True)),
                 ('channels', Property(handler=AudioChannelsRule())),
+                ('bit_depth', Property('bit_depth', Integer('audio bit depth'))),
                 ('bit_rate', Property('bit_rate', MultiHandler(Integer('audio bit rate')))),
                 ('bit_rate_mode', Property('bit_rate_mode', MultiHandler(BitRateMode()))),
-                ('sample_rate', Property('sampling_rate', MultiHandler(Integer('audio sample rate')))),
+                ('sampling_rate', Property('sampling_rate', MultiHandler(Integer('audio sampling rate')))),
                 ('compression', Property('compression_mode', MultiHandler(AudioCompression()))),
                 ('forced', Property('forced', YesNo(hide_value=False))),
                 ('default', Property('default', YesNo(hide_value=False))),
-                ('enabled', Property('enabled', YesNo(hide_value=True))),
             ]),
             'subtitle': OrderedDict([
                 ('number', Property('track_id', Integer('subtitle track number'))),
@@ -130,38 +132,38 @@ class MediaInfoProvider(Provider):
                 ('encoding', Property('codec_id', SubtitleEncoding())),
                 ('forced', Property('forced', YesNo(hide_value=False))),
                 ('default', Property('default', YesNo(hide_value=False))),
-                ('enabled', Property('enabled', YesNo(hide_value=True))),
             ]),
         })
 
-    def accepts(self, video_path):
+    def accepts(self, target):
         """Accept any video when MediaInfo is available."""
         return load_native()
 
-    def describe(self, video_path, options):
+    def describe(self, target, options):
         """Return video metadata."""
-        media = MediaInfo.parse(video_path)
+        data = MediaInfo.parse(target).to_data() if isinstance(target, string_types) else target
         if options['raw']:
-            return media.to_data()
+            return data
 
         general_tracks = []
         video_tracks = []
         audio_tracks = []
         subtitle_tracks = []
-        for track in media.tracks:
-            if track.track_type == 'General':
+        for track in data.get('tracks'):
+            track_type = track.get('track_type')
+            if track_type == 'General':
                 general_tracks.append(track)
-            elif track.track_type == 'Video':
+            elif track_type == 'Video':
                 video_tracks.append(track)
-            elif track.track_type == 'Audio':
+            elif track_type == 'Audio':
                 audio_tracks.append(track)
-            elif track.track_type == 'Text':
+            elif track_type == 'Text':
                 subtitle_tracks.append(track)
 
         result = self._describe_tracks(general_tracks[0] if general_tracks else [],
                                        video_tracks, audio_tracks, subtitle_tracks)
         if not result:
-            logger.warning("Invalid file '%s'", video_path)
+            logger.warning("Invalid file '%s'", target)
             if options['fail_on_error']:
                 raise MalformedFileError
 

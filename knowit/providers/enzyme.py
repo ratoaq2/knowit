@@ -4,6 +4,7 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 import enzyme
+from six import string_types
 
 from .. import OrderedDict
 from ..properties import (
@@ -63,22 +64,26 @@ class EnzymeProvider(Provider):
             ]),
         })
 
-    def accepts(self, video_path):
+    def accepts(self, target):
         """Accept only MKV files."""
-        return video_path.lower().endswith('.mkv')
+        return not isinstance(target, string_types) or target.lower().endswith('.mkv')
 
-    def describe(self, video_path, options):
+    def describe(self, target, options):
         """Return video metadata."""
-        try:
-            with open(video_path, 'rb') as f:
-                mkv = enzyme.MKV(f)
-        except enzyme.MalformedMKVError:
-            logger.warning("Invalid file '%s'", video_path)
-            if options['fail_on_error']:
-                raise MalformedFileError
-            return dict()
+        if isinstance(target, string_types):
+            try:
+                with open(target, 'rb') as f:
+                    data = todict(enzyme.MKV(f))
+            except enzyme.MalformedMKVError:  # pragma: no cover
+                logger.warning("Invalid file '%s'", target)
+                if options['fail_on_error']:
+                    raise MalformedFileError
+                return dict()
+        else:
+            data = target
 
         if options['raw']:
-            return todict(mkv)
+            return data
 
-        return self._describe_tracks(mkv.info, mkv.video_tracks, mkv.audio_tracks, mkv.subtitle_tracks)
+        return self._describe_tracks(data.get('info'), data.get('video_tracks'),
+                                     data.get('audio_tracks'), data.get('subtitle_tracks'))
