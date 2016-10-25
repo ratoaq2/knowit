@@ -1,16 +1,7 @@
 # https://en.wikipedia.org/wiki/Pixel_aspect_ratio
 # https://en.wikipedia.org/wiki/Low-definition_television
 # https://knowledge.kaltura.com/best-practices-multi-device-transcoding
-
-288p:
-  - width: 480
-    height: 270
-    scan_type: Progressive
-    aspect_ratio: 1.778
-    pixel_aspect_ratio: 1.0
-  - width: 480
-    height: 270
-    scan_type: Progressive
+240p:
   - width: 320
     height: 250
     scan_type: Progressive
@@ -26,6 +17,16 @@
     pixel_aspect_ratio: 1.0
   - width: 320
     height: 262
+    scan_type: Progressive
+
+288p:
+  - width: 480
+    height: 270
+    scan_type: Progressive
+    aspect_ratio: 1.778
+    pixel_aspect_ratio: 1.0
+  - width: 480
+    height: 270
     scan_type: Progressive
 
 360p:
@@ -105,6 +106,26 @@
     scan_type: Progressive
     aspect_ratio: 1.818
     pixel_aspect_ratio: 1.422
+  - width: 720
+    height: 596
+    scan_type: Progressive
+    aspect_ratio: 1.289
+    pixel_aspect_ratio: 1.067
+  - width: 720
+    height: 586
+    scan_type: Progressive
+    aspect_ratio: 1.311
+    pixel_aspect_ratio: 1.067
+  - width: 720
+    height: 588
+    scan_type: Progressive
+    aspect_ratio: 1.304
+    pixel_aspect_ratio: 1.065
+  - width: 720
+    height: 590
+    scan_type: Progressive
+    aspect_ratio: 1.302
+    pixel_aspect_ratio: 1.067
 
 720p:
   - width: 1280

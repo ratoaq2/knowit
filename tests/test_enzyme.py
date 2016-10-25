@@ -4,6 +4,11 @@ from __future__ import unicode_literals
 import glob
 import os
 
+try:
+    from mock import Mock
+except:
+    from unittest.mock import Mock
+
 import pytest
 import yaml
 
@@ -29,12 +34,14 @@ def _parameters():
 
 
 @pytest.mark.parametrize('raw,expected', _parameters())
-def test_enzyme_provider(raw, expected):
+def test_enzyme_provider(monkeypatch, video_path, raw, expected):
     # Given
-    options = dict(provider='enzyme', raw=False)
+    options = dict(provider='enzyme')
+    monkeypatch.setattr('enzyme.MKV', Mock())
+    monkeypatch.setattr('knowit.utils.todict', lambda mkv: raw)
 
     # When
-    actual = knowit.knowit(raw, options)
+    actual = knowit.know(video_path, options)
 
     # Then
     assert expected == actual

@@ -4,6 +4,11 @@ from __future__ import unicode_literals
 import glob
 import os
 
+try:
+    from mock import Mock
+except:
+    from unittest.mock import Mock
+
 import pytest
 import yaml
 
@@ -30,14 +35,17 @@ def _parameters():
 
 
 @pytest.mark.parametrize('raw,expected', _parameters())
-def test_mediainfo_provider(monkeypatch, raw, expected):
+def test_mediainfo_provider(monkeypatch, video_path, raw, expected):
     # Given
-    options = dict(provider='mediainfo', raw=False)
+    options = dict(provider='mediainfo')
+    parse_method = Mock()
+    parse_method.to_data.return_value = raw
+    monkeypatch.setattr('pymediainfo.MediaInfo.parse', staticmethod(lambda video: parse_method))
     monkeypatch.setattr('knowit.providers.mediainfo.INITIALIZED', True)
     monkeypatch.setattr('knowit.providers.mediainfo.MEDIA_INFO_AVAILABLE', True)
 
     # When
-    actual = knowit.knowit(raw, options)
+    actual = knowit.know(video_path, options)
 
     # Then
     assert expected == actual

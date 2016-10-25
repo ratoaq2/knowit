@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import re
 from datetime import timedelta
 
+import pytest
+from six import text_type
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 
@@ -45,3 +47,8 @@ def construct_mapping(self, node, deep=False):
 
 
 CustomLoader.add_constructor(u'tag:yaml.org,2002:map', construct_mapping)
+
+
+@pytest.fixture
+def video_path(tmpdir):
+    return text_type(tmpdir.ensure('video.mkv'))

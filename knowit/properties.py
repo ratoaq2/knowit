@@ -412,19 +412,20 @@ class ResolutionRule(Handler):
         scan_type = props.get('scan_type', 'p')[0].lower()
 
         if width and height:
-            # Max DAR for widescreen TVs is 16:9
-            max_dar = min(dar, self.wide)
+            # selected DAR must be between 4:3 and 16:9
+            selected_dar = max(min(dar, self.wide), self.square)
             stretched_width = int(round(width * par / 16)) * 16  # mod-16
-            calculated_height = int(round(stretched_width / max_dar / 8)) * 8  # mod-8
+            calculated_height = int(round(stretched_width / selected_dar / 8)) * 8  # mod-8
 
-            last_resolution = None
+            selected_resolution = None
             for r in reversed(self.resolutions):
                 if r < calculated_height:
                     break
-                last_resolution = r
 
-            if last_resolution:
-                return '{0}{1}'.format(last_resolution, scan_type)
+                selected_resolution = r
+
+            if selected_resolution:
+                return '{0}{1}'.format(selected_resolution, scan_type)
 
             logger.info('''# Unable to detect resolution
   - width: {0}

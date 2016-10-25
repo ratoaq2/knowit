@@ -6,9 +6,8 @@ import os
 import sys
 
 from pymediainfo import MediaInfo
-from six import string_types
 
-from .. import OrderedDict
+from .. import OrderedDict, VIDEO_EXTENSIONS
 from ..properties import (
     AudioChannels, AudioChannelsRule, AudioCodec, AudioCompression, AudioProfile, BitRateMode,
     Duration, Float, HearingImpairedRule, Integer, Language, MultiHandler, Property,
@@ -135,14 +134,14 @@ class MediaInfoProvider(Provider):
             ]),
         })
 
-    def accepts(self, target):
+    def accepts(self, video_path):
         """Accept any video when MediaInfo is available."""
-        return load_native()
+        return load_native() and video_path.lower().endswith(VIDEO_EXTENSIONS)
 
-    def describe(self, target, options):
+    def describe(self, video_path, options):
         """Return video metadata."""
-        data = MediaInfo.parse(target).to_data() if isinstance(target, string_types) else target
-        if options['raw']:
+        data = MediaInfo.parse(video_path).to_data()
+        if options.get('raw'):
             return data
 
         general_tracks = []
@@ -163,8 +162,8 @@ class MediaInfoProvider(Provider):
         result = self._describe_tracks(general_tracks[0] if general_tracks else [],
                                        video_tracks, audio_tracks, subtitle_tracks)
         if not result:
-            logger.warning("Invalid file '%s'", target)
-            if options['fail_on_error']:
+            logger.warning("Invalid file '%s'", video_path)
+            if options.get('fail_on_error'):
                 raise MalformedFileError
 
         return result

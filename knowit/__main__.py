@@ -58,9 +58,9 @@ def build_argument_parser():
 def knowit(video_path, options):
     """Extract video metadata."""
     console.info('For: %s', video_path)
-    console.info('Knowit %s found: ', __version__)
-    info = api.knowit(video_path, vars(options))
+    info = api.know(video_path, vars(options))
     if not options.no_output:
+        console.info('Knowit %s found: ', __version__)
         if options.yaml:
             result = yaml.dump({video_path: info}, Dumper=CustomDumper,
                                default_flow_style=False, allow_unicode=True)

@@ -12,7 +12,7 @@ available_providers = OrderedDict([
 ])
 
 
-def knowit(video_path, options):
+def know(video_path, options=None):
     """Return a dict containing the video metadata.
 
     :param video_path:
@@ -22,8 +22,9 @@ def knowit(video_path, options):
     :return:
     :rtype: dict
     """
+    options = options or dict()
     for name, provider in available_providers.items():
-        if name != (options['provider'] or name):
+        if name != (options.get('provider') or name):
             continue
 
         if provider.accepts(video_path):

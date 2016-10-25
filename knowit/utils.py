@@ -5,12 +5,15 @@ from collections import OrderedDict
 from datetime import timedelta
 
 import babelfish
+from six import string_types
 import yaml
 
 
 def todict(obj, classkey=None):
     """Transform an object to dict."""
-    if isinstance(obj, dict):
+    if isinstance(obj, string_types):
+        return obj
+    elif isinstance(obj, dict):
         data = {}
         for (k, v) in obj.items():
             data[k] = todict(v, classkey)
@@ -26,8 +29,7 @@ def todict(obj, classkey=None):
         if classkey is not None and hasattr(obj, '__class__'):
             data[classkey] = obj.__class__.__name__
         return data
-    else:
-        return obj
+    return obj
 
 
 class CustomDumper(yaml.SafeDumper):
