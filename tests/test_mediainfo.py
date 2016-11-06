@@ -13,6 +13,7 @@ import pytest
 import yaml
 
 import knowit
+from knowit.providers.mediainfo import MediaInfoProvider
 from knowit.utils import CustomLoader
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -40,9 +41,8 @@ def test_mediainfo_provider(monkeypatch, video_path, raw, expected):
     options = dict(provider='mediainfo')
     parse_method = Mock()
     parse_method.to_data.return_value = raw
-    monkeypatch.setattr('pymediainfo.MediaInfo.parse', staticmethod(lambda video: parse_method))
-    monkeypatch.setattr('knowit.providers.mediainfo.INITIALIZED', True)
-    monkeypatch.setattr('knowit.providers.mediainfo.MEDIA_INFO_AVAILABLE', True)
+    monkeypatch.setattr(MediaInfoProvider, '_create_native_lib', staticmethod(lambda *args, **kwargs: True))
+    monkeypatch.setattr(MediaInfoProvider, '_parse', lambda self, video: parse_method)
 
     # When
     actual = knowit.know(video_path, options)
