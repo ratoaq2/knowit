@@ -50,7 +50,8 @@ def load_native():
             if os_family == 'macos':
                 from ctypes import CDLL
                 logger.debug('Loading native mediainfo library from %s', os_folder)
-                os.environ['DYLD_FALLBACK_LIBRARY_PATH'] = os_folder + ':' + os.environ['DYLD_FALLBACK_LIBRARY_PATH']
+                dyld_path = os.environ.get('DYLD_FALLBACK_LIBRARY_PATH')
+                os.environ['DYLD_FALLBACK_LIBRARY_PATH'] = os_folder + (':' + dyld_path if dyld_path else '')
                 CDLL('libmediainfo.0.dylib')
                 MEDIA_INFO_AVAILABLE = True
             else:
