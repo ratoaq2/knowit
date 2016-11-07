@@ -12,7 +12,7 @@ from pymediainfo import MediaInfo
 from .. import OrderedDict, VIDEO_EXTENSIONS
 from ..properties import (
     AudioChannels, AudioChannelsRule, AudioCodec, AudioCompression, AudioProfile, BitRateMode,
-    Duration, Float, HearingImpairedRule, Integer, Language, MultiHandler, Property,
+    Duration, Float, HearingImpairedRule, Integer, Language, LanguageRule, MultiHandler, Property,
     ResolutionRule, ScanType, SubtitleEncoding, SubtitleFormat, VideoCodec, YesNo
 )
 from ..provider import MalformedFileError, Provider
@@ -36,6 +36,7 @@ class MediaInfoProvider(Provider):
                 ('number', Property('track_id', Integer('video track number'))),
                 ('name', Property('name')),
                 ('language', Property('language', Language())),
+                ('_language', Property(handler=LanguageRule())),
                 ('duration', Property('duration', Duration())),
                 ('size', Property('stream_size', Integer('video stream size'))),
                 ('width', Property('width', Integer('width'))),
@@ -59,6 +60,7 @@ class MediaInfoProvider(Provider):
                 ('number', Property('track_id', Integer('audio track number'))),
                 ('name', Property('title')),
                 ('language', Property('language', Language())),
+                ('_language', Property(handler=LanguageRule())),
                 ('duration', Property('duration', Duration())),
                 ('size', Property('stream_size', Integer('audio stream size'))),
                 ('codec', Property('codec', MultiHandler(AudioCodec()))),
@@ -79,6 +81,7 @@ class MediaInfoProvider(Provider):
                 ('number', Property('track_id', Integer('subtitle track number'))),
                 ('name', Property('title')),
                 ('language', Property('language', Language())),
+                ('_language', Property(handler=LanguageRule())),
                 ('hearing_impaired', Property(handler=HearingImpairedRule())),
                 ('format', Property('codec_id', SubtitleFormat())),
                 ('encoding', Property('codec_id', SubtitleEncoding())),

@@ -97,6 +97,7 @@ expected:
   video:
   - number: 1
     name: Video Track 1
+    language: und
     width: 1920
     height: 800
     scan_type: Progressive
@@ -106,6 +107,7 @@ expected:
   audio:
   - number: 2
     name: Audio Track 1
+    language: und
     codec: DTS
     channels_count: 8
     channels: '7.1'
@@ -113,12 +115,15 @@ expected:
   subtitle:
   - number: 3
     name: English SRT
+    language: en
     default: true
   - number: 4
     name: English SRT SDH
+    language: en
     hearing_impaired: true
   - number: 5
     name: English PGS
+    language: en
   - number: 6
     name: French PGS
     language: fr

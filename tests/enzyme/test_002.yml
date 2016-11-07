@@ -1,0 +1,13 @@
+input:
+  subtitle_tracks:
+  - forced: false
+    name: English
+    enabled: true
+    number: 3
+    codec_id: S_TEXT/UTF8
+
+expected:
+  subtitle:
+  - number: 3
+    name: English
+    language: en
