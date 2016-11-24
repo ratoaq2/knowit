@@ -29,7 +29,9 @@ class MediaInfoProvider(Provider):
         super(MediaInfoProvider, self).__init__({
             'general': OrderedDict([
                 ('title', Property('title')),
+                ('path', Property('complete_name')),
                 ('duration', Property('duration', Duration())),
+                ('size', Property('file_size', Integer('file size'))),
                 ('overall_bit_rate', Property('overall_bit_rate', Integer('overall bit rate'))),
             ]),
             'video': OrderedDict([

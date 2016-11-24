@@ -3,19 +3,17 @@ from __future__ import unicode_literals
 
 import json
 import logging
-import os
 import sys
 from argparse import ArgumentParser
 
-from babelfish.language import Language
 from enzyme import __version__ as enzyme_version
 from pymediainfo import __version__ as pymediainfo_version
-from six import PY2, text_type
+from six import PY2
 import yaml
 
-from . import VIDEO_EXTENSIONS, __version__, api
+from . import __version__, api
 from .provider import ProviderError
-from .utils import CustomDumper
+from .utils import CustomDumper, StringEncoder, recurse_paths
 
 
 logging.basicConfig(stream=sys.stdout, format='%(message)s')
@@ -72,20 +70,11 @@ def knowit(video_path, options):
                                default_flow_style=False, allow_unicode=True)
             if PY2:
                 result = result.decode('utf-8')
+
         else:
             result = json.dumps(info, cls=StringEncoder, indent=4, ensure_ascii=False)
+
         console.info(result)
-
-
-class StringEncoder(json.JSONEncoder):
-    """String json encoder."""
-
-    def default(self, o):
-        """Convert properties to string."""
-        if isinstance(o, Language):
-            return getattr(o, 'name')
-
-        return text_type(o)
 
 
 def main(args=None):
@@ -98,22 +87,7 @@ def main(args=None):
         logging.getLogger('knowit').setLevel(logging.INFO)
         logging.getLogger('enzyme').setLevel(logging.WARNING)
 
-    paths = []
-
-    encoding = sys.getfilesystemencoding()
-    for path in options.videopath:
-        if os.path.isfile(path):
-            paths.append(path.decode(encoding) if PY2 else path)
-        if os.path.isdir(path):
-            for root, directories, filenames in os.walk(path):
-                for filename in filenames:
-                    if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
-                        if PY2:
-                            if os.name == 'nt':
-                                fullpath = os.path.join(root, filename.decode(encoding))
-                            else:
-                                fullpath = os.path.join(root, filename).decode(encoding)
-                        paths.append(fullpath)
+    paths = recurse_paths(options.videopath)
 
     if paths:
         for videopath in paths:

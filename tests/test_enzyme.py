@@ -43,5 +43,8 @@ def test_enzyme_provider(monkeypatch, video_path, raw, expected):
     # When
     actual = knowit.know(video_path, options)
 
+    expected['path'] = video_path
+    expected['size'] = os.path.getsize(video_path)
+
     # Then
     assert expected == actual
