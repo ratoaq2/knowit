@@ -24,3 +24,8 @@ except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
 from .api import know
+
+
+_all = ['api', 'know', 'properties', 'provider', 'providers', 'utils', 'VIDEO_EXTENSIONS']
+
+__all__ = [a.encode('ascii') for a in _all]

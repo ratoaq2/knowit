@@ -9,7 +9,8 @@ from six import text_type
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 
-from knowit.utils import CustomLoader
+import knowit
+
 
 duration_re = re.compile(r'(?P<hours>\d{1,2}):'
                          r'(?P<minutes>\d{1,2}):'
@@ -46,7 +47,7 @@ def construct_mapping(self, node, deep=False):
     return mapping
 
 
-CustomLoader.add_constructor(u'tag:yaml.org,2002:map', construct_mapping)
+knowit.utils.CustomLoader.add_constructor(u'tag:yaml.org,2002:map', construct_mapping)
 
 
 @pytest.fixture

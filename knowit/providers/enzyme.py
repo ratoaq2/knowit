@@ -2,6 +2,8 @@
 from __future__ import absolute_import, unicode_literals
 
 import logging
+import os
+from collections import defaultdict
 
 import enzyme
 
@@ -25,6 +27,8 @@ class EnzymeProvider(Provider):
         super(EnzymeProvider, self).__init__({
             'general': OrderedDict([
                 ('title', Property('title')),
+                ('path', Property('complete_name')),
+                ('size', Property('file_size', Integer('file size'))),
                 ('duration', Property('duration')),
             ]),
             'video': OrderedDict([
@@ -74,12 +78,17 @@ class EnzymeProvider(Provider):
         """Return video metadata."""
         try:
             with open(video_path, 'rb') as f:
-                data = todict(enzyme.MKV(f))
+                data = defaultdict(dict)
+                ff = todict(enzyme.MKV(f))
+                data.update(ff)
+                data['info']['complete_name'] = video_path
+                data['info']['file_size'] = int(os.path.getsize(video_path))
+
         except enzyme.MalformedMKVError:  # pragma: no cover
             logger.warning("Invalid file '%s'", video_path)
             if options.get('fail_on_error'):
                 raise MalformedFileError
-            return dict()
+            return {}
 
         if options.get('raw'):
             return data

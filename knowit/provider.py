@@ -119,7 +119,14 @@ class Provider(object):
     def _enrich(props, name, source, prop, context):
         if source is not None:
             is_rule = prop.name is None
-            value = source.get(prop.name) or prop.default if not is_rule else props
+            # To handle 0 int values from py.test
+            if source.get(prop.name) is not None:
+                value = source.get(prop.name)
+            elif is_rule is True:
+                value = props
+            else:
+                value = prop.default
+
             if value is not None:
                 logger.debug('Adding %s with value %r', name, value)
                 if isinstance(value, binary_type):

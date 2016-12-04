@@ -1,12 +1,61 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+import os
+import sys
 from collections import OrderedDict
 from datetime import timedelta
 
 import babelfish
-from six import string_types
+from six import PY2, string_types, text_type
 import yaml
+
+from knowit import VIDEO_EXTENSIONS
+
+
+def recurse_paths(paths):
+    """Return a file system encoded list of videofiles.
+
+    :param paths:
+    :type paths: string or list
+    :return:
+    :rtype: list
+    """
+    enc_paths = []
+
+    if isinstance(paths, (string_types, text_type)):
+        paths = [p.strip() for p in paths.split(',')] if ',' in paths else paths.split()
+
+    encoding = sys.getfilesystemencoding()
+    for path in paths:
+        if os.path.isfile(path):
+            enc_paths.append(path.decode(encoding) if PY2 else path)
+        if os.path.isdir(path):
+            for root, directories, filenames in os.walk(path):
+                for filename in filenames:
+                    if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
+                        if PY2 and os.name == 'nt':
+                            fullpath = os.path.join(root, filename.decode(encoding))
+                        else:
+                            fullpath = os.path.join(root, filename).decode(encoding)
+                        enc_paths.append(fullpath)
+
+    # Lets remove any dupes since mediainfo is rather slow.
+    seen = set()
+    seen_add = seen.add
+    return [f for f in enc_paths if not (f in seen or seen_add(f))]
+
+
+class StringEncoder(json.JSONEncoder):
+    """String json encoder."""
+
+    def default(self, o):
+        """Convert properties to string."""
+        if isinstance(o, babelfish.language.Language):
+            return getattr(o, 'name')
+
+        return text_type(o)
 
 
 def todict(obj, classkey=None):

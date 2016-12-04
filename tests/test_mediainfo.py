@@ -12,7 +12,7 @@ except:
 import pytest
 import yaml
 
-import knowit
+from knowit import know
 from knowit.api import available_providers
 from knowit.providers.mediainfo import MediaInfoProvider
 from knowit.utils import CustomLoader
@@ -46,7 +46,7 @@ def test_mediainfo_provider(monkeypatch, video_path, raw, expected):
     monkeypatch.setattr(MediaInfoProvider, '_parse', lambda self, video: parse_method)
 
     # When
-    actual = knowit.know(video_path, options)
+    actual = know(video_path, options)
 
     # Then
     assert expected == actual

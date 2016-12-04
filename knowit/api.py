@@ -22,7 +22,7 @@ def know(video_path, options=None):
     :return:
     :rtype: dict
     """
-    options = options or dict()
+    options = options or {}
     for name, provider in available_providers.items():
         if name != (options.get('provider') or name):
             continue
@@ -30,4 +30,4 @@ def know(video_path, options=None):
         if provider.accepts(video_path):
             return provider.describe(video_path, options)
 
-    return dict()
+    return {}

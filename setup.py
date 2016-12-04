@@ -2,10 +2,9 @@
 import io
 import os
 import re
-
 import sys
-from setuptools import find_packages, setup
 
+from setuptools import find_packages, setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -20,6 +19,7 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError('Unable to find version string.')
+
 
 setup_requirements = ['pytest-runner'] if {'pytest', 'test', 'ptr'}.intersection(sys.argv) else []
 install_requirements = ['babelfish>=0.5.2', 'enzyme>=0.4.1', 'pymediainfo>=2.1.5', 'PyYAML',
