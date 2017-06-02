@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 __title__ = 'knowit'
-__version__ = '0.1.4.1'
+__version__ = '0.2.0-dev'
 __short_version__ = '.'.join(__version__.split('.')[:2])
 __author__ = 'Rato AQ2'
 __license__ = 'MIT'
@@ -24,8 +24,3 @@ except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
 from .api import know
-
-
-_all = ['api', 'know', 'properties', 'provider', 'providers', 'utils', 'VIDEO_EXTENSIONS']
-
-__all__ = [a.encode('ascii') for a in _all]
