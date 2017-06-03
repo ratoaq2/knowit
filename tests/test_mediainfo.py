@@ -14,7 +14,7 @@ import yaml
 
 from knowit import know
 from knowit.api import available_providers
-from knowit.providers.mediainfo import MediaInfoProvider
+from knowit.providers import MediaInfoProvider
 from knowit.utils import CustomLoader
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))

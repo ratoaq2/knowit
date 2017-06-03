@@ -179,20 +179,20 @@ input:
 expected:
   title: Super Title
   duration: '0:20:34.567000'
-  overall_bit_rate: 11223344
+  bit_rate: 11223344 bps
   video:
   - number: 1
     language: en
     duration: '0:20:34.566000'
-    width: 1920
-    height: 800
+    width: 1920 pixel
+    height: 800 pixel
     scan_type: Progressive
     aspect_ratio: 2.4
     pixel_aspect_ratio: 1.0
     resolution: 1080p
-    frame_rate: 23.976
-    bit_depth: 8
-    codec: h264
+    frame_rate: 23.976 FPS
+    bit_depth: 8 bit
+    codec: H.264
     profile: High@L4.1
     encoder: x264
     media_type: video/H264
@@ -202,19 +202,19 @@ expected:
     name: Audio Track 1
     language: en
     duration: '0:20:34.568000'
-    codec: DTS-HD
+    codec: DTS-HD Master Audio
     channels_count:
     - 8
     - 6
     channels: '7.1'
-    bit_depth: 24
+    bit_depth: 24 bit
     bit_rate:
     - null
-    - 1509000
+    - 1509000 bps
     bit_rate_mode:
     - Variable
     - Constant
-    sampling_rate: 48000
+    sampling_rate: 48000 Hz
     compression:
     - Lossless
     - Lossy
@@ -224,23 +224,23 @@ expected:
     name: English SRT
     language: en
     format: SubRip
-    encoding: utf-8
+    encoding: UTF-8
     default: true
   - number: 4
     name: English SRT SDH
     language: en
     hearing_impaired: true
     format: SubRip
-    encoding: utf-8
+    encoding: UTF-8
   - number: 5
     name: English PGS
     language: en
-    format: PGS
+    format: Presentation Graphic Stream
   - number: 6
     name: French PGS
     language: fr
-    format: PGS
+    format: Presentation Graphic Stream
   - number: 7
     name: Spanish PGS
     language: es
-    format: PGS
+    format: Presentation Graphic Stream

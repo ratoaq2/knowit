@@ -24,7 +24,7 @@ def _parameters():
 
     for input_file in yml_files:
         with open(input_file, 'r') as stream:
-            data = yaml.load(stream)
+            data = yaml.load(stream, Loader=knowit.utils.CustomLoader)
 
         raw = data['input']
         expected = data['expected']

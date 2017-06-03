@@ -11,18 +11,24 @@ from pymediainfo import __version__ as pymediainfo_version
 from six import PY2
 import yaml
 
-from . import __version__, api
-from .provider import ProviderError
-from .utils import CustomDumper, StringEncoder, recurse_paths
+from . import (
+    __version__,
+    api,
+)
+from .providers import ProviderError
+from .utils import (
+    CustomDumper,
+    StringEncoder,
+    recurse_paths,
+)
 
 
 logging.basicConfig(stream=sys.stdout, format='%(message)s')
 logging.getLogger('CONSOLE').setLevel(logging.INFO)
 logging.getLogger('knowit').setLevel(logging.ERROR)
-logging.getLogger('enzyme').setLevel(logging.ERROR)
 
-logger = logging.getLogger('enzyme')
 console = logging.getLogger('CONSOLE')
+logger = logging.getLogger('knowit')
 
 
 def build_argument_parser():
@@ -76,6 +82,8 @@ def knowit(video_path, options):
 
         console.info(result)
 
+    return info
+
 
 def main(args=None):
     """Main function for entry point."""
@@ -99,6 +107,7 @@ def main(args=None):
                 logger.exception('OS error when processing video')
             except UnicodeError:
                 logger.exception('Character encoding error when processing video')
+
     elif options.version:
         mi_location = api.available_providers['mediainfo'].native_lib
         if mi_location and hasattr(mi_location, '_name'):

@@ -12,6 +12,7 @@ from six import PY2, string_types, text_type
 import yaml
 
 from knowit import VIDEO_EXTENSIONS
+from knowit.units import format_quantity
 
 
 def recurse_paths(paths):
@@ -54,6 +55,9 @@ class StringEncoder(json.JSONEncoder):
         """Convert properties to string."""
         if isinstance(o, babelfish.language.Language):
             return getattr(o, 'name')
+
+        if hasattr(o, 'units'):
+            return format_quantity(o)
 
         return text_type(o)
 

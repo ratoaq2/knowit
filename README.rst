@@ -27,21 +27,25 @@ Extract information from a video file::
     $ knowit FooBar.mkv
     For: FooBar.mkv
     {
+        "title": "Foo.Bar",
+        "path": "/folder/FooBar.mkv",
         "duration": "2:06:09.001000",
+        "size": "611.24 MB",
+        "bit_rate": "1.8 Mbps",
         "video": [
             {
                 "number": 1,
                 "language": "English",
                 "duration": "2:06:09.012000",
-                "width": 1920,
-                "height": 796,
+                "width": "1920 pixel",
+                "height": "796 pixel",
                 "scan_type": "Progressive",
                 "aspect_ratio": 2.412,
                 "pixel_aspect_ratio": 1.0,
                 "resolution": "1080p",
-                "frame_rate": 23.976,
-                "bit_depth": 8,
-                "codec": "h264",
+                "frame_rate": "23.976 FPS",
+                "bit_depth": "8 bit",
+                "codec": "H.264",
                 "profile": "High@L4.1",
                 "encoder": "x264",
                 "media_type": "video/H264",
@@ -54,18 +58,18 @@ Extract information from a video file::
                 "name": "DTS MA 5.1 16bit",
                 "language": "English",
                 "duration": "2:06:09.001000",
-                "codec": "DTS-HD",
+                "codec": "DTS-HD Master Audio",
                 "channels_count": 6,
                 "channels": "5.1",
                 "bit_rate": [
                     null,
-                    1509000
+                    "1509.0 Kbps"
                 ],
                 "bit_rate_mode": [
                     "Variable",
                     "Constant"
                 ],
-                "sample_rate": 48000,
+                "sampling_rate": "48.0 KHz",
                 "compression": [
                     "Lossless",
                     "Lossy"
@@ -77,13 +81,13 @@ Extract information from a video file::
                 "name": "DD5.1 448Kbps",
                 "language": "Chinese",
                 "duration": "2:06:09.001000",
-                "size": 448014053,
+                "size": 448.01 MB,
                 "codec": "AC3",
                 "channels_count": 6,
                 "channels": "5.1",
-                "bit_rate": 448000,
+                "bit_rate": "448 Kbps",
                 "bit_rate_mode": "Constant",
-                "sample_rate": 48000,
+                "sampling_rate": "48.0 KHz",
                 "compression": "Lossy"
             }
         ],
@@ -92,7 +96,7 @@ Extract information from a video file::
                 "number": 4,
                 "language": "English",
                 "format": "SubRip",
-                "encoding": "utf-8",
+                "encoding": "UTF-8",
                 "default": true
             }
         ]

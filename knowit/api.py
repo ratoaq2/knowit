@@ -2,8 +2,10 @@
 from __future__ import unicode_literals
 
 from . import OrderedDict
-from .providers.enzyme import EnzymeProvider
-from .providers.mediainfo import MediaInfoProvider
+from .providers import (
+    EnzymeProvider,
+    MediaInfoProvider,
+)
 
 
 available_providers = OrderedDict([

@@ -98,11 +98,11 @@ expected:
   - number: 1
     name: Video Track 1
     language: und
-    width: 1920
-    height: 800
+    width: 1920 pixel
+    height: 800 pixel
     scan_type: Progressive
     resolution: 1080p
-    codec: h264
+    codec: H.264
     default: true
   audio:
   - number: 2

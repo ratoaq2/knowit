@@ -2,210 +2,210 @@
 # https://en.wikipedia.org/wiki/Low-definition_television
 # https://knowledge.kaltura.com/best-practices-multi-device-transcoding
 240p:
-  - width: 320
-    height: 250
+  - width: 320 pixel
+    height: 250 pixel
     scan_type: Progressive
     aspect_ratio: 1.28
     pixel_aspect_ratio: 1.0
-  - width: 320
-    height: 250
+  - width: 320 pixel
+    height: 250 pixel
     scan_type: Progressive
-  - width: 320
-    height: 262
+  - width: 320 pixel
+    height: 262 pixel
     scan_type: Progressive
     aspect_ratio: 1.221
     pixel_aspect_ratio: 1.0
-  - width: 320
-    height: 262
+  - width: 320 pixel
+    height: 262 pixel
     scan_type: Progressive
 
 288p:
-  - width: 480
-    height: 270
+  - width: 480 pixel
+    height: 270 pixel
     scan_type: Progressive
     aspect_ratio: 1.778
     pixel_aspect_ratio: 1.0
-  - width: 480
-    height: 270
+  - width: 480 pixel
+    height: 270 pixel
     scan_type: Progressive
 
 360p:
-  - width: 640
-    height: 360
+  - width: 640 pixel
+    height: 360 pixel
     scan_type: Progressive
     aspect_ratio: 1.778
     pixel_aspect_ratio: 1.0
-  - width: 640
-    height: 360
+  - width: 640 pixel
+    height: 360 pixel
     scan_type: Progressive
-  - width: 640
-    height: 352
+  - width: 640 pixel
+    height: 352 pixel
     scan_type: Progressive
     aspect_ratio: 1.818
     pixel_aspect_ratio: 1.0
-  - width: 640
-    height: 352
+  - width: 640 pixel
+    height: 352 pixel
     scan_type: Progressive
-  - width: 592
-    height: 320
+  - width: 592 pixel
+    height: 320 pixel
     scan_type: Progressive
     aspect_ratio: 1.85
     pixel_aspect_ratio: 1.0
-  - width: 592
-    height: 320
+  - width: 592 pixel
+    height: 320 pixel
     scan_type: Progressive
-  - width: 640
-    height: 320
+  - width: 640 pixel
+    height: 320 pixel
     scan_type: Progressive
-  - width: 640
-    height: 352
+  - width: 640 pixel
+    height: 352 pixel
     scan_type: Progressive
 
 480p:
-  - width: 640
-    height: 320
+  - width: 640 pixel
+    height: 320 pixel
     scan_type: Progressive
     aspect_ratio: 2.0
     pixel_aspect_ratio: 1.092
-  - width: 752
-    height: 398
+  - width: 752 pixel
+    height: 398 pixel
     scan_type: Progressive
     aspect_ratio: 1.889
     pixel_aspect_ratio: 1.0
-  - width: 752
-    height: 398
+  - width: 752 pixel
+    height: 398 pixel
     scan_type: Progressive
-  - width: 720
-    height: 400
+  - width: 720 pixel
+    height: 400 pixel
     scan_type: Progressive
     aspect_ratio: 1.8
     pixel_aspect_ratio: 1.0
-  - width: 720
-    height: 400
+  - width: 720 pixel
+    height: 400 pixel
     scan_type: Progressive
 
 576p:
-  - width: 720
-    height: 576
+  - width: 720 pixel
+    height: 576 pixel
     scan_type: Progressive
     aspect_ratio: 1.333
     pixel_aspect_ratio: 1.067
-  - width: 720
-    height: 576
+  - width: 720 pixel
+    height: 576 pixel
     scan_type: Progressive
-  - width: 720
-    height: 576
+  - width: 720 pixel
+    height: 576 pixel
     scan_type: Progressive
     aspect_ratio: 1.778
     pixel_aspect_ratio: 1.422  # not sure
-  - width: 720
-    height: 576
+  - width: 720 pixel
+    height: 576 pixel
     scan_type: Progressive
-  - width: 640
-    height: 352
+  - width: 640 pixel
+    height: 352 pixel
     scan_type: Progressive
     aspect_ratio: 1.818
     pixel_aspect_ratio: 1.422
-  - width: 720
-    height: 596
+  - width: 720 pixel
+    height: 596 pixel
     scan_type: Progressive
     aspect_ratio: 1.289
     pixel_aspect_ratio: 1.067
-  - width: 720
-    height: 586
+  - width: 720 pixel
+    height: 586 pixel
     scan_type: Progressive
     aspect_ratio: 1.311
     pixel_aspect_ratio: 1.067
-  - width: 720
-    height: 588
+  - width: 720 pixel
+    height: 588 pixel
     scan_type: Progressive
     aspect_ratio: 1.304
     pixel_aspect_ratio: 1.065
-  - width: 720
-    height: 590
+  - width: 720 pixel
+    height: 590 pixel
     scan_type: Progressive
     aspect_ratio: 1.302
     pixel_aspect_ratio: 1.067
 
 720p:
-  - width: 1280
-    height: 720
+  - width: 1280 pixel
+    height: 720 pixel
     scan_type: Progressive
     aspect_ratio: 1.778
     pixel_aspect_ratio: 1.0
-  - width: 1280
-    height: 720
+  - width: 1280 pixel
+    height: 720 pixel
     scan_type: Progressive
-  - width: 1280
-    height: 544
+  - width: 1280 pixel
+    height: 544 pixel
     scan_type: Progressive
     aspect_ratio: 2.353
     pixel_aspect_ratio: 1.0
-  - width: 1280
-    height: 544
+  - width: 1280 pixel
+    height: 544 pixel
     scan_type: Progressive
-  - width: 1280
-    height: 542
+  - width: 1280 pixel
+    height: 542 pixel
     scan_type: Progressive
     aspect_ratio: 2.362
     pixel_aspect_ratio: 1.0
-  - width: 1280
-    height: 542
+  - width: 1280 pixel
+    height: 542 pixel
     scan_type: Progressive
-  - width: 1280
-    height: 526
+  - width: 1280 pixel
+    height: 526 pixel
     scan_type: Progressive
     aspect_ratio: 2.433
     pixel_aspect_ratio: 1.0
-  - width: 1280
-    height: 526
+  - width: 1280 pixel
+    height: 526 pixel
     scan_type: Progressive
-  - width: 1264
-    height: 718
+  - width: 1264 pixel
+    height: 718 pixel
     scan_type: Progressive
     aspect_ratio: 1.76
     pixel_aspect_ratio: 1.0
-  - width: 1264
-    height: 718
+  - width: 1264 pixel
+    height: 718 pixel
     scan_type: Progressive
 
 1080p:
-  - width: 1920
-    height: 1080
+  - width: 1920 pixel
+    height: 1080 pixel
     scan_type: Progressive
     aspect_ratio: 1.778
     pixel_aspect_ratio: 1.0
-  - width: 1920
-    height: 1080
+  - width: 1920 pixel
+    height: 1080 pixel
     scan_type: Progressive
-  - width: 1426
-    height: 1080
+  - width: 1426 pixel
+    height: 1080 pixel
     scan_type: Progressive
     aspect_ratio: 1.319
-  - width: 1426
-    height: 1080
+  - width: 1426 pixel
+    height: 1080 pixel
     scan_type: Progressive
-  - width: 1920
-    height: 800
+  - width: 1920 pixel
+    height: 800 pixel
     scan_type: Progressive
     aspect_ratio: 2.4
     pixel_aspect_ratio: 1.0
-  - width: 1920
-    height: 800
+  - width: 1920 pixel
+    height: 800 pixel
     scan_type: Progressive
-  - width: 1920
-    height: 796
+  - width: 1920 pixel
+    height: 796 pixel
     scan_type: Progressive
     aspect_ratio: 2.412
     pixel_aspect_ratio: 1.0
-  - width: 1920
-    height: 796
+  - width: 1920 pixel
+    height: 796 pixel
     scan_type: Progressive
-  - width: 1920
-    height: 540
+  - width: 1920 pixel
+    height: 540 pixel
     scan_type: Progressive
     aspect_ratio: 3.556
     pixel_aspect_ratio: 1.0
-  - width: 1920
-    height: 540
+  - width: 1920 pixel
+    height: 540 pixel
     scan_type: Progressive

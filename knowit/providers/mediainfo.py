@@ -2,23 +2,49 @@
 from __future__ import unicode_literals
 
 import locale
-import logging
 import os
 import sys
 
 from ctypes import c_size_t, c_void_p, c_wchar_p
+from logging import NullHandler, getLogger
 from pymediainfo import MediaInfo
 
-from .. import OrderedDict, VIDEO_EXTENSIONS
-from ..properties import (
-    AudioChannels, AudioChannelsRule, AudioCodec, AudioCompression, AudioProfile, BitRateMode,
-    Duration, Float, HearingImpairedRule, Integer, Language, LanguageRule, MultiHandler, Property,
-    ResolutionRule, ScanType, SubtitleEncoding, SubtitleFormat, VideoCodec, YesNo
+from .provider import (
+    MalformedFileError,
+    Provider,
 )
-from ..provider import MalformedFileError, Provider
+from .. import (
+    OrderedDict,
+    VIDEO_EXTENSIONS,
+)
+from ..properties import (
+    AudioChannels,
+    AudioCodec,
+    AudioCompression,
+    AudioProfile,
+    Basic,
+    BitRateMode,
+    Duration,
+    Language,
+    MultiValue,
+    Property,
+    Quantity,
+    ScanType,
+    SubtitleEncoding,
+    SubtitleFormat,
+    VideoCodec,
+    YesNo,
+)
+from ..rules import (
+    AudioChannelsRule,
+    HearingImpairedRule,
+    LanguageRule,
+    ResolutionRule,
+)
+from ..units import units
 
-
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
+logger.addHandler(NullHandler())
 
 
 class MediaInfoProvider(Provider):
@@ -28,68 +54,78 @@ class MediaInfoProvider(Provider):
         """Init method."""
         super(MediaInfoProvider, self).__init__({
             'general': OrderedDict([
-                ('title', Property('title')),
-                ('path', Property('complete_name')),
-                ('duration', Property('duration', Duration())),
-                ('size', Property('file_size', Integer('file size'))),
-                ('overall_bit_rate', Property('overall_bit_rate', Integer('overall bit rate'))),
+                ('title', Property('title', description='media title')),
+                ('path', Property('complete_name', description='media path')),
+                ('duration', Duration('duration', description='media duration')),
+                ('size', Quantity('file_size', units.byte, description='media size')),
+                ('bit_rate', Quantity('overall_bit_rate', units.bps, description='media bit rate')),
             ]),
             'video': OrderedDict([
-                ('number', Property('track_id', Integer('video track number'))),
-                ('name', Property('name')),
-                ('language', Property('language', Language())),
-                ('_language', Property(handler=LanguageRule())),
-                ('duration', Property('duration', Duration())),
-                ('size', Property('stream_size', Integer('video stream size'))),
-                ('width', Property('width', Integer('width'))),
-                ('height', Property('height', Integer('height'))),
-                ('scan_type', Property('scan_type', ScanType(), default='Progressive')),
-                ('aspect_ratio', Property('display_aspect_ratio', Float('aspect ratio'))),
-                ('pixel_aspect_ratio', Property('pixel_aspect_ratio', Float('pixel aspect ratio'))),
-                ('resolution', Property(handler=ResolutionRule())),
-                ('frame_rate', Property('frame_rate', Float('frame rate'))),
+                ('number', Basic('track_id', int, description='video track number')),
+                ('name', Property('name', description='video track name')),
+                ('language', Language('language', description='video language')),
+                ('duration', Duration('duration', description='video duration')),
+                ('size', Quantity('stream_size', units.byte, description='video stream size')),
+                ('width', Quantity('width', units.pixel)),
+                ('height', Quantity('height', units.pixel)),
+                ('scan_type', ScanType('scan_type', default='Progressive', description='video scan type')),
+                ('aspect_ratio', Basic('display_aspect_ratio', float, description='display aspect ratio')),
+                ('pixel_aspect_ratio', Basic('pixel_aspect_ratio', float, description='pixel aspect ratio')),
+                ('resolution', None),  # populated with ResolutionRule
+                ('frame_rate', Quantity('frame_rate', units.FPS, float, description='video frame rate')),
                 # frame_rate_mode
-                ('bit_rate', Property('bit_rate', Integer('video bit rate'))),
-                ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
-                ('codec', Property('codec', VideoCodec())),
-                ('profile', Property('codec_profile')),
-                ('encoder', Property('encoded_library_name')),
-                ('media_type', Property('internet_media_type')),
-                ('forced', Property('forced', YesNo(hide_value=False))),
-                ('default', Property('default', YesNo(hide_value=False))),
+                ('bit_rate', Quantity('bit_rate', units.bps, description='video bit rate')),
+                ('bit_depth', Quantity('bit_depth', units.bit, description='video bit depth')),
+                ('codec', VideoCodec('codec', description='video codec')),
+                ('profile', Property('codec_profile', description='video codec profile')),
+                ('encoder', Property('encoded_library_name', description='video encoder')),
+                ('media_type', Property('internet_media_type', description='video media type')),
+                ('forced', YesNo('forced', hide_value=False, description='video track forced')),
+                ('default', YesNo('default', hide_value=False, description='video track default')),
             ]),
             'audio': OrderedDict([
-                ('number', Property('track_id', Integer('audio track number'))),
-                ('name', Property('title')),
-                ('language', Property('language', Language())),
-                ('_language', Property(handler=LanguageRule())),
-                ('duration', Property('duration', Duration())),
-                ('size', Property('stream_size', Integer('audio stream size'))),
-                ('codec', Property('codec', MultiHandler(AudioCodec()))),
-                ('profile', Property('codec', MultiHandler(AudioProfile()))),
-                ('channels_count', Property('channel_s', MultiHandler(AudioChannels()))),
-                ('channel_positions', Property('other_channel_positions',
-                                               MultiHandler(lambda x, *args: x, delimiter=' / '), private=True)),
-                ('channels', Property(handler=AudioChannelsRule())),
-                ('bit_depth', Property('bit_depth', Integer('audio bit depth'))),
-                ('bit_rate', Property('bit_rate', MultiHandler(Integer('audio bit rate')))),
-                ('bit_rate_mode', Property('bit_rate_mode', MultiHandler(BitRateMode()))),
-                ('sampling_rate', Property('sampling_rate', MultiHandler(Integer('audio sampling rate')))),
-                ('compression', Property('compression_mode', MultiHandler(AudioCompression()))),
-                ('forced', Property('forced', YesNo(hide_value=False))),
-                ('default', Property('default', YesNo(hide_value=False))),
+                ('number', Basic('track_id', int, description='audio track number')),
+                ('name', Property('title', description='audio track name')),
+                ('language', Language('language', description='audio language')),
+                ('duration', Duration('duration', description='audio duration')),
+                ('size', Quantity('stream_size', units.byte, description='audio stream size')),
+                ('codec', MultiValue(AudioCodec('codec', description='audio codec'))),
+                ('profile', MultiValue(AudioProfile('codec', description='audio codec profile'))),
+                ('channels_count', MultiValue(AudioChannels('channel_s', description='audio channels count'))),
+                ('channel_positions', MultiValue(name='other_channel_positions', handler=(lambda x, *args: x),
+                                                 delimiter=' / ', private=True, description='audio channels position')),
+                ('channels', None),  # populated with AudioChannelsRule
+                ('bit_depth', Quantity('bit_depth', units.bit, description='audio bit depth')),
+                ('bit_rate', MultiValue(Quantity('bit_rate', units.bps, description='audio bit rate'))),
+                ('bit_rate_mode', MultiValue(BitRateMode('bit_rate_mode', description='audio bit rate mode'))),
+                ('sampling_rate', MultiValue(Quantity('sampling_rate', units.Hz, description='audio sampling rate'))),
+                ('compression', MultiValue(AudioCompression('compression_mode', description='audio compression'))),
+                ('forced', YesNo('forced', hide_value=False, description='audio track forced')),
+                ('default', YesNo('default', hide_value=False, description='audio track default')),
             ]),
             'subtitle': OrderedDict([
-                ('number', Property('track_id', Integer('subtitle track number'))),
-                ('name', Property('title')),
-                ('language', Property('language', Language())),
-                ('_language', Property(handler=LanguageRule())),
-                ('hearing_impaired', Property(handler=HearingImpairedRule())),
-                ('format', Property('codec_id', SubtitleFormat())),
-                ('encoding', Property('codec_id', SubtitleEncoding())),
-                ('forced', Property('forced', YesNo(hide_value=False))),
-                ('default', Property('default', YesNo(hide_value=False))),
+                ('number', Basic('track_id', int, description='subtitle track number')),
+                ('name', Property('title', description='subtitle track name')),
+                ('language', Language('language', description='subtitle language')),
+                ('hearing_impaired', None),  # populated with HearingImpairedRule
+                ('format', SubtitleFormat('codec_id', description='subtitle format')),
+                ('encoding', SubtitleEncoding('codec_id', description='subtitle encoding')),
+                ('forced', YesNo('forced', hide_value=False, description='subtitle track forced')),
+                ('default', YesNo('default', hide_value=False, description='subtitle track default')),
             ]),
+        }, {
+            'video': OrderedDict([
+                ('language', LanguageRule('video language')),
+                ('resolution', ResolutionRule('video resolution')),
+            ]),
+            'audio': OrderedDict([
+                ('language', LanguageRule('audio language')),
+                ('channels', AudioChannelsRule('audio channels')),
+            ]),
+            'subtitle': OrderedDict([
+                ('language', LanguageRule('subtitle language')),
+                ('hearing_impaired', HearingImpairedRule('subtitle hearing impaired')),
+            ])
         })
         self.native_lib = self._create_native_lib()
 
@@ -124,7 +160,11 @@ class MediaInfoProvider(Provider):
                     arch = 'x86_64' if is_64bits else 'i386'
                     lib = os.path.join(os_folder, arch)
                     logger.debug('Loading native mediainfo library from %s', lib)
-                    lib = windll.MediaInfo = windll.LoadLibrary(os.path.join(lib, 'MediaInfo.dll'))
+                    dll_filename = os.path.join(lib, 'MediaInfo.dll')
+                    if sys.version_info[:3] == (2, 7, 13):
+                        # http://bugs.python.org/issue29082
+                        dll_filename = str(dll_filename)
+                    lib = windll.MediaInfo = windll.LoadLibrary(dll_filename)
 
             lib.MediaInfo_Inform.restype = c_wchar_p
             lib.MediaInfo_New.argtypes = []
