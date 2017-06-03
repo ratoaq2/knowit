@@ -98,7 +98,7 @@ class CustomLoader(yaml.SafeLoader):
 
 
 def default_representer(dumper, data):
-    """Default representer."""
+    """Convert data to string."""
     return dumper.represent_str(str(data))
 
 

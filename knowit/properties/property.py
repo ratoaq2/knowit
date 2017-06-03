@@ -50,7 +50,7 @@ class Property(object):
             return result
 
     def handle(self, value):
-        """Default handle implementation."""
+        """Return the value without any modification."""
         return value
 
     def _handle(self, value, key, mapping):

@@ -86,7 +86,7 @@ def knowit(video_path, options):
 
 
 def main(args=None):
-    """Main function for entry point."""
+    """Execute main function for entry point."""
     argument_parser = build_argument_parser()
     args = args or sys.argv[1:]
     options = argument_parser.parse_args(args)
