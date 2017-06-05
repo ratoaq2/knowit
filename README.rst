@@ -26,7 +26,7 @@ Extract information from a video file::
 
     $ knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
     For: /folder/Audio Samples/hd_dtsma_7.1.mkv
-    Knowit 0.2.0-dev found:
+    Knowit 0.2.0 found:
     {
         "title": "HD DTS-HD Master Audio 7.1",
         "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
@@ -104,10 +104,10 @@ the ``--user`` flag.
 
 External dependencies
 -------------------------
-This product uses `MediaInfo <http://mediaarea.net/MediaInfo>`_ library, Copyright (c) 2002-2016 `MediaArea.net SARL<mailto:Info@MediaArea.net>`_
-
-Binaries for Windows and MacOS are included. Linux distributions need to manually install MediaInfo.
+KnowIt depends on MediaInfo: http://mediaarea.net/MediaInfo
 
 KnowIt supports MKV regardless if MediaInfo is installed.
 
 MediaInfo increases the number of supported formats and the number of extracted information.
+
+Visit their `website <http://mediaarea.net/MediaInfo>`_ and install the proper package for your system.

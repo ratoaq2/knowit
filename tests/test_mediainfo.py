@@ -19,7 +19,7 @@ def test_mediainfo_provider(monkeypatch, video_path, expected, input):
     options = dict(provider='mediainfo')
     parse_method = Mock()
     parse_method.to_data.return_value = input
-    monkeypatch.setattr(MediaInfoProvider, 'native_lib', True)
+    monkeypatch.setattr(MediaInfoProvider, '_create_native_lib', lambda cls, location: True)
     monkeypatch.setattr(MediaInfoProvider, '_parse', lambda self, video: parse_method)
 
     # When
