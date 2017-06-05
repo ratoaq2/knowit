@@ -3,8 +3,10 @@ from __future__ import unicode_literals
 
 import pytest
 
-from knowit import know
-from knowit import api
+from knowit import (
+    api,
+    know,
+)
 from knowit.providers import MediaInfoProvider
 
 from . import (
