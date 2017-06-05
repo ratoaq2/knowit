@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import pytest
 
 from knowit import know
+from knowit import api
 from knowit.providers import MediaInfoProvider
 
 from . import (
@@ -16,6 +17,7 @@ from . import (
 @pytest.mark.parametrize('expected,input', parameters_from_yaml(__name__, expected_key='expected', input_key='input'))
 def test_mediainfo_provider(monkeypatch, video_path, expected, input):
     # Given
+    api.available_providers.clear()
     options = dict(provider='mediainfo')
     parse_method = Mock()
     parse_method.to_data.return_value = input
