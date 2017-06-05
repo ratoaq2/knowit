@@ -1,20 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from ..core import Reportable
 
-class Rule(object):
+
+class Rule(Reportable):
     """Rule abstract class."""
 
-    def __init__(self, name, description=None):
-        """Constructor."""
-        self.name = name
-        self._description = description
-
-    @property
-    def description(self):
-        """Rule description."""
-        return self._description or self.name
-
-    def execute(self, props, context):
+    def execute(self, props, pv_props, context):
         """How to execute a rule."""
         raise NotImplementedError

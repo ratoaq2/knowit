@@ -1,0 +1,172 @@
+VideoCodec:
+  H.264:
+    - V_MPEG4/ISO/AVC
+    - AVC
+  Microsoft MPEG-4 v2: MP42
+  WMV 7: WMV1
+  JPEG: JPEG
+  H.265: V_MPEGH/ISO/HEVC
+  Xvid: XVID
+  MPEG-1: MPEG-1V
+  VC-1:
+    - VC-1
+    - WMV3
+  WMV 8: WMV2
+
+VideoEncoder:
+  x264: x264
+  x265: x265
+  Xvid: XviD
+  Vimeo: Vimeo Encoder
+
+VideoProfile:
+  Advanced: Advanced@L3
+  Advanced Simple: Advanced Simple@L5
+  Baseline:
+    - Baseline@L1.1
+    - Baseline@L1.3
+    - Baseline@L2
+    - Baseline@L2.1
+    - Baseline@L3
+    - Baseline@L4.1
+  Main:
+    - Main
+    - Main@L1.3
+    - Main@L2.1
+    - Main@L3
+    - Main@L3.1
+    - Main@L3.1@Main
+    - Main@L4
+    - Main@L4@Main
+    - Main@L5@Main
+  Main 10:
+    - Main 10@L2.1@Main
+    - Main 10@L3@Main
+    - Main 10@L3.1@Main
+    - Main 10@L4@Main
+    - Main 10@L4@High
+    - Main 10@L4.1@Main
+    - Main 10@L5@Main
+    - Main 10@L5.1@Main
+  High:
+    - High@L3
+    - High@L3.1
+    - High@L4
+    - High@L4.2
+    - High@L5
+    - High@L5.1
+
+VideoProfileLevel:
+  '1.1': Baseline@L1.1
+  '1.3':
+    - Baseline@L1.3
+    - Main@L1.3
+  '2': Baseline@L2
+  '2.1':
+    - Baseline@L2.1
+    - Main@L2.1
+    - Main 10@L2.1@Main
+  '3':
+    - Advanced@L3
+    - Baseline@L3
+    - Main@L3
+    - Main 10@L3@Main
+    - High@L3
+  '3.1':
+    - Main@L3.1
+    - Main@L3.1@Main
+    - Main 10@L3.1@Main
+    - High@L3.1
+  '4':
+    - Main@L4
+    - Main@L4@Main
+    - Main 10@L4@Main
+    - Main 10@L4@High
+    - High@L4
+  '4.1':
+    - Baseline@L4.1
+    - Main 10@L4.1@Main
+  '4.2':
+    - High@L4.2
+  '5':
+    - Advanced Simple@L5
+    - Main@L5@Main
+    - Main 10@L5@Main
+    - High@L5
+  '5.1':
+    - High@L5.1
+    - Main 10@L5.1@Main
+
+VideoProfileTier:
+  Main:
+    - Main@L3.1@Main
+    - Main@L4@Main
+    - Main@L5@Main
+    - Main 10@L2.1@Main
+    - Main 10@L3@Main
+    - Main 10@L3.1@Main
+    - Main 10@L4@Main
+    - Main 10@L4.1@Main
+    - Main 10@L5@Main
+    - Main 10@L5.1@Main
+  High:
+    - Main 10@L4@High
+
+ScanType:
+  Progressive: Progressive
+  Interlaced: MBAFF
+
+AudioCodec:
+  AAC:
+    - AAC LC
+    - AAC LC-SBR
+    - AAC LC-SBR-PS
+  AC-3: AC3
+  E-AC-3: AC3+
+  Atmos: Atmos
+  TrueHD:
+    - TrueHD
+    - A_TRUEHD
+  DTS: DTS
+  DTS-HD: DTS-HD
+  FLAC: FLAC
+  PCM: PCM
+  Vorbis: Vorbis
+  MP2: MPA1L2
+  MP3:
+    - MPA1L3
+    - MPA2L3
+  WMA 2: 161
+  WMA Pro: 162
+
+AudioProfile:
+  High Efficiency: HE-AAC
+  High Efficiency v2: HE-AACv2
+  Master Audio: MA
+  Low Complexity: LC
+  Core: Core
+  High Resolution Audio: HRA
+  96/24: 96/24
+  ES Discrete: ES Discrete
+  ES Matrix: ES Matrix
+  Layer 2: Layer 2
+  Layer 3: Layer 3
+  Pro: Pro
+
+AudioCompression:
+  Lossy: Lossy
+  Lossless: Lossless
+
+BitRateMode:
+  Constant: CBR
+  Variable: VBR
+
+SubtitleFormat:
+  ASS: S_TEXT/ASS
+  SSA: S_TEXT/SSA
+  VobSub: S_VOBSUB
+  PGS: S_HDMV/PGS
+  SubRip: S_TEXT/UTF8
+
+SubtitleEncoding:
+  UTF-8: S_TEXT/UTF8

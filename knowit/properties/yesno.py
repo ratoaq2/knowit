@@ -18,7 +18,7 @@ class YesNo(Property):
         self.no = no
         self.hide_value = hide_value
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Handle boolean values."""
         v = text_type(value).lower()
         result = self.yes if v in self.mapping else self.no

@@ -1,27 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-
 import pytest
-import yaml
-
 from knowit.rules import AudioChannelsRule
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-
-def _parameters():
-    parameters = []
-    input_file = os.path.join(__location__, __name__.split('.')[-1] + '.yml')
-    with open(input_file, 'r') as stream:
-        data = yaml.load(stream)
-
-    for expected, array in data.items():
-        for properties in array:
-            parameters.append([properties, expected])
-
-    return parameters
+from . import (
+    assert_expected,
+    parameters_from_yaml,
+)
 
 
 @pytest.fixture
@@ -29,12 +15,12 @@ def audiochannels_rule():
     return AudioChannelsRule('audio channels')
 
 
-@pytest.mark.parametrize('properties,expected', _parameters())
-def test_resolution(audiochannels_rule, properties, expected):
+@pytest.mark.parametrize('expected,input', parameters_from_yaml(__name__))
+def test_resolution(audiochannels_rule, context, expected, input):
     # Given
 
     # When
-    actual = audiochannels_rule.execute(properties, properties)
+    actual = audiochannels_rule.execute(input, input, context)
 
     # Then
-    assert expected == actual
+    assert_expected(expected, actual)

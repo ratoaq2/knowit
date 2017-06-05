@@ -19,13 +19,13 @@ class Quantity(Property):
         self.unit = unit
         self.data_type = data_type
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Handle value with unit."""
         if not isinstance(value, self.data_type):
             try:
                 value = self.data_type(text_type(value))
             except ValueError:
-                logger.info('Invalid %s: %r', self.description, value)
+                self.report(value, context)
                 return
 
         return value * self.unit

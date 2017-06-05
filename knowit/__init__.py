@@ -8,6 +8,7 @@ __short_version__ = '.'.join(__version__.split('.')[:2])
 __author__ = 'Rato AQ2'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2016, Rato AQ2'
+__url__ = 'https://github.com/ratoaq2/knowit'
 
 #: Video extensions
 VIDEO_EXTENSIONS = ('.3g2', '.3gp', '.3gp2', '.3gpp', '.60d', '.ajp', '.asf', '.asx', '.avchd', '.avi', '.bik',

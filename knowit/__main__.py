@@ -12,16 +12,16 @@ from six import PY2
 import yaml
 
 from . import (
+    __url__,
     __version__,
     api,
 )
 from .providers import ProviderError
-from .utils import (
-    CustomDumper,
-    StringEncoder,
-    recurse_paths,
+from .serializer import (
+    get_json_encoder,
+    get_yaml_dumper,
 )
-
+from .utils import recurse_paths
 
 logging.basicConfig(stream=sys.stdout, format='%(message)s')
 logging.getLogger('CONSOLE').setLevel(logging.INFO)
@@ -44,45 +44,61 @@ def build_argument_parser():
     provider_opts.add_argument('-p', '--provider', dest='provider', default=None,
                                help='The provider to be used: enzyme or mediainfo.')
 
-    input_opts = opts.add_argument_group("Input")
+    input_opts = opts.add_argument_group('Input')
     input_opts.add_argument('-E', '--fail-on-error', action='store_true', dest='fail_on_error', default=False,
                             help='Fail when errors are found on the media file.')
 
-    output_opts = opts.add_argument_group("Output")
+    output_opts = opts.add_argument_group('Output')
     output_opts.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
                              help='Display debug output')
     output_opts.add_argument('-r', '--raw', action='store_true', dest='raw', default=False,
                              help='Display raw properties')
-    output_opts.add_argument('-N', '--no-output', action='store_true', dest='no_output', default=False,
-                             help='Do not display properties output')
+    output_opts.add_argument('--report', action='store_true', dest='report', default=False,
+                             help='Parse media and display report all non-detected values')
     output_opts.add_argument('-y', '--yaml', action='store_true', dest='yaml', default=False,
                              help='Display output in yaml format')
+    output_opts.add_argument('-P', '--profile', dest='profile', default='default',
+                             help='Display values according to specified profile: code, default, human, technical')
 
-    information_opts = opts.add_argument_group("Information")
+    conf_opts = opts.add_argument_group('Configuration')
+    conf_opts.add_argument('-l', '--lib-location', dest='lib_location', default=None,
+                           help='The location to search for native libraries')
+
+    information_opts = opts.add_argument_group('Information')
     information_opts.add_argument('--version', dest='version', action='store_true', default=False,
                                   help='Display knowit version.')
 
     return opts
 
 
-def knowit(video_path, options):
+def knowit(video_path, options, context):
     """Extract video metadata."""
-    console.info('For: %s', video_path)
-    info = api.know(video_path, vars(options))
-    if not options.no_output:
+    context['path'] = video_path
+    if not options.report:
+        console.info('For: %s', video_path)
+    else:
+        console.info('Parsing: %s', video_path)
+    info = api.know(video_path, context)
+    if not options.report:
         console.info('Knowit %s found: ', __version__)
-        if options.yaml:
-            result = yaml.dump({video_path: info}, Dumper=CustomDumper,
-                               default_flow_style=False, allow_unicode=True)
-            if PY2:
-                result = result.decode('utf-8')
-
-        else:
-            result = json.dumps(info, cls=StringEncoder, indent=4, ensure_ascii=False)
-
-        console.info(result)
+        console.info(dump(info, options, context))
 
     return info
+
+
+def dump(info, options, context):
+    """Convert info to string using json or yaml format."""
+    if options.yaml:
+        data = {info['path']: info} if 'path' in info else info
+        result = yaml.dump(data, Dumper=get_yaml_dumper(context),
+                           default_flow_style=False, allow_unicode=True)
+        if PY2:
+            result = result.decode('utf-8')
+
+    else:
+        result = json.dumps(info, cls=get_json_encoder(context), indent=4, ensure_ascii=False)
+
+    return result
 
 
 def main(args=None):
@@ -92,21 +108,40 @@ def main(args=None):
     options = argument_parser.parse_args(args)
 
     if options.verbose:
-        logging.getLogger('knowit').setLevel(logging.INFO)
-        logging.getLogger('enzyme').setLevel(logging.WARNING)
+        logger.setLevel(logging.DEBUG)
+        logging.getLogger('enzyme').setLevel(logging.INFO)
+    else:
+        logger.setLevel(logging.WARNING)
 
     paths = recurse_paths(options.videopath)
 
     if paths:
-        for videopath in paths:
+        report = {}
+        for i, videopath in enumerate(paths):
             try:
-                knowit(videopath, options)
+                context = dict(vars(options))
+                if options.report:
+                    context['report'] = report
+                else:
+                    del context['report']
+                knowit(videopath, options, context)
             except ProviderError:
                 logger.exception('Error when processing video')
             except OSError:
                 logger.exception('OS error when processing video')
             except UnicodeError:
                 logger.exception('Character encoding error when processing video')
+            if options.report and i % 20 == 19 and report:
+                console.info('Unknown values so far:')
+                console.info(dump(report, options, vars(options)))
+
+        if options.report:
+            if report:
+                console.info('Knowit %s found unknown values:', __version__)
+                console.info(dump(report, options, vars(options)))
+                console.info('Please report them at %s', __url__)
+            else:
+                console.info('Knowit %s knows everything. :-)', __version__)
 
     elif options.version:
         mi_location = api.available_providers['mediainfo'].native_lib

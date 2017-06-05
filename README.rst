@@ -24,79 +24,69 @@ CLI
 ^^^
 Extract information from a video file::
 
-    $ knowit FooBar.mkv
-    For: FooBar.mkv
+    $ knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
+    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
+    Knowit 0.2.0-dev found:
     {
-        "title": "Foo.Bar",
-        "path": "/folder/FooBar.mkv",
-        "duration": "2:06:09.001000",
-        "size": "611.24 MB",
-        "bit_rate": "1.8 Mbps",
+        "title": "HD DTS-HD Master Audio 7.1",
+        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
+        "duration": "0:00:21",
+        "size": "31.64 MB",
+        "bit_rate": "12.0 Mbps",
         "video": [
             {
                 "number": 1,
-                "language": "English",
-                "duration": "2:06:09.012000",
+                "duration": "0:00:21",
                 "width": "1920 pixel",
-                "height": "796 pixel",
+                "height": "1080 pixel",
                 "scan_type": "Progressive",
-                "aspect_ratio": 2.412,
+                "aspect_ratio": 1.778,
                 "pixel_aspect_ratio": 1.0,
                 "resolution": "1080p",
-                "frame_rate": "23.976 FPS",
+                "frame_rate": "29.97 FPS",
                 "bit_depth": "8 bit",
                 "codec": "H.264",
-                "profile": "High@L4.1",
+                "profile": "High",
+                "profile_level": "4",
                 "encoder": "x264",
                 "media_type": "video/H264",
-                "default": true
+                "default": true,
+                "language": "Undetermined"
             }
         ],
         "audio": [
             {
                 "number": 2,
-                "name": "DTS MA 5.1 16bit",
-                "language": "English",
-                "duration": "2:06:09.001000",
-                "codec": "DTS-HD Master Audio",
-                "channels_count": 6,
-                "channels": "5.1",
+                "name": "German",
+                "language": "German",
+                "duration": "0:00:21",
+                "codec": "DTS-HD",
+                "profile": [
+                    "Master Audio",
+                    "Core"
+                ],
+                "channels_count": [
+                    8,
+                    6
+                ],
+                "channels": "7.1",
+                "bit_depth": "24 bit",
                 "bit_rate": [
                     null,
-                    "1509.0 Kbps"
+                    "1.5 Mbps"
                 ],
                 "bit_rate_mode": [
                     "Variable",
                     "Constant"
                 ],
-                "sampling_rate": "48.0 KHz",
+                "sampling_rate": [
+                    "96.0 KHz",
+                    "48.0 KHz"
+                ],
                 "compression": [
                     "Lossless",
                     "Lossy"
                 ],
-                "default": true
-            },
-            {
-                "number": 3,
-                "name": "DD5.1 448Kbps",
-                "language": "Chinese",
-                "duration": "2:06:09.001000",
-                "size": 448.01 MB,
-                "codec": "AC3",
-                "channels_count": 6,
-                "channels": "5.1",
-                "bit_rate": "448 Kbps",
-                "bit_rate_mode": "Constant",
-                "sampling_rate": "48.0 KHz",
-                "compression": "Lossy"
-            }
-        ],
-        "subtitle": [
-            {
-                "number": 4,
-                "language": "English",
-                "format": "SubRip",
-                "encoding": "UTF-8",
                 "default": true
             }
         ]

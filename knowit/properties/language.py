@@ -13,7 +13,7 @@ logger.addHandler(NullHandler())
 class Language(Property):
     """Language property."""
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Handle languages."""
         try:
             if len(value) == 3:
@@ -28,5 +28,5 @@ class Language(Property):
         except babelfish.Error:
             pass
 
-        logger.info('Invalid %s: %r', self.description, value)
+        self.report(value, context)
         return babelfish.Language('und')

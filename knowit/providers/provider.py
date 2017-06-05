@@ -12,8 +12,9 @@ logger.addHandler(NullHandler())
 class Provider(object):
     """Base class for all providers."""
 
-    def __init__(self, mapping, rules=None):
+    def __init__(self, config, mapping, rules=None):
         """Init method."""
+        self.config = config
         self.mapping = mapping
         self.rules = rules or {}
 
@@ -21,21 +22,21 @@ class Provider(object):
         """Whether or not the video is supported by this provider."""
         raise NotImplementedError
 
-    def describe(self, target, options):
+    def describe(self, target, context):
         """Read video metadata information."""
         raise NotImplementedError
 
-    def _describe_tracks(self, general_track, video_tracks, audio_tracks, subtitle_tracks):
+    def _describe_tracks(self, general_track, video_tracks, audio_tracks, subtitle_tracks, context):
         logger.debug('Handling general track')
-        props = self._describe_track(general_track, 'general')
+        props = self._describe_track(general_track, 'general', context)
 
         for track_type, tracks, in (('video', video_tracks),
                                     ('audio', audio_tracks),
                                     ('subtitle', subtitle_tracks)):
             results = []
-            for track in tracks:
+            for track in tracks or []:
                 logger.debug('Handling %s track', track_type)
-                t = self._describe_track(track, track_type)
+                t = self._describe_track(track, track_type, context)
                 if t:
                     results.append(t)
 
@@ -44,7 +45,7 @@ class Provider(object):
 
         return props
 
-    def _describe_track(self, track, track_type):
+    def _describe_track(self, track, track_type, context):
         """Describe track to a dict.
 
         :param track:
@@ -52,16 +53,19 @@ class Provider(object):
         :rtype: dict
         """
         props = OrderedDict()
-        context = {}
+        pv_props = {}
         for name, prop in self.mapping[track_type].items():
             if not prop:
                 # placeholder to be populated by rules. It keeps the order
                 props[name] = None
                 continue
 
-            value = prop.extract_value(track)
+            value = prop.extract_value(track, context)
             if value is not None:
-                which = context if prop.private else props
+                if not prop.private:
+                    which = props
+                else:
+                    which = pv_props
                 which[name] = value
 
         for name, rule in self.rules.get(track_type, {}).items():
@@ -69,7 +73,7 @@ class Provider(object):
                 logger.debug('Skipping rule %s since property is already present', name)
                 continue
 
-            value = rule.execute(props, context)
+            value = rule.execute(props, pv_props, context)
             if value is not None:
                 props[name] = value
             elif name in props:

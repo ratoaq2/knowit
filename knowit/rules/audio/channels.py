@@ -20,14 +20,14 @@ class AudioChannelsRule(Rule):
         8: '7.1',
     }
 
-    def execute(self, props, context):
+    def execute(self, props, pv_props, context):
         """Execute the rule against properties."""
         count = props.get('channels_count')
         if count is None:
             return
 
         channels = self.mapping.get(count) if isinstance(count, int) else None
-        positions = context.get('channel_positions') or []
+        positions = pv_props.get('channel_positions') or []
         positions = positions if isinstance(positions, list) else [positions]
         candidate = 0
         for position in positions:
@@ -54,4 +54,4 @@ class AudioChannelsRule(Rule):
         if candidate:
             return text_type(candidate)
 
-        logger.info('Invalid %s: %d', self.description, count)
+        self.report(positions, context)

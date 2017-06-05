@@ -1,18 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
 import os
 import sys
 from collections import OrderedDict
-from datetime import timedelta
 
-import babelfish
 from six import PY2, string_types, text_type
-import yaml
 
-from knowit import VIDEO_EXTENSIONS
-from knowit.units import format_quantity
+from . import VIDEO_EXTENSIONS
 
 
 def recurse_paths(paths):
@@ -48,20 +43,6 @@ def recurse_paths(paths):
     return [f for f in enc_paths if not (f in seen or seen_add(f))]
 
 
-class StringEncoder(json.JSONEncoder):
-    """String json encoder."""
-
-    def default(self, o):
-        """Convert properties to string."""
-        if isinstance(o, babelfish.language.Language):
-            return getattr(o, 'name')
-
-        if hasattr(o, 'units'):
-            return format_quantity(o)
-
-        return text_type(o)
-
-
 def todict(obj, classkey=None):
     """Transform an object to dict."""
     if isinstance(obj, string_types):
@@ -83,30 +64,3 @@ def todict(obj, classkey=None):
             data[classkey] = obj.__class__.__name__
         return data
     return obj
-
-
-class CustomDumper(yaml.SafeDumper):
-    """Custom YAML Dumper."""
-
-    pass
-
-
-class CustomLoader(yaml.SafeLoader):
-    """Custom YAML Loader."""
-
-    pass
-
-
-def default_representer(dumper, data):
-    """Convert data to string."""
-    return dumper.represent_str(str(data))
-
-
-def ordered_dict_representer(dumper, data):
-    """Representer for OrderedDict."""
-    return dumper.represent_mapping('tag:yaml.org,2002:map', data.items())
-
-
-CustomDumper.add_representer(OrderedDict, ordered_dict_representer)
-CustomDumper.add_representer(babelfish.Language, default_representer)
-CustomDumper.add_representer(timedelta, default_representer)

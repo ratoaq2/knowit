@@ -10,14 +10,6 @@ logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
 
-_DEBUG_MSG = '''# Unable to detect resolution
-  - width: {width}
-    height: {height}
-    scan_type: {scan_type}
-    aspect_ratio: {dar}
-    pixel_aspect_ratio: {par}'''
-
-
 class ResolutionRule(Rule):
     """Resolution rule."""
 
@@ -38,7 +30,7 @@ class ResolutionRule(Rule):
     square = 4. / 3
     wide = 16. / 9
 
-    def execute(self, props, context):
+    def execute(self, props, pv_props, context):
         """Return the resolution for the video.
 
         The resolution is based on a widescreen TV (16:9)
@@ -78,4 +70,6 @@ class ResolutionRule(Rule):
         if selected_resolution:
             return '{0}{1}'.format(selected_resolution.magnitude, scan_type)
 
-        logger.info(_DEBUG_MSG.format(width=width, height=height, scan_type=scan_type, dar=dar, par=par))
+        msg = '{width}x{height} - scan_type: {scan_type}, aspect_ratio: {dar}, pixel_aspect_ratio: {par}'.format(
+            width=width, height=height, scan_type=scan_type, dar=dar, par=par)
+        self.report(msg, context)

@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from logging import NullHandler, getLogger
 from six import PY3, binary_type, text_type
 
+from ..core import Reportable
+
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
@@ -14,22 +16,16 @@ def _is_unknown(value):
     return isinstance(value, text_type) and (not value or value.lower() == 'unknown')
 
 
-class Property(object):
+class Property(Reportable):
     """Property class."""
 
     def __init__(self, name, default=None, private=False, description=None):
         """Init method."""
-        self.name = name
+        super(Property, self).__init__(name, description)
         self.default = default
         self.private = private
-        self._description = description
 
-    @property
-    def description(self):
-        """Property description."""
-        return self._description or self.name
-
-    def extract_value(self, track):
+    def extract_value(self, track, context):
         """Extract the property value from a given track."""
         value = track.get(self.name)
         if value is None:
@@ -45,20 +41,57 @@ class Property(object):
             if _is_unknown(value):
                 return
 
-        result = self.handle(value)
+        result = self.handle(value, context)
         if result is not None and not _is_unknown(result):
             return result
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Return the value without any modification."""
         return value
 
-    def _handle(self, value, key, mapping):
-        result = mapping.get(key)
-        if result is not None:
-            return result
 
-        logger.info('Invalid %s: %r', self.description, value)
+class Configurable(Property):
+    """Configurable property where values are in a config mapping."""
+
+    def __init__(self, config, *args, **kwargs):
+        """Init method."""
+        super(Configurable, self).__init__(*args, **kwargs)
+        self.mapping = getattr(config, self.__class__.__name__)
+
+    @classmethod
+    def _extract_key(cls, value):
+        return text_type(value).upper()
+
+    @classmethod
+    def _extract_fallback_key(cls, value, key):
+        pass
+
+    def _lookup(self, key, context):
+        result = self.mapping.get(key)
+        if result is not None:
+            result = getattr(result, context['profile'])
+            return result if result != '__ignored__' else False
+
+    def handle(self, value, context):
+        """Return Variable or Constant."""
+        key = self._extract_key(value)
+        if key is False:
+            return
+
+        result = self._lookup(key, context)
+        if result is False:
+            return
+
+        while not result and key:
+            key = self._extract_fallback_key(value, key)
+            result = self._lookup(key, context)
+            if result is False:
+                return
+
+        if not result:
+            self.report(value, context)
+
+        return result
 
 
 class MultiValue(Property):
@@ -71,15 +104,15 @@ class MultiValue(Property):
         self.delimiter = delimiter
         self.handler = handler
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Handle properties with multiple values."""
         values = (self._split(value[0], self.delimiter)
                   if len(value) == 1 else value) if isinstance(value, list) else self._split(value, self.delimiter)
         call = self.handler or self.prop.handle
         if len(values) > 1:
-            return [call(item) if not _is_unknown(item) else None for item in values]
+            return [call(item, context) if not _is_unknown(item) else None for item in values]
 
-        return call(values[0])
+        return call(values[0], context)
 
     @classmethod
     def _split(cls, value, delimiter='/'):

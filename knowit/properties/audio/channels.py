@@ -18,7 +18,7 @@ class AudioChannels(Property):
         'object based',  # Dolby Atmos
     }
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Handle audio channels."""
         if isinstance(value, int):
             return value
@@ -28,4 +28,4 @@ class AudioChannels(Property):
             try:
                 return int(v)
             except ValueError:
-                logger.info('Invalid %s: %r', self.description, value)
+                self.report(value, context)

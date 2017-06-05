@@ -17,7 +17,7 @@ class LanguageRule(Rule):
 
     name_re = re.compile(r'(?P<name>\w+)\b', re.IGNORECASE)
 
-    def execute(self, props, context):
+    def execute(self, props, pv_props, context):
         """Language detection using name."""
         if 'language' in props:
             return
@@ -30,6 +30,5 @@ class LanguageRule(Rule):
                     return babelfish.Language.fromname(match.group('name'))
                 except babelfish.Error:
                     pass
-
             logger.info('Invalid %s: %r', self.description, name)
         return babelfish.Language('und')

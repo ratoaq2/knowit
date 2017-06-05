@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+import pytest
+
+from knowit import properties
+
+from . import parameters_from_yaml
+
+
+@pytest.mark.parametrize('name,expected,input', parameters_from_yaml(__name__))
+def test_resolution(config, context, name, expected, input):
+    # Given
+    prop_class = getattr(properties, name)
+    sut = prop_class(config, name)
+
+    # When
+    actual = sut.handle(input, context)
+
+    # Then
+    assert expected == actual

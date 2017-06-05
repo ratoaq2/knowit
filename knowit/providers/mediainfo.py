@@ -33,6 +33,10 @@ from ..properties import (
     SubtitleEncoding,
     SubtitleFormat,
     VideoCodec,
+    VideoEncoder,
+    VideoProfile,
+    VideoProfileLevel,
+    VideoProfileTier,
     YesNo,
 )
 from ..rules import (
@@ -50,9 +54,11 @@ logger.addHandler(NullHandler())
 class MediaInfoProvider(Provider):
     """Media Info provider."""
 
-    def __init__(self):
+    native_lib = None
+
+    def __init__(self, config, lib_location):
         """Init method."""
-        super(MediaInfoProvider, self).__init__({
+        super(MediaInfoProvider, self).__init__(config, {
             'general': OrderedDict([
                 ('title', Property('title', description='media title')),
                 ('path', Property('complete_name', description='media path')),
@@ -68,7 +74,7 @@ class MediaInfoProvider(Provider):
                 ('size', Quantity('stream_size', units.byte, description='video stream size')),
                 ('width', Quantity('width', units.pixel)),
                 ('height', Quantity('height', units.pixel)),
-                ('scan_type', ScanType('scan_type', default='Progressive', description='video scan type')),
+                ('scan_type', ScanType(config, 'scan_type', default='Progressive', description='video scan type')),
                 ('aspect_ratio', Basic('display_aspect_ratio', float, description='display aspect ratio')),
                 ('pixel_aspect_ratio', Basic('pixel_aspect_ratio', float, description='pixel aspect ratio')),
                 ('resolution', None),  # populated with ResolutionRule
@@ -76,9 +82,11 @@ class MediaInfoProvider(Provider):
                 # frame_rate_mode
                 ('bit_rate', Quantity('bit_rate', units.bps, description='video bit rate')),
                 ('bit_depth', Quantity('bit_depth', units.bit, description='video bit depth')),
-                ('codec', VideoCodec('codec', description='video codec')),
-                ('profile', Property('codec_profile', description='video codec profile')),
-                ('encoder', Property('encoded_library_name', description='video encoder')),
+                ('codec', VideoCodec(config, 'codec', description='video codec')),
+                ('profile', VideoProfile(config, 'codec_profile', description='video codec profile')),
+                ('profile_level', VideoProfileLevel(config, 'codec_profile', description='video codec profile level')),
+                ('profile_tier', VideoProfileTier(config, 'codec_profile', description='video codec profile tier')),
+                ('encoder', VideoEncoder(config, 'encoded_library_name', description='video encoder')),
                 ('media_type', Property('internet_media_type', description='video media type')),
                 ('forced', YesNo('forced', hide_value=False, description='video track forced')),
                 ('default', YesNo('default', hide_value=False, description='video track default')),
@@ -89,17 +97,19 @@ class MediaInfoProvider(Provider):
                 ('language', Language('language', description='audio language')),
                 ('duration', Duration('duration', description='audio duration')),
                 ('size', Quantity('stream_size', units.byte, description='audio stream size')),
-                ('codec', MultiValue(AudioCodec('codec', description='audio codec'))),
-                ('profile', MultiValue(AudioProfile('codec', description='audio codec profile'))),
+                ('codec', MultiValue(AudioCodec(config, 'codec', description='audio codec'))),
+                ('profile', MultiValue(AudioProfile(config, 'format_profile', description='audio codec profile'),
+                                       delimiter=' / ')),
                 ('channels_count', MultiValue(AudioChannels('channel_s', description='audio channels count'))),
                 ('channel_positions', MultiValue(name='other_channel_positions', handler=(lambda x, *args: x),
                                                  delimiter=' / ', private=True, description='audio channels position')),
                 ('channels', None),  # populated with AudioChannelsRule
                 ('bit_depth', Quantity('bit_depth', units.bit, description='audio bit depth')),
                 ('bit_rate', MultiValue(Quantity('bit_rate', units.bps, description='audio bit rate'))),
-                ('bit_rate_mode', MultiValue(BitRateMode('bit_rate_mode', description='audio bit rate mode'))),
+                ('bit_rate_mode', MultiValue(BitRateMode(config, 'bit_rate_mode', description='audio bit rate mode'))),
                 ('sampling_rate', MultiValue(Quantity('sampling_rate', units.Hz, description='audio sampling rate'))),
-                ('compression', MultiValue(AudioCompression('compression_mode', description='audio compression'))),
+                ('compression', MultiValue(AudioCompression(config, 'compression_mode',
+                                                            description='audio compression'))),
                 ('forced', YesNo('forced', hide_value=False, description='audio track forced')),
                 ('default', YesNo('default', hide_value=False, description='audio track default')),
             ]),
@@ -108,8 +118,8 @@ class MediaInfoProvider(Provider):
                 ('name', Property('title', description='subtitle track name')),
                 ('language', Language('language', description='subtitle language')),
                 ('hearing_impaired', None),  # populated with HearingImpairedRule
-                ('format', SubtitleFormat('codec_id', description='subtitle format')),
-                ('encoding', SubtitleEncoding('codec_id', description='subtitle encoding')),
+                ('format', SubtitleFormat(config, 'codec_id', description='subtitle format')),
+                ('encoding', SubtitleEncoding(config, 'codec_id', description='subtitle encoding')),
                 ('forced', YesNo('forced', hide_value=False, description='subtitle track forced')),
                 ('default', YesNo('default', hide_value=False, description='subtitle track default')),
             ]),
@@ -127,10 +137,10 @@ class MediaInfoProvider(Provider):
                 ('hearing_impaired', HearingImpairedRule('subtitle hearing impaired')),
             ])
         })
-        self.native_lib = self._create_native_lib()
+        self.native_lib = self._create_native_lib(lib_location)
 
-    @staticmethod
-    def _create_native_lib():
+    @classmethod
+    def _get_native_lib(cls, suggested_path):
         os_family = 'windows' if (
             os.name in ('nt', 'dos', 'os2', 'ce')
         ) else (
@@ -139,50 +149,90 @@ class MediaInfoProvider(Provider):
         logger.debug('Detected os family: %s', os_family)
         try:
             if os_family == 'unix':
-                from ctypes import CDLL
-                logger.debug('Loading native mediainfo library')
-                so_name = 'libmediainfo.so.0'
-                for location in ('/usr/local/mediainfo/lib',):
-                    candidate = os.path.join(location, so_name)
-                    if os.path.isfile(candidate):
-                        so_name = candidate
-                        break
-                lib = CDLL(so_name)
-            else:  # pragma: no cover
-                os_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '../native', os_family))
-                if os_family == 'macos':
-                    from ctypes import CDLL
-                    logger.debug('Loading native mediainfo library from %s', os_folder)
-                    lib = CDLL(os.path.join(os_folder, 'libmediainfo.0.dylib'))
-                else:
-                    from ctypes import windll
-                    is_64bits = sys.maxsize > 2 ** 32
-                    arch = 'x86_64' if is_64bits else 'i386'
-                    lib = os.path.join(os_folder, arch)
-                    logger.debug('Loading native mediainfo library from %s', lib)
-                    dll_filename = os.path.join(lib, 'MediaInfo.dll')
-                    if sys.version_info[:3] == (2, 7, 13):
-                        # http://bugs.python.org/issue29082
-                        dll_filename = str(dll_filename)
-                    lib = windll.MediaInfo = windll.LoadLibrary(dll_filename)
+                return cls._get_unix_lib(suggested_path)
+            if os_family == 'macos':
+                return cls._get_macos_lib(suggested_path)
 
-            lib.MediaInfo_Inform.restype = c_wchar_p
-            lib.MediaInfo_New.argtypes = []
-            lib.MediaInfo_New.restype = c_void_p
-            lib.MediaInfo_Option.argtypes = [c_void_p, c_wchar_p, c_wchar_p]
-            lib.MediaInfo_Option.restype = c_wchar_p
-            lib.MediaInfo_Inform.argtypes = [c_void_p, c_size_t]
-            lib.MediaInfo_Inform.restype = c_wchar_p
-            lib.MediaInfo_Open.argtypes = [c_void_p, c_wchar_p]
-            lib.MediaInfo_Open.restype = c_size_t
-            lib.MediaInfo_Delete.argtypes = [c_void_p]
-            lib.MediaInfo_Delete.restype = None
-            lib.MediaInfo_Close.argtypes = [c_void_p]
-            lib.MediaInfo_Close.restype = None
-            logger.debug('MediaInfo loaded')
-            return lib
+            return cls._get_windows_lib(suggested_path)
         except OSError:
-            logger.warning('Unable to load native mediainfo library')
+            pass
+
+    @classmethod
+    def _get_windows_lib(cls, suggested_path):
+        from ctypes import windll
+        logger.debug('Loading native mediainfo library')
+        for folder in (suggested_path, ''):
+            try:
+                dll_filename = os.path.join(folder, 'MediaInfo.dll') if folder else 'MediaInfo.dll'
+                if sys.version_info[:3] == (2, 7, 13):
+                    # http://bugs.python.org/issue29082
+                    dll_filename = str(dll_filename)
+                lib = windll.MediaInfo = windll.LoadLibrary(dll_filename)
+                logger.debug('Native mediainfo library loaded from %s', dll_filename)
+                return lib
+            except OSError:
+                pass
+
+    @classmethod
+    def _get_macos_lib(cls, suggested_path):
+        from ctypes import CDLL
+        logger.debug('Loading native mediainfo library')
+        for filename in ('libmediainfo.0.dylib', 'libmediainfo.dylib'):
+            dylib_path = filename
+            if suggested_path:
+                candidate = os.path.join(suggested_path, dylib_path)
+                if os.path.isfile(candidate):
+                    dylib_path = CDLL(candidate)
+
+            try:
+                lib = CDLL(dylib_path)
+                logger.debug('Native mediainfo library loaded from %s', dylib_path)
+                return lib
+            except OSError:
+                pass
+
+    @classmethod
+    def _get_unix_lib(cls, suggested_path):
+        from ctypes import CDLL
+        logger.debug('Loading native mediainfo library')
+        so_path = 'libmediainfo.so.0'
+        for location in (suggested_path, '/usr/local/mediainfo/lib'):
+            if not suggested_path:
+                continue
+
+            candidate = os.path.join(location, so_path)
+            if os.path.isfile(candidate):
+                so_path = candidate
+                break
+        lib = CDLL(so_path)
+        logger.debug('Native mediainfo library loaded from %s', so_path)
+        return lib
+
+    @classmethod
+    def _create_native_lib(cls, suggested_path):
+        lib = cls._get_native_lib(suggested_path)
+        if not lib:
+            logger.warning('MediaInfo not found on your system.')
+            logger.warning('Visit https://mediaarea.net/ to download it.')
+            logger.warning('If you still have problems, please check if the downloaded version matches your system.')
+            logger.warning('To provide a different location to search for it, please specify: --lib-location <folder>')
+            return
+
+        lib.MediaInfo_Inform.restype = c_wchar_p
+        lib.MediaInfo_New.argtypes = []
+        lib.MediaInfo_New.restype = c_void_p
+        lib.MediaInfo_Option.argtypes = [c_void_p, c_wchar_p, c_wchar_p]
+        lib.MediaInfo_Option.restype = c_wchar_p
+        lib.MediaInfo_Inform.argtypes = [c_void_p, c_size_t]
+        lib.MediaInfo_Inform.restype = c_wchar_p
+        lib.MediaInfo_Open.argtypes = [c_void_p, c_wchar_p]
+        lib.MediaInfo_Open.restype = c_size_t
+        lib.MediaInfo_Delete.argtypes = [c_void_p]
+        lib.MediaInfo_Delete.restype = None
+        lib.MediaInfo_Close.argtypes = [c_void_p]
+        lib.MediaInfo_Close.restype = None
+        logger.debug('MediaInfo loaded')
+        return lib
 
     def _parse(self, filename):
         lib = self.native_lib
@@ -207,10 +257,10 @@ class MediaInfoProvider(Provider):
         """Accept any video when MediaInfo is available."""
         return self.native_lib and video_path.lower().endswith(VIDEO_EXTENSIONS)
 
-    def describe(self, video_path, options):
+    def describe(self, video_path, context):
         """Return video metadata."""
         data = self._parse(video_path).to_data()
-        if options.get('raw'):
+        if context.get('raw'):
             return data
 
         general_tracks = []
@@ -229,10 +279,10 @@ class MediaInfoProvider(Provider):
                 subtitle_tracks.append(track)
 
         result = self._describe_tracks(general_tracks[0] if general_tracks else None,
-                                       video_tracks, audio_tracks, subtitle_tracks)
+                                       video_tracks, audio_tracks, subtitle_tracks, context)
         if not result:
             logger.warning("Invalid file '%s'", video_path)
-            if options.get('fail_on_error'):
+            if context.get('fail_on_error'):
                 raise MalformedFileError
 
         return result

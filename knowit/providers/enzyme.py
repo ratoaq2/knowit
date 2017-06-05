@@ -38,9 +38,9 @@ logger.addHandler(NullHandler())
 class EnzymeProvider(Provider):
     """Enzyme Provider."""
 
-    def __init__(self):
+    def __init__(self, config):
         """Init method."""
-        super(EnzymeProvider, self).__init__({
+        super(EnzymeProvider, self).__init__(config, {
             'general': OrderedDict([
                 ('title', Property('title', description='media title')),
                 ('path', Property('complete_name', description='media path')),
@@ -57,7 +57,7 @@ class EnzymeProvider(Provider):
                                     description='video scan type')),
                 ('resolution', None),  # populated with ResolutionRule
                 # ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
-                ('codec', VideoCodec('codec_id', description='video codec')),
+                ('codec', VideoCodec(config, 'codec_id', description='video codec')),
                 ('forced', YesNo('forced', hide_value=False, description='video track forced')),
                 ('default', YesNo('default', hide_value=False, description='video track default')),
                 ('enabled', YesNo('enabled', hide_value=True, description='video track enabled')),
@@ -66,7 +66,7 @@ class EnzymeProvider(Provider):
                 ('number', Basic('number', int, description='audio track number')),
                 ('name', Property('name', description='audio track name')),
                 ('language', Language('language', description='audio language')),
-                ('codec', AudioCodec('codec_id', description='audio codec')),
+                ('codec', AudioCodec(config, 'codec_id', description='audio codec')),
                 ('channels_count', Basic('channels', int, description='audio channels count')),
                 ('channels', None),  # populated with AudioChannelsRule
                 ('forced', YesNo('forced', hide_value=False, description='audio track forced')),
@@ -101,24 +101,26 @@ class EnzymeProvider(Provider):
         """Accept only MKV files."""
         return video_path.lower().endswith('.mkv')
 
-    def describe(self, video_path, options):
+    def describe(self, video_path, context):
         """Return video metadata."""
         try:
             with open(video_path, 'rb') as f:
                 data = defaultdict(dict)
                 ff = todict(enzyme.MKV(f))
                 data.update(ff)
+                if 'info' in data and data['info'] is None:
+                    return {}
+
                 data['info']['complete_name'] = video_path
                 data['info']['file_size'] = os.path.getsize(video_path)
-
         except enzyme.MalformedMKVError:  # pragma: no cover
             logger.warning("Invalid file '%s'", video_path)
-            if options.get('fail_on_error'):
+            if context.get('fail_on_error'):
                 raise MalformedFileError
             return {}
 
-        if options.get('raw'):
+        if context.get('raw'):
             return data
 
-        return self._describe_tracks(data.get('info'), data.get('video_tracks', []),
-                                     data.get('audio_tracks', []), data.get('subtitle_tracks', []))
+        return self._describe_tracks(data.get('info'), data.get('video_tracks'),
+                                     data.get('audio_tracks'), data.get('subtitle_tracks'), context)

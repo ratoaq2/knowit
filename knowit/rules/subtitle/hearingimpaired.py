@@ -11,7 +11,7 @@ class HearingImpairedRule(Rule):
 
     hi_re = re.compile(r'(\bcc\d\b)|(\bsdh\b)', re.IGNORECASE)
 
-    def execute(self, props, context):
+    def execute(self, props, pv_props, context):
         """Hearing Impaired."""
         name = props.get('name')
         if name and self.hi_re.search(name):

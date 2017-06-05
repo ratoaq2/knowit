@@ -12,6 +12,7 @@ from .basic import Basic
 from .duration import Duration
 from .language import Language
 from .property import (
+    Configurable,
     MultiValue,
     Property,
 )
@@ -23,5 +24,9 @@ from .subtitle import (
 from .video import (
     ScanType,
     VideoCodec,
+    VideoEncoder,
+    VideoProfile,
+    VideoProfileLevel,
+    VideoProfileTier,
 )
 from .yesno import YesNo

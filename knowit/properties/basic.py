@@ -19,7 +19,7 @@ class Basic(Property):
         super(Basic, self).__init__(name, **kwargs)
         self.data_type = data_type
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Handle value."""
         if isinstance(value, self.data_type):
             return value
@@ -27,4 +27,4 @@ class Basic(Property):
         try:
             return self.data_type(text_type(value))
         except ValueError:
-            logger.info('Invalid %s: %r', self.description, value)
+            self.report(value, context)

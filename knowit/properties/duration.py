@@ -22,7 +22,7 @@ class Duration(Property):
                              r'(?P<millis>\d{3})'
                              r'(?P<micro>\d{3})?\d*)?')
 
-    def handle(self, value):
+    def handle(self, value, context):
         """Return duration as timedelta."""
         if isinstance(value, timedelta):
             return value
@@ -39,4 +39,4 @@ class Duration(Property):
         except ValueError:
             pass
 
-        logger.info('Invalid %s: %r', self.description, value)
+        self.report(value, context)
