@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from collections import namedtuple
 from logging import NullHandler, getLogger
 
-from pip._vendor.six import text_type
 from pkg_resources import resource_stream
+from six import text_type
 import yaml
 
 from .serializer import get_yaml_loader
