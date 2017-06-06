@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from logging import NullHandler, getLogger
-from six import PY3, binary_type, text_type
+from six import PY3, binary_type, string_types, text_type
 
-from ..core import Reportable
+from .core import Reportable
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -19,11 +19,13 @@ def _is_unknown(value):
 class Property(Reportable):
     """Property class."""
 
-    def __init__(self, name, default=None, private=False, description=None):
+    def __init__(self, name, default=None, private=False, description=None, delimiter=' / '):
         """Init method."""
         super(Property, self).__init__(name, description)
         self.default = default
         self.private = private
+        # Used to detect duplicated values. e.g.: en / en or High@L4.0 / High@L4.0 or Progressive / Progressive
+        self.delimiter = delimiter
 
     def extract_value(self, track, context):
         """Extract the property value from a given track."""
@@ -34,16 +36,25 @@ class Property(Reportable):
 
             value = self.default
 
-        if isinstance(value, binary_type):
-            value = text_type(value)
-        if isinstance(value, text_type):
-            value = value.translate(_visible_chars_table).strip()
-            if _is_unknown(value):
-                return
+        if isinstance(value, string_types):
+            if isinstance(value, binary_type):
+                value = text_type(value)
+            else:
+                value = value.translate(_visible_chars_table).strip()
+                if _is_unknown(value):
+                    return
+            value = self._deduplicate(value)
 
         result = self.handle(value, context)
         if result is not None and not _is_unknown(result):
             return result
+
+    @classmethod
+    def _deduplicate(cls, value):
+        values = value.split(' / ')
+        if len(values) == 2 and values[0] == values[1]:
+            return values[0]
+        return value
 
     def handle(self, value, context):
         """Return the value without any modification."""

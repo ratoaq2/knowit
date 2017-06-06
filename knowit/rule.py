@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from ..core import Reportable
+from .core import Reportable
 
 
 class Rule(Reportable):

@@ -8,6 +8,6 @@ input:
 
 expected:
   subtitle:
-  - number: 3
+  - id: 3
     name: English
     language: en

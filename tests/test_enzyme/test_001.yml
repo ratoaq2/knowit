@@ -95,7 +95,7 @@ expected:
   title: Super Title
   duration: '1:23:45.678000'
   video:
-  - number: 1
+  - id: 1
     name: Video Track 1
     language: und
     width: 1920 pixel
@@ -105,7 +105,7 @@ expected:
     codec: H.264
     default: true
   audio:
-  - number: 2
+  - id: 2
     name: Audio Track 1
     language: und
     codec: DTS
@@ -113,20 +113,20 @@ expected:
     channels: '7.1'
     default: true
   subtitle:
-  - number: 3
+  - id: 3
     name: English SRT
     language: en
     default: true
-  - number: 4
+  - id: 4
     name: English SRT SDH
     language: en
     hearing_impaired: true
-  - number: 5
+  - id: 5
     name: English PGS
     language: en
-  - number: 6
+  - id: 6
     name: French PGS
     language: fr
-  - number: 7
+  - id: 7
     name: Spanish PGS
     language: es

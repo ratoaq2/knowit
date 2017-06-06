@@ -181,7 +181,7 @@ expected:
   duration: '0:20:34.567000'
   bit_rate: 11223344 bps
   video:
-  - number: 1
+  - id: 1
     language: en
     duration: '0:20:34.566000'
     width: 1920 pixel
@@ -199,7 +199,7 @@ expected:
     media_type: video/H264
     default: true
   audio:
-  - number: 2
+  - id: 2
     name: Audio Track 1
     language: en
     duration: '0:20:34.568000'
@@ -224,27 +224,25 @@ expected:
     - Lossy
     default: true
   subtitle:
-  - number: 3
+  - id: 3
     name: English SRT
     language: en
     format: SubRip
-    encoding: UTF-8
     default: true
-  - number: 4
+  - id: 4
     name: English SRT SDH
     language: en
     hearing_impaired: true
     format: SubRip
-    encoding: UTF-8
-  - number: 5
+  - id: 5
     name: English PGS
     language: en
     format: PGS
-  - number: 6
+  - id: 6
     name: French PGS
     language: fr
     format: PGS
-  - number: 7
+  - id: 7
     name: Spanish PGS
     language: es
     format: PGS

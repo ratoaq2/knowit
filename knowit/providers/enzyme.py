@@ -13,17 +13,18 @@ from ..properties import (
     Basic,
     Duration,
     Language,
-    Property,
     Quantity,
     VideoCodec,
     YesNo,
 )
-from ..providers.provider import (
+from ..property import Property
+from ..provider import (
     MalformedFileError,
     Provider,
 )
 from ..rules import (
     AudioChannelsRule,
+    ClosedCaptionRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
@@ -48,7 +49,7 @@ class EnzymeProvider(Provider):
                 ('duration', Duration('duration', description='media duration')),
             ]),
             'video': OrderedDict([
-                ('number', Basic('number', int, description='video track number')),
+                ('id', Basic('number', int, description='video track number')),
                 ('name', Property('name', description='video track name')),
                 ('language', Language('language', description='video language')),
                 ('width', Quantity('width', units.pixel)),
@@ -63,7 +64,7 @@ class EnzymeProvider(Provider):
                 ('enabled', YesNo('enabled', hide_value=True, description='video track enabled')),
             ]),
             'audio': OrderedDict([
-                ('number', Basic('number', int, description='audio track number')),
+                ('id', Basic('number', int, description='audio track number')),
                 ('name', Property('name', description='audio track name')),
                 ('language', Language('language', description='audio language')),
                 ('codec', AudioCodec(config, 'codec_id', description='audio codec')),
@@ -74,10 +75,11 @@ class EnzymeProvider(Provider):
                 ('enabled', YesNo('enabled', hide_value=True, description='audio track enabled')),
             ]),
             'subtitle': OrderedDict([
-                ('number', Basic('number', int, description='subtitle track number')),
+                ('id', Basic('number', int, description='subtitle track number')),
                 ('name', Property('name', description='subtitle track name')),
                 ('language', Language('language', description='subtitle language')),
                 ('hearing_impaired', None),  # populated with HearingImpairedRule
+                ('closed_caption', None),  # populated with ClosedCaptionRule
                 ('forced', YesNo('forced', hide_value=False, description='subtitle track forced')),
                 ('default', YesNo('default', hide_value=False, description='subtitle track default')),
                 ('enabled', YesNo('enabled', hide_value=True, description='subtitle track enabled')),
@@ -94,6 +96,7 @@ class EnzymeProvider(Provider):
             'subtitle': OrderedDict([
                 ('language', LanguageRule('subtitle language')),
                 ('hearing_impaired', HearingImpairedRule('subtitle hearing impaired')),
+                ('closed_caption', ClosedCaptionRule('closed caption')),
             ])
         })
 

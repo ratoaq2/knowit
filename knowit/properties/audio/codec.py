@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from six import text_type
 
-from ..property import Configurable
+from ...property import Configurable
 
 
 class AudioCodec(Configurable):

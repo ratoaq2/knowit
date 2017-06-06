@@ -11,14 +11,8 @@ from .audio import (
 from .basic import Basic
 from .duration import Duration
 from .language import Language
-from .property import (
-    Configurable,
-    MultiValue,
-    Property,
-)
 from .quantity import Quantity
 from .subtitle import (
-    SubtitleEncoding,
     SubtitleFormat,
 )
 from .video import (

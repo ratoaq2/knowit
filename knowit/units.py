@@ -4,10 +4,10 @@ from pint import UnitRegistry
 
 
 def _build_unit_registry():
-    ureg = UnitRegistry()
-    ureg.define('FPS = 1 * hertz')
+    registry = UnitRegistry()
+    registry.define('FPS = 1 * hertz')
 
-    return ureg
+    return registry
 
 
 units = _build_unit_registry()

@@ -29,7 +29,7 @@ class Reportable(object):
 
         value = text_type(value)
         if 'report' in context:
-            report_map = context['report'].setdefault(self.__class__.__name__, {})
+            report_map = context['report'].setdefault(self.name, {})
             if value not in report_map:
                 report_map[value] = context['path']
         logger.info('Invalid %s: %r', self.description, value)

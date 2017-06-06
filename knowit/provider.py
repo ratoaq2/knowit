@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from logging import NullHandler, getLogger
 
-from .. import OrderedDict
+from . import OrderedDict
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

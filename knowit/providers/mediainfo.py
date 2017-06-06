@@ -9,10 +9,6 @@ from ctypes import c_size_t, c_void_p, c_wchar_p
 from logging import NullHandler, getLogger
 from pymediainfo import MediaInfo
 
-from .provider import (
-    MalformedFileError,
-    Provider,
-)
 from .. import (
     OrderedDict,
     VIDEO_EXTENSIONS,
@@ -26,11 +22,8 @@ from ..properties import (
     BitRateMode,
     Duration,
     Language,
-    MultiValue,
-    Property,
     Quantity,
     ScanType,
-    SubtitleEncoding,
     SubtitleFormat,
     VideoCodec,
     VideoEncoder,
@@ -39,8 +32,17 @@ from ..properties import (
     VideoProfileTier,
     YesNo,
 )
+from ..property import (
+    MultiValue,
+    Property,
+)
+from ..provider import (
+    MalformedFileError,
+    Provider,
+)
 from ..rules import (
     AudioChannelsRule,
+    ClosedCaptionRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
@@ -67,7 +69,7 @@ class MediaInfoProvider(Provider):
                 ('bit_rate', Quantity('overall_bit_rate', units.bps, description='media bit rate')),
             ]),
             'video': OrderedDict([
-                ('number', Basic('track_id', int, description='video track number')),
+                ('id', Basic('track_id', int, allow_fallback=True, description='video track number')),
                 ('name', Property('name', description='video track name')),
                 ('language', Language('language', description='video language')),
                 ('duration', Duration('duration', description='video duration')),
@@ -92,7 +94,7 @@ class MediaInfoProvider(Provider):
                 ('default', YesNo('default', hide_value=False, description='video track default')),
             ]),
             'audio': OrderedDict([
-                ('number', Basic('track_id', int, description='audio track number')),
+                ('id', Basic('track_id', int, allow_fallback=True, description='audio track number')),
                 ('name', Property('title', description='audio track name')),
                 ('language', Language('language', description='audio language')),
                 ('duration', Duration('duration', description='audio duration')),
@@ -114,12 +116,13 @@ class MediaInfoProvider(Provider):
                 ('default', YesNo('default', hide_value=False, description='audio track default')),
             ]),
             'subtitle': OrderedDict([
-                ('number', Basic('track_id', int, description='subtitle track number')),
+                ('id', Basic('track_id', int, allow_fallback=True, description='subtitle track number')),
                 ('name', Property('title', description='subtitle track name')),
                 ('language', Language('language', description='subtitle language')),
                 ('hearing_impaired', None),  # populated with HearingImpairedRule
+                ('_closed_caption', Property('captionservicename', private=True)),
+                ('closed_caption', None),  # populated with ClosedCaptionRule
                 ('format', SubtitleFormat(config, 'codec_id', description='subtitle format')),
-                ('encoding', SubtitleEncoding(config, 'codec_id', description='subtitle encoding')),
                 ('forced', YesNo('forced', hide_value=False, description='subtitle track forced')),
                 ('default', YesNo('default', hide_value=False, description='subtitle track default')),
             ]),
@@ -135,6 +138,7 @@ class MediaInfoProvider(Provider):
             'subtitle': OrderedDict([
                 ('language', LanguageRule('subtitle language')),
                 ('hearing_impaired', HearingImpairedRule('subtitle hearing impaired')),
+                ('closed_caption', ClosedCaptionRule('closed caption'))
             ])
         })
         self.native_lib = self._create_native_lib(lib_location)

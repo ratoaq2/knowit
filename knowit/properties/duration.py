@@ -7,7 +7,7 @@ from datetime import timedelta
 from logging import NullHandler, getLogger
 from six import text_type
 
-from .property import Property
+from ..property import Property
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

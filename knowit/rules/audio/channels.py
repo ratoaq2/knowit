@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from logging import NullHandler, getLogger
 from six import text_type
 
-from ..rule import Rule
+from ...rule import Rule
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

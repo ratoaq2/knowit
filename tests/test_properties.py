@@ -13,9 +13,10 @@ def test_resolution(config, context, name, expected, input):
     # Given
     prop_class = getattr(properties, name)
     sut = prop_class(config, name)
+    track = {name: input}
 
     # When
-    actual = sut.handle(input, context)
+    actual = sut.extract_value(track, context)
 
     # Then
     assert expected == actual

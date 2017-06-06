@@ -102,6 +102,9 @@ knowledge:
       - VP70
       - VP71
       - VP72
+    # https://en.wikipedia.org/wiki/VP8
+    VP8:
+      - VP8
     # https://en.wikipedia.org/wiki/VP9
     # https://wiki.multimedia.cx/index.php/VP9
     VP9:
@@ -109,10 +112,14 @@ knowledge:
       - VP90
     JPEG:
       - JPEG
+    CJPG:
+      - CJPG
     QUICKTIME:
       - QUICKTIME
 
   VideoEncoder:
+    DIVX:
+      - DIVX
     X264:
       - X264
     X265:
@@ -127,6 +134,8 @@ knowledge:
       - ADVANCED
     ADVANCEDSIMPLE:
       - ADVANCED SIMPLE
+    SIMPLE:
+      - SIMPLE
     BASELINE:
       - BASELINE
     MAIN:
@@ -137,6 +146,9 @@ knowledge:
       - HIGH
 
   VideoProfileLevel:
+    L1:
+      - L1
+      - L1.0
     L11:
       - L1.1
     L13:
@@ -145,20 +157,31 @@ knowledge:
       - L2
     L21:
       - L2.1
+    L22:
+      - L2.2
     L3:
       - L3
+      - L3.0
     L31:
       - L3.1
+    L32:
+      - L3.2
     L4:
       - L4
+      - L4.0
     L41:
       - L4.1
     L42:
       - L4.2
     L5:
       - L5
+      - L5.0
     L51:
       - L5.1
+    HIGH:
+      - HIGH
+    H14:
+      - HIGH 1440
 
   VideoProfileTier:
     MAIN:
@@ -265,15 +288,9 @@ knowledge:
       - 161
     WMAPRO:
       - 162
-
-  SubtitleEncoding:
-    UTF8:
-      - UTF8
-    __ignored__:
-      - ASS
-      - SSA
-      - PGS
-      - VOBSUB
+    # https://answers.microsoft.com/en-us/windows/forum/windows_vista-pictures/how-to-access-codec-voxware-rt29-metasound-75/a6dbea68-ca5c-e011-8dfc-68b599b31bf5
+    RT29:
+      - 75
 
   SubtitleFormat:
     PGS:
@@ -293,6 +310,8 @@ knowledge:
     # https://en.wikipedia.org/wiki/MPEG-4_Part_17
     TX3G:
       - TX3G
+    DVBSUB:
+      - 6
 
 profiles:
   VideoCodec:
@@ -359,13 +378,19 @@ profiles:
     VP7:
       human: On2 VP7
       technical: On2 TrueMotion VP7
+    VP8:
+      technical: Google VP8
     VP9:
       technical: Google VP9
     JPEG:
+    CJPG:
+      default: WebCam JPEG
     QUICKTIME:
       default: QuickTime
 
   VideoEncoder:
+    DIVX:
+      default: DivX
     X264:
       default: x264
     X265:
@@ -380,6 +405,8 @@ profiles:
       default: Advanced
     ADVANCEDSIMPLE:
       default: Advanced Simple
+    SIMPLE:
+      default: Simple
     BASELINE:
       default: Baseline
     MAIN:
@@ -390,6 +417,9 @@ profiles:
       default: High
 
   VideoProfileLevel:
+    L1:
+      default: '1'
+      technical: Level 1
     L11:
       default: '1.1'
       technical: Level 1.1
@@ -402,12 +432,18 @@ profiles:
     L21:
       default: '2.1'
       technical: Level 2.1
+    L22:
+      default: '2.2'
+      technical: Level 2.2
     L3:
       default: '3'
       technical: Level 3
     L31:
       default: '3.1'
       technical: Level 3.1
+    L32:
+      default: '3.2'
+      technical: Level 3.2
     L4:
       default: '4'
       technical: Level 4
@@ -423,6 +459,10 @@ profiles:
     L51:
       default: '5.1'
       technical: Level 5.1
+    HIGH:
+      default: High
+    H14:
+      default: High 1440
 
   VideoProfileTier:
     MAIN:
@@ -531,16 +571,9 @@ profiles:
     WMAPRO:
       default: WMA Pro
       human: Windows Media Audio Pro
-
-  SubtitleEncoding:
-    UTF8:
-      default: UTF-8
-    PGS:
-      human: Presentation Graphic Stream
-    VOBSUB:
-      default: VobSub
-    ASS:
-      human: Advanced SubStation Alpha
+    RT29:
+      default: RT29 MetaSound
+      human: Voxware RT29 MetaSound
 
   SubtitleFormat:
     PGS:
@@ -556,3 +589,7 @@ profiles:
     TX3G:
       human: MPEG-4 Timed Text
       technical: MPEG-4 Part 17
+    DVBSUB:
+      default: DVBSub
+      human: DVB Subtitle
+      technical: Digital Video Broadcasting Subtitles

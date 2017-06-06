@@ -5,6 +5,7 @@ from logging import NullHandler, getLogger
 
 from .audio import AudioChannelsRule
 from .language import LanguageRule
+from .subtitle import ClosedCaptionRule
 from .subtitle import HearingImpairedRule
 from .video import ResolutionRule
 

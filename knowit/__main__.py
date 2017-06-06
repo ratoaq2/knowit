@@ -16,7 +16,7 @@ from . import (
     __version__,
     api,
 )
-from .providers import ProviderError
+from .provider import ProviderError
 from .serializer import (
     get_json_encoder,
     get_yaml_dumper,

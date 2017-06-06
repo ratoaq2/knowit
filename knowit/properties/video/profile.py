@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from .. import Configurable
+from ...property import Configurable
 
 
 class VideoProfile(Configurable):
@@ -19,7 +19,8 @@ class VideoProfileLevel(Configurable):
     def _extract_key(cls, value):
         values = value.upper().split('@')
         if len(values) > 1:
-            return values[1]
+            value = values[1]
+            return value
 
         # There's no level, so don't warn or report it
         return False

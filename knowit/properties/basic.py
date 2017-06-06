@@ -5,7 +5,7 @@ from logging import NullHandler, getLogger
 
 from six import text_type
 
-from .property import Property
+from ..property import Property
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -14,10 +14,11 @@ logger.addHandler(NullHandler())
 class Basic(Property):
     """Basic property to handle int, float and other basic types."""
 
-    def __init__(self, name, data_type, **kwargs):
+    def __init__(self, name, data_type, allow_fallback=False, **kwargs):
         """Init method."""
         super(Basic, self).__init__(name, **kwargs)
         self.data_type = data_type
+        self.allow_fallback = allow_fallback
 
     def handle(self, value, context):
         """Handle value."""
@@ -27,4 +28,5 @@ class Basic(Property):
         try:
             return self.data_type(text_type(value))
         except ValueError:
-            self.report(value, context)
+            if not self.allow_fallback:
+                self.report(value, context)

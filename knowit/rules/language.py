@@ -6,7 +6,7 @@ import re
 from logging import NullHandler, getLogger
 import babelfish
 
-from .rule import Rule
+from ..rule import Rule
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

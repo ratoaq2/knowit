@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from .. import Configurable
+from six import text_type
+
+from ...property import Configurable
 
 
 class SubtitleFormat(Configurable):
@@ -9,7 +11,7 @@ class SubtitleFormat(Configurable):
 
     @classmethod
     def _extract_key(cls, value):
-        key = value.upper()
+        key = text_type(value)  .upper()
         if key.startswith('S_'):
             key = key[2:]
 
