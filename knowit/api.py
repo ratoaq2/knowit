@@ -5,10 +5,27 @@ from . import OrderedDict
 from .config import Config
 from .providers import (
     EnzymeProvider,
+    FFmpegProvider,
     MediaInfoProvider,
 )
 
+_provider_map = {
+    'ffmpeg': FFmpegProvider,
+    'mediainfo': MediaInfoProvider,
+    'enzyme': EnzymeProvider,
+}
+
 available_providers = OrderedDict([])
+
+
+def initialize(context=None):
+    """Initialize knowit."""
+    if not available_providers:
+        context = context or {}
+        config = Config.build(context.get('config'))
+        for name, provider_cls in _provider_map.items():
+            key = '{0}_path'.format(name)
+            available_providers[name] = provider_cls(config, context.get(key) or config.general.get(key))
 
 
 def know(video_path, context=None):
@@ -23,11 +40,7 @@ def know(video_path, context=None):
     """
     context = context or {}
     context.setdefault('profile', 'default')
-    if not available_providers:
-        config = Config.build(context.get('config'))
-        lib_location = context.get('lib_location') or config.general.get('lib_location')
-        available_providers['mediainfo'] = MediaInfoProvider(config, lib_location)
-        available_providers['enzyme'] = EnzymeProvider(config)
+    initialize(context)
 
     for name, provider in available_providers.items():
         if name != (context.get('provider') or name):

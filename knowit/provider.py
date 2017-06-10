@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from logging import NullHandler, getLogger
 
 from . import OrderedDict
+from .units import units
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -11,6 +12,9 @@ logger.addHandler(NullHandler())
 
 class Provider(object):
     """Base class for all providers."""
+
+    min_fps = 1. * units['FPS']
+    max_fps = 100 * units['FPS']
 
     def __init__(self, config, mapping, rules=None):
         """Init method."""
@@ -36,7 +40,7 @@ class Provider(object):
             results = []
             for track in tracks or []:
                 logger.debug('Handling %s track', track_type)
-                t = self._describe_track(track, track_type, context)
+                t = self._validate_track(track_type, self._describe_track(track, track_type, context))
                 if t:
                     results.append(t)
 
@@ -44,6 +48,11 @@ class Provider(object):
                 props[track_type] = results
 
         return props
+
+    @classmethod
+    def _validate_track(cls, track_type, track):
+        if track_type != 'video' or 'frame_rate' not in track or cls.min_fps < track['frame_rate'] < cls.max_fps:
+            return track
 
     def _describe_track(self, track, track_type, context):
         """Describe track to a dict.
@@ -69,14 +78,14 @@ class Provider(object):
                 which[name] = value
 
         for name, rule in self.rules.get(track_type, {}).items():
-            if props.get(name) is not None:
+            if props.get(name) is not None and not rule.override:
                 logger.debug('Skipping rule %s since property is already present', name)
                 continue
 
             value = rule.execute(props, pv_props, context)
             if value is not None:
                 props[name] = value
-            elif name in props:
+            elif name in props and not rule.override:
                 del props[name]
 
         return props

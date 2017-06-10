@@ -39,7 +39,7 @@ logger.addHandler(NullHandler())
 class EnzymeProvider(Provider):
     """Enzyme Provider."""
 
-    def __init__(self, config):
+    def __init__(self, config, *args, **kwargs):
         """Init method."""
         super(EnzymeProvider, self).__init__(config, {
             'general': OrderedDict([
@@ -117,7 +117,7 @@ class EnzymeProvider(Provider):
                 data['info']['complete_name'] = video_path
                 data['info']['file_size'] = os.path.getsize(video_path)
         except enzyme.MalformedMKVError:  # pragma: no cover
-            logger.warning("Invalid file '%s'", video_path)
+            logger.warning('Invalid file %r', video_path)
             if context.get('fail_on_error'):
                 raise MalformedFileError
             return {}
@@ -125,5 +125,8 @@ class EnzymeProvider(Provider):
         if context.get('raw'):
             return data
 
-        return self._describe_tracks(data.get('info'), data.get('video_tracks'),
-                                     data.get('audio_tracks'), data.get('subtitle_tracks'), context)
+        result = self._describe_tracks(data.get('info'), data.get('video_tracks'),
+                                       data.get('audio_tracks'), data.get('subtitle_tracks'), context)
+
+        result['provider'] = 'Enzyme {0}'.format(enzyme.__version__)
+        return result

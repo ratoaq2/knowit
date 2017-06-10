@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 
 import os
 
+import enzyme
 import pytest
-
 import knowit
 
 from . import (
@@ -18,14 +18,14 @@ from . import (
 def test_enzyme_provider(monkeypatch, video_path, expected, input):
     # Given
     options = dict(provider='enzyme')
+    expected['path'] = video_path
+    expected['size'] = os.path.getsize(video_path)
+    expected['provider'] = 'Enzyme {0}'.format(enzyme.__version__)
     monkeypatch.setattr('enzyme.MKV', Mock())
     monkeypatch.setattr('knowit.utils.todict', lambda mkv: input)
 
     # When
     actual = knowit.know(video_path, options)
-
-    expected['path'] = video_path
-    expected['size'] = os.path.getsize(video_path)
 
     # Then
     assert_expected(expected, actual)

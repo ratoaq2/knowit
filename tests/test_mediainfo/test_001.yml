@@ -246,3 +246,4 @@ expected:
     name: Spanish PGS
     language: es
     format: PGS
+  provider: libmediainfo.so.0

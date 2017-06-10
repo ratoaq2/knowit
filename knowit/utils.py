@@ -64,3 +64,31 @@ def todict(obj, classkey=None):
             data[classkey] = obj.__class__.__name__
         return data
     return obj
+
+
+def detect_os():
+    """Detect os family: windows, macos or unix."""
+    if os.name in ('nt', 'dos', 'os2', 'ce'):
+        return 'windows'
+    if sys.platform == 'darwin':
+        return 'macos'
+
+    return 'unix'
+
+
+def define_candidate(os_family, locations, names, suggested_path):
+    """Generate candidate list for the given parameters."""
+    for location in [suggested_path] + locations[os_family]:
+        if not location:
+            continue
+
+        if location == '__PATH__':
+            for name in names[os_family]:
+                yield name
+        elif os.path.isfile(location):
+            yield location
+        elif os.path.isdir(location):
+            for name in names[os_family]:
+                cmd = os.path.join(location, name)
+                if os.path.isfile(cmd):
+                    yield cmd

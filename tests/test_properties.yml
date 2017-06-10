@@ -4,7 +4,6 @@ VideoCodec:
     - AVC
   Microsoft MPEG-4 v2: MP42
   WMV 7: WMV1
-  JPEG: JPEG
   WebCam JPEG: CJPG
   H.265: V_MPEGH/ISO/HEVC
   Xvid: XVID
@@ -40,6 +39,7 @@ VideoProfile:
     - Baseline@L4.1
   Main:
     - Main
+    - Main@Main
     - Main@L1.3
     - Main@L2.1
     - Main@L3
@@ -131,6 +131,8 @@ VideoProfileLevel:
   '5.1':
     - High@L5.1
     - Main 10@L5.1@Main
+  Main:
+    - Main@Main
   High:
     - Main@High
   High 1440:

@@ -3,6 +3,7 @@ knowledge:
     # https://en.wikipedia.org/wiki/MPEG-1#Part_2:_Video
     MPEG1:
       - MPEG-1V
+      - MPEG1VIDEO
     # https://en.wikipedia.org/wiki/H.262/MPEG-2_Part_2
     MPEG2:
       - MPEG2
@@ -13,6 +14,7 @@ knowledge:
       - MPG4
     MSMPEG4V2:
       - MP42
+      - MSMPEG4V2
     MSMPEG4V3:
       - MP43
       - AP41
@@ -48,6 +50,7 @@ knowledge:
       - WV1F
       - MPEG-4V
       - ASP # V_MPEG-4/ISO/ASP
+      - MPEG4
     DIVX:
       - DIV1
       - DIVX
@@ -67,6 +70,7 @@ knowledge:
       - WVP2
       - WMVR
       - VC-1
+      - VC1
     # H.263:
     #  https://wiki.multimedia.cx/index.php/H.263
     #  https://en.wikipedia.org/wiki/Sorenson_Media#Sorenson_Spark
@@ -110,12 +114,13 @@ knowledge:
     VP9:
       - VP9
       - VP90
-    JPEG:
-      - JPEG
     CJPG:
       - CJPG
     QUICKTIME:
       - QUICKTIME
+    __ignored__:
+      - MJPEG
+      - PNG
 
   VideoEncoder:
     DIVX:
@@ -134,10 +139,12 @@ knowledge:
       - ADVANCED
     ADVANCEDSIMPLE:
       - ADVANCED SIMPLE
+      - ADVANCED SIMPLE PROFILE
     SIMPLE:
       - SIMPLE
     BASELINE:
       - BASELINE
+      - CONSTRAINED BASELINE
     MAIN:
       - MAIN
     MAIN10:
@@ -178,6 +185,10 @@ knowledge:
       - L5.0
     L51:
       - L5.1
+    LOW:
+      - LOW
+    MAIN:
+      - MAIN
     HIGH:
       - HIGH
     H14:
@@ -195,6 +206,10 @@ knowledge:
     INTERLACED:
       - INTERLACED
       - MBAFF
+      - TT
+      - BB
+      - TB
+      - BT
 
   BitRateMode:
     VBR:
@@ -213,8 +228,10 @@ knowledge:
       - CORE
     HRA:
       - HRA
+      - DTS-HD HRA
     MA:
       - MA
+      - DTS-HD MA
     MAIN:
       - MAIN
     LC:
@@ -226,9 +243,11 @@ knowledge:
     # https://www.lifewire.com/dts-96-24-1846848
     96/24:
       - 96/24
+      - DTS 96/24
     # https://www.lifewire.com/what-is-dts-es-1846890
     ESDISCRETE:
       - ES DISCRETE
+      - DTS-ES
     ESMATRIX:
       - ES MATRIX
     LAYER2:
@@ -239,6 +258,7 @@ knowledge:
       - PRO
     __ignored__:
       - DOLBY DIGITAL
+      - DTS
 
   # References:
   #  - https://ffmpeg.org/general.html#Audio-Codecs
@@ -266,12 +286,15 @@ knowledge:
       - FLAC
     PCM:
       - PCM
+      - PCM_S16LE
     # https://en.wikipedia.org/wiki/MPEG-1_Audio_Layer_II
     MP2:
+      - MP2
       - MPA1L2
       - MPEG/L2
     # https://en.wikipedia.org/wiki/MP3
     MP3:
+      - MP3
       - MPA1L3
       - MPA2L3
       - MPEG/L3
@@ -286,8 +309,10 @@ knowledge:
       - 160
     WMA2:
       - 161
+      - WMAV2
     WMAPRO:
       - 162
+      - WMAPRO
     # https://answers.microsoft.com/en-us/windows/forum/windows_vista-pictures/how-to-access-codec-voxware-rt29-metasound-75/a6dbea68-ca5c-e011-8dfc-68b599b31bf5
     RT29:
       - 75
@@ -296,9 +321,11 @@ knowledge:
     PGS:
       - PGS
       - 144
+      - HDMV_PGS_SUBTITLE
     VOBSUB:
       - VOBSUB
       - E0
+      - DVD_SUBTITLE
     SUBRIP:
       - SUBRIP
       - UTF8
@@ -382,7 +409,6 @@ profiles:
       technical: Google VP8
     VP9:
       technical: Google VP9
-    JPEG:
     CJPG:
       default: WebCam JPEG
     QUICKTIME:
@@ -459,6 +485,10 @@ profiles:
     L51:
       default: '5.1'
       technical: Level 5.1
+    LOW:
+      default: Low
+    MAIN:
+      default: Main
     HIGH:
       default: High
     H14:

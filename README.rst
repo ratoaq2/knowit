@@ -25,30 +25,29 @@ CLI
 Extract information from a video file::
 
     $ knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
-    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
-    Knowit 0.2.0 found:
+    For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
+    Knowit 0.2.2-dev found:
     {
-        "title": "HD DTS-HD Master Audio 7.1",
-        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
-        "duration": "0:00:21",
-        "size": "31.64 MB",
-        "bit_rate": "12.0 Mbps",
+        "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
+        "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
+        "duration": "0:01:37",
+        "size": "40.77 MB",
+        "bit_rate": "3.3 Mbps",
         "video": [
             {
-                "number": 1,
-                "duration": "0:00:21",
+                "id": 1,
+                "duration": "0:01:37",
                 "width": "1920 pixel",
                 "height": "1080 pixel",
                 "scan_type": "Progressive",
                 "aspect_ratio": 1.778,
                 "pixel_aspect_ratio": 1.0,
                 "resolution": "1080p",
-                "frame_rate": "29.97 FPS",
+                "frame_rate": "23.976 FPS",
                 "bit_depth": "8 bit",
                 "codec": "H.264",
-                "profile": "High",
+                "profile": "Main",
                 "profile_level": "4",
-                "encoder": "x264",
                 "media_type": "video/H264",
                 "default": true,
                 "language": "Undetermined"
@@ -56,10 +55,10 @@ Extract information from a video file::
         ],
         "audio": [
             {
-                "number": 2,
-                "name": "German",
-                "language": "German",
-                "duration": "0:00:21",
+                "id": 2,
+                "name": "7.1Ch DTS-HD MA",
+                "language": "English",
+                "duration": "0:01:37",
                 "codec": "DTS-HD",
                 "profile": [
                     "Master Audio",
@@ -79,18 +78,102 @@ Extract information from a video file::
                     "Variable",
                     "Constant"
                 ],
-                "sampling_rate": [
-                    "96.0 KHz",
-                    "48.0 KHz"
-                ],
+                "sampling_rate": "48.0 KHz",
                 "compression": [
                     "Lossless",
                     "Lossy"
                 ],
                 "default": true
             }
-        ]
+        ],
+        "provider": "libmediainfo.so.0"
     }
+
+
+Extract information from a video file using ffprobe::
+
+    $ knowit --provider ffmpeg /folder/Audio Samples/hd_dtsma_7.1.mkv
+    For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
+    Knowit 0.2.2-dev found:
+    {
+        "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
+        "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
+        "duration": "0:01:37",
+        "size": "40.77 MB",
+        "bit_rate": "3.3 Mbps",
+        "video": [
+            {
+                "id": 0,
+                "width": "1920 pixel",
+                "height": "1080 pixel",
+                "scan_type": "Progressive",
+                "aspect_ratio": 1.778,
+                "pixel_aspect_ratio": 1.0,
+                "resolution": "1080p",
+                "frame_rate": "23.976 FPS",
+                "bit_depth": "8 bit",
+                "codec": "H.264",
+                "profile": "Main",
+                "default": true,
+                "language": "Undetermined"
+            }
+        ],
+        "audio": [
+            {
+                "id": 1,
+                "name": "7.1Ch DTS-HD MA",
+                "language": "English",
+                "codec": "DTS-HD",
+                "profile": "Master Audio",
+                "channels_count": 8,
+                "channels": "7.1",
+                "bit_depth": "24 bit",
+                "sampling_rate": "48.0 KHz",
+                "default": true
+            }
+        ],
+        "provider": "ffprobe"
+    }
+
+
+All available CLI options::
+
+    $ knowit --help
+    usage: knowit [-h] [-p PROVIDER] [-E] [-v] [-r] [--report] [-y]
+                       [-P PROFILE] [--mediainfo MEDIAINFO_PATH]
+                       [--ffmpeg FFMPEG_PATH] [--version]
+                       [videopath [videopath ...]]
+
+    positional arguments:
+      videopath             Path to the video to introspect
+
+    optional arguments:
+      -h, --help            show this help message and exit
+
+    Providers:
+      -p PROVIDER, --provider PROVIDER
+                            The provider to be used: mediainfo, ffmpeg or enzyme.
+
+    Input:
+      -E, --fail-on-error   Fail when errors are found on the media file.
+
+    Output:
+      -v, --verbose         Display debug output
+      -r, --raw             Display raw properties
+      --report              Parse media and report all non-detected values
+      -y, --yaml            Display output in yaml format
+      -P PROFILE, --profile PROFILE
+                            Display values according to specified profile: code,
+                            default, human, technical
+
+    Configuration:
+      --mediainfo MEDIAINFO_PATH
+                            The location to search for MediaInfo binaries
+      --ffmpeg FFMPEG_PATH  The location to search for FFmpeg (ffprobe) binaries
+
+    Information:
+      --version             Display knowit version.
+
 
 Installation
 ------------
@@ -104,10 +187,12 @@ the ``--user`` flag.
 
 External dependencies
 -------------------------
-KnowIt depends on MediaInfo: http://mediaarea.net/MediaInfo
+KnowIt can use MediaInfo or FFmpeg (ffprobe)
 
-KnowIt supports MKV regardless if MediaInfo is installed.
+KnowIt supports MKV regardless if MediaInfo or FFmpeg are installed.
 
-MediaInfo increases the number of supported formats and the number of extracted information.
+MediaInfo or FFmpeg increases the number of supported formats and the number of extracted information.
 
-Visit their `website <http://mediaarea.net/MediaInfo>`_ and install the proper package for your system.
+MediaInfo is the default provider. Visit their `website <http://mediaarea.net/MediaInfo>`_ and install the proper package for your system.
+
+FFmpeg (ffprobe) can be downloaded `here <https://ffmpeg.org/download.html>`_

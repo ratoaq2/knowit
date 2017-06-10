@@ -42,7 +42,7 @@ def build_argument_parser():
 
     provider_opts = opts.add_argument_group('Providers')
     provider_opts.add_argument('-p', '--provider', dest='provider', default=None,
-                               help='The provider to be used: enzyme or mediainfo.')
+                               help='The provider to be used: mediainfo, ffmpeg or enzyme.')
 
     input_opts = opts.add_argument_group('Input')
     input_opts.add_argument('-E', '--fail-on-error', action='store_true', dest='fail_on_error', default=False,
@@ -54,15 +54,17 @@ def build_argument_parser():
     output_opts.add_argument('-r', '--raw', action='store_true', dest='raw', default=False,
                              help='Display raw properties')
     output_opts.add_argument('--report', action='store_true', dest='report', default=False,
-                             help='Parse media and display report all non-detected values')
+                             help='Parse media and report all non-detected values')
     output_opts.add_argument('-y', '--yaml', action='store_true', dest='yaml', default=False,
                              help='Display output in yaml format')
     output_opts.add_argument('-P', '--profile', dest='profile', default='default',
                              help='Display values according to specified profile: code, default, human, technical')
 
     conf_opts = opts.add_argument_group('Configuration')
-    conf_opts.add_argument('-l', '--lib-location', dest='lib_location', default=None,
-                           help='The location to search for native libraries')
+    conf_opts.add_argument('--mediainfo', dest='mediainfo_path', default=None,
+                           help='The location to search for MediaInfo binaries')
+    conf_opts.add_argument('--ffmpeg', dest='ffmpeg_path', default=None,
+                           help='The location to search for FFmpeg (ffprobe) binaries')
 
     information_opts = opts.add_argument_group('Information')
     information_opts.add_argument('--version', dest='version', action='store_true', default=False,
@@ -144,24 +146,29 @@ def main(args=None):
                 console.info('Knowit %s knows everything. :-)', __version__)
 
     elif options.version:
-        mi_location = api.available_providers['mediainfo'].native_lib
-        if mi_location and hasattr(mi_location, '_name'):
-            mi_location = getattr(mi_location, '_name')
+        api.initialize(vars(options))
+        mediainfo_executor = api.available_providers['mediainfo'].executor
+        mediainfo_location = mediainfo_executor.location if mediainfo_executor else None
+        ffmpeg_executor = api.available_providers['ffmpeg'].executor
+        ffmpeg_location = ffmpeg_executor.location if ffmpeg_executor else None
 
         console.info('+-------------------------------------------------------+')
-        console.info('|                   KnowIt %s %s |', __version__, (27 - len(__version__)) * ' ')
+        _print_centered('KnowIt {0}'.format(__version__))
         console.info('+-------------------------------------------------------+')
-        console.info('|                   Enzyme %s %s |', enzyme_version, (27 - len(enzyme_version)) * ' ')
-        console.info('|                   pymediainfo %s %s |',
-                     pymediainfo_version, (22 - len(pymediainfo_version)) * ' ')
-        if not mi_location:
-            console.info('|              MediaInfo not available                  |')
-            console.info('|      https://mediaarea.net/en/MediaInfo/Download      |')
+        _print_centered('Enzyme {0}'.format(enzyme_version))
+        _print_centered('pymediainfo {0}'.format(pymediainfo_version))
+        if not mediainfo_location:
+            _print_centered('MediaInfo not available')
+            _print_centered('https://mediaarea.net/en/MediaInfo/Download')
         else:
-            mi_location = mi_location[-52:]
-            spaces = max((53 - len(mi_location)), 0)
-            console.info('|                   MediaInfo available                 |')
-            console.info('| %s%s%s |', spaces / 2 * ' ', mi_location, (spaces / 2 + spaces % 2) * ' ')
+            _print_centered('MediaInfo available')
+            _print_centered(mediainfo_location)
+        if not ffmpeg_location:
+            _print_centered('FFmpeg not available')
+            _print_centered('https://ffmpeg.org/download.html')
+        else:
+            _print_centered('FFmpeg available')
+            _print_centered(ffmpeg_location)
         console.info('+-------------------------------------------------------+')
         console.info('|      Please report any bug or feature request at      |')
         console.info('|     https://github.com/ratoaq2/knowit/issues.         |')
@@ -169,6 +176,11 @@ def main(args=None):
     else:
         argument_parser.print_help()
 
+
+def _print_centered(value):
+    value = value[-52:]
+    spaces = max((53 - len(value)), 0)
+    console.info('| %s%s%s |', spaces / 2 * ' ', value, (spaces / 2 + spaces % 2) * ' ')
 
 if __name__ == '__main__':
     main(sys.argv[1:])

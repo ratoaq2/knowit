@@ -7,6 +7,8 @@ import sys
 
 from ctypes import c_size_t, c_void_p, c_wchar_p
 from logging import NullHandler, getLogger
+from subprocess import check_output
+
 from pymediainfo import MediaInfo
 
 from .. import (
@@ -48,17 +50,188 @@ from ..rules import (
     ResolutionRule,
 )
 from ..units import units
+from ..utils import (
+    define_candidate,
+    detect_os,
+)
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
 
+WARN_MSG = '''
+=========================================================================================
+MediaInfo not found on your system or could not be loaded.
+Visit https://mediaarea.net/ to download it.
+If you still have problems, please check if the downloaded version matches your system.
+To load MediaInfo from a specific location, please define the location as follow:
+  knowit --mediainfo /usr/local/mediainfo/lib <video_path>
+  knowit --mediainfo /usr/local/mediainfo/bin <video_path>
+  knowit --mediainfo "C:\Program Files\MediaInfo" <video_path>
+  knowit --mediainfo C:\Software\MediaInfo.dll <video_path>
+  knowit --mediainfo C:\Software\MediaInfo.exe <video_path>
+  knowit --mediainfo /opt/mediainfo/libmediainfo.so <video_path>
+  knowit --mediainfo /opt/mediainfo/libmediainfo.dylib <video_path>
+=========================================================================================
+'''
+
+
+class MediaInfoExecutor(object):
+    """Media info executable knows how to execute media info: using ctypes or cli."""
+
+    def __init__(self, location):
+        """Constructor."""
+        self.location = location
+
+    def extract_info(self, filename):
+        """Extract media info."""
+        xml = self._execute(filename)
+        return MediaInfo(xml)
+
+    def _execute(self, filename):
+        raise NotImplementedError
+
+    @classmethod
+    def get_executor_instance(cls, suggested_path):
+        """Return the executor instance."""
+        os_family = detect_os()
+        logger.debug('Detected os: %s', os_family)
+        for exec_cls in (MediaInfoCTypesExecutor, MediaInfoCliExecutor):
+            executor = exec_cls.create(os_family, suggested_path)
+            if executor:
+                return executor
+
+
+class MediaInfoCliExecutor(MediaInfoExecutor):
+    """Media info using cli."""
+
+    names = {
+        'unix': ['mediainfo'],
+        'windows': ['MediaInfo.exe'],
+        'macos': ['mediainfo'],
+    }
+
+    locations = {
+        'unix': ['/usr/local/mediainfo/bin', '__PATH__'],
+        'windows': ['__PATH__'],
+        'macos': ['__PATH__'],
+    }
+
+    def _execute(self, filename):
+        return check_output([self.location, '--Output=XML', '--Full', filename])
+
+    @classmethod
+    def create(cls, os_family, suggested_path):
+        """Create the executor instance."""
+        for candidate in define_candidate(os_family, cls.locations, cls.names, suggested_path):
+            try:
+                check_output([candidate, '--version'])
+                logger.debug('MediaInfo cli detected: %s', candidate)
+                return MediaInfoCliExecutor(candidate)
+            except OSError:
+                pass
+
+
+class MediaInfoCTypesExecutor(MediaInfoExecutor):
+    """Media info ctypes."""
+
+    names = {
+        'unix': ['libmediainfo.so.0'],
+        'windows': ['MediaInfo.dll'],
+        'macos': ['libmediainfo.0.dylib', 'libmediainfo.dylib'],
+    }
+
+    locations = {
+        'unix': ['/usr/local/mediainfo/lib', '__PATH__'],
+        'windows': ['__PATH__'],  # 'C:\Program Files\MediaInfo', 'C:\Program Files (x86)\MediaInfo'],
+        'macos': ['__PATH__'],
+    }
+
+    def __init__(self, location, lib):
+        """Constructor."""
+        super(MediaInfoCTypesExecutor, self).__init__(location)
+        self.lib = lib
+
+    def _execute(self, filename):
+        # Create a MediaInfo handle
+        handle = self.lib.MediaInfo_New()
+        try:
+            self.lib.MediaInfo_Option(handle, 'CharSet', 'UTF-8')
+            # Fix for https://github.com/sbraz/pymediainfo/issues/22
+            # Python 2 does not change LC_CTYPE
+            # at startup: https://bugs.python.org/issue6203
+            if sys.version_info < (3, ) and os.name == 'posix' and locale.getlocale() == (None, None):
+                locale.setlocale(locale.LC_CTYPE, locale.getdefaultlocale())
+            self.lib.MediaInfo_Option(None, 'Inform', 'XML')
+            self.lib.MediaInfo_Option(None, 'Complete', '1')
+            self.lib.MediaInfo_Open(handle, filename)
+            return self.lib.MediaInfo_Inform(handle, 0)
+        finally:
+            # Delete the handle
+            self.lib.MediaInfo_Close(handle)
+            self.lib.MediaInfo_Delete(handle)
+
+    @classmethod
+    def create(cls, os_family, suggested_path):
+        """Create the executor instance."""
+        for candidate in define_candidate(os_family, cls.locations, cls.names, suggested_path):
+            lib = cls._get_native_lib(os_family, candidate)
+            if lib:
+                logger.debug('MediaInfo library detected: %s', candidate)
+                return MediaInfoCTypesExecutor(candidate, lib)
+
+    @classmethod
+    def _get_native_lib(cls, os_family, library_path):
+        if os_family == 'windows':
+            return cls._get_windows_lib(library_path)
+
+        # works for unix and macos
+        return cls._get_unix_lib(library_path)
+
+    @classmethod
+    def _get_windows_lib(cls, library_path):
+        from ctypes import windll
+        try:
+            if sys.version_info[:3] == (2, 7, 13):
+                # http://bugs.python.org/issue29082
+                library_path = str(library_path)
+            lib = windll.MediaInfo = windll.LoadLibrary(library_path)
+            return cls._initialize_lib(lib)
+        except OSError:
+            pass
+
+    @classmethod
+    def _get_unix_lib(cls, library_path):
+        from ctypes import CDLL
+        try:
+            return cls._initialize_lib(CDLL(library_path))
+        except OSError:
+            pass
+
+    @classmethod
+    def _initialize_lib(cls, lib):
+        lib.MediaInfo_Inform.restype = c_wchar_p
+        lib.MediaInfo_New.argtypes = []
+        lib.MediaInfo_New.restype = c_void_p
+        lib.MediaInfo_Option.argtypes = [c_void_p, c_wchar_p, c_wchar_p]
+        lib.MediaInfo_Option.restype = c_wchar_p
+        lib.MediaInfo_Inform.argtypes = [c_void_p, c_size_t]
+        lib.MediaInfo_Inform.restype = c_wchar_p
+        lib.MediaInfo_Open.argtypes = [c_void_p, c_wchar_p]
+        lib.MediaInfo_Open.restype = c_size_t
+        lib.MediaInfo_Delete.argtypes = [c_void_p]
+        lib.MediaInfo_Delete.restype = None
+        lib.MediaInfo_Close.argtypes = [c_void_p]
+        lib.MediaInfo_Close.restype = None
+        return lib
+
+
 class MediaInfoProvider(Provider):
     """Media Info provider."""
 
-    native_lib = None
+    executor = None
 
-    def __init__(self, config, lib_location):
+    def __init__(self, config, suggested_path):
         """Init method."""
         super(MediaInfoProvider, self).__init__(config, {
             'general': OrderedDict([
@@ -141,129 +314,19 @@ class MediaInfoProvider(Provider):
                 ('closed_caption', ClosedCaptionRule('closed caption'))
             ])
         })
-        self.native_lib = self._create_native_lib(lib_location)
-
-    @classmethod
-    def _get_native_lib(cls, suggested_path):
-        os_family = 'windows' if (
-            os.name in ('nt', 'dos', 'os2', 'ce')
-        ) else (
-            'macos' if sys.platform == "darwin" else 'unix'
-        )
-        logger.debug('Detected os family: %s', os_family)
-        try:
-            if os_family == 'unix':
-                return cls._get_unix_lib(suggested_path)
-            if os_family == 'macos':
-                return cls._get_macos_lib(suggested_path)
-
-            return cls._get_windows_lib(suggested_path)
-        except OSError:
-            pass
-
-    @classmethod
-    def _get_windows_lib(cls, suggested_path):
-        from ctypes import windll
-        logger.debug('Loading native mediainfo library')
-        for folder in (suggested_path, ''):
-            try:
-                dll_filename = os.path.join(folder, 'MediaInfo.dll') if folder else 'MediaInfo.dll'
-                if sys.version_info[:3] == (2, 7, 13):
-                    # http://bugs.python.org/issue29082
-                    dll_filename = str(dll_filename)
-                lib = windll.MediaInfo = windll.LoadLibrary(dll_filename)
-                logger.debug('Native mediainfo library loaded from %s', dll_filename)
-                return lib
-            except OSError:
-                pass
-
-    @classmethod
-    def _get_macos_lib(cls, suggested_path):
-        from ctypes import CDLL
-        logger.debug('Loading native mediainfo library')
-        for filename in ('libmediainfo.0.dylib', 'libmediainfo.dylib'):
-            dylib_path = filename
-            if suggested_path:
-                candidate = os.path.join(suggested_path, dylib_path)
-                if os.path.isfile(candidate):
-                    dylib_path = CDLL(candidate)
-
-            try:
-                lib = CDLL(dylib_path)
-                logger.debug('Native mediainfo library loaded from %s', dylib_path)
-                return lib
-            except OSError:
-                pass
-
-    @classmethod
-    def _get_unix_lib(cls, suggested_path):
-        from ctypes import CDLL
-        logger.debug('Loading native mediainfo library')
-        so_path = 'libmediainfo.so.0'
-        for location in (suggested_path, '/usr/local/mediainfo/lib'):
-            if not suggested_path:
-                continue
-
-            candidate = os.path.join(location, so_path)
-            if os.path.isfile(candidate):
-                so_path = candidate
-                break
-        lib = CDLL(so_path)
-        logger.debug('Native mediainfo library loaded from %s', so_path)
-        return lib
-
-    @classmethod
-    def _create_native_lib(cls, suggested_path):
-        lib = cls._get_native_lib(suggested_path)
-        if not lib:
-            logger.warning('MediaInfo not found on your system.')
-            logger.warning('Visit https://mediaarea.net/ to download it.')
-            logger.warning('If you still have problems, please check if the downloaded version matches your system.')
-            logger.warning('To provide a different location to search for it, please specify: --lib-location <folder>')
-            return
-
-        lib.MediaInfo_Inform.restype = c_wchar_p
-        lib.MediaInfo_New.argtypes = []
-        lib.MediaInfo_New.restype = c_void_p
-        lib.MediaInfo_Option.argtypes = [c_void_p, c_wchar_p, c_wchar_p]
-        lib.MediaInfo_Option.restype = c_wchar_p
-        lib.MediaInfo_Inform.argtypes = [c_void_p, c_size_t]
-        lib.MediaInfo_Inform.restype = c_wchar_p
-        lib.MediaInfo_Open.argtypes = [c_void_p, c_wchar_p]
-        lib.MediaInfo_Open.restype = c_size_t
-        lib.MediaInfo_Delete.argtypes = [c_void_p]
-        lib.MediaInfo_Delete.restype = None
-        lib.MediaInfo_Close.argtypes = [c_void_p]
-        lib.MediaInfo_Close.restype = None
-        logger.debug('MediaInfo loaded')
-        return lib
-
-    def _parse(self, filename):
-        lib = self.native_lib
-        # Create a MediaInfo handle
-        handle = lib.MediaInfo_New()
-        lib.MediaInfo_Option(handle, 'CharSet', 'UTF-8')
-        # Fix for https://github.com/sbraz/pymediainfo/issues/22
-        # Python 2 does not change LC_CTYPE
-        # at startup: https://bugs.python.org/issue6203
-        if sys.version_info < (3, ) and os.name == 'posix' and locale.getlocale() == (None, None):
-            locale.setlocale(locale.LC_CTYPE, locale.getdefaultlocale())
-        lib.MediaInfo_Option(None, 'Inform', 'XML')
-        lib.MediaInfo_Option(None, 'Complete', '1')
-        lib.MediaInfo_Open(handle, filename)
-        xml = lib.MediaInfo_Inform(handle, 0)
-        # Delete the handle
-        lib.MediaInfo_Close(handle)
-        lib.MediaInfo_Delete(handle)
-        return MediaInfo(xml)
+        self.executor = MediaInfoExecutor.get_executor_instance(suggested_path)
 
     def accepts(self, video_path):
         """Accept any video when MediaInfo is available."""
-        return self.native_lib and video_path.lower().endswith(VIDEO_EXTENSIONS)
+        if self.executor is None:
+            logger.warning(WARN_MSG)
+            self.executor = False
+
+        return self.executor and video_path.lower().endswith(VIDEO_EXTENSIONS)
 
     def describe(self, video_path, context):
         """Return video metadata."""
-        data = self._parse(video_path).to_data()
+        data = self.executor.extract_info(video_path).to_data()
         if context.get('raw'):
             return data
 
@@ -285,8 +348,9 @@ class MediaInfoProvider(Provider):
         result = self._describe_tracks(general_tracks[0] if general_tracks else None,
                                        video_tracks, audio_tracks, subtitle_tracks, context)
         if not result:
-            logger.warning("Invalid file '%s'", video_path)
+            logger.warning('Invalid file %r', video_path)
             if context.get('fail_on_error'):
                 raise MalformedFileError
 
+        result['provider'] = self.executor.location
         return result

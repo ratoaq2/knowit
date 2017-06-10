@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from pymediainfo import MediaInfo
 import pytest
 
 from knowit import (
     api,
     know,
 )
-from knowit.providers.mediainfo import MediaInfoExecutor
+from knowit.providers.ffmpeg import FFmpegExecutor
 
 from . import (
     Mock,
@@ -21,15 +20,13 @@ from . import (
 def test_mediainfo_provider(monkeypatch, video_path, expected, input):
     # Given
     api.available_providers.clear()
-    options = {'provider': 'mediainfo'}
-    expected['provider'] = 'libmediainfo.so.0'
-    executor = MediaInfoExecutor(expected['provider'])
-    obj = MediaInfo('<xml></xml>')
+    options = {'provider': 'ffmpeg'}
+    expected['provider'] = 'ffprobe'
+    executor = FFmpegExecutor(expected['provider'])
     get_executor = Mock()
     get_executor.return_value = executor
-    monkeypatch.setattr(MediaInfoExecutor, 'get_executor_instance', get_executor)
-    monkeypatch.setattr(executor, 'extract_info', lambda v: obj)
-    monkeypatch.setattr(obj, 'to_data', lambda: input)
+    monkeypatch.setattr(FFmpegExecutor, 'get_executor_instance', get_executor)
+    monkeypatch.setattr(executor, 'extract_info', lambda v: input)
 
     # When
     actual = know(video_path, options)

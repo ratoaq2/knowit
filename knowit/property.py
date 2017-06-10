@@ -19,9 +19,9 @@ def _is_unknown(value):
 class Property(Reportable):
     """Property class."""
 
-    def __init__(self, name, default=None, private=False, description=None, delimiter=' / '):
+    def __init__(self, name, default=None, private=False, description=None, delimiter=' / ', **kwargs):
         """Init method."""
-        super(Property, self).__init__(name, description)
+        super(Property, self).__init__(name, description, **kwargs)
         self.default = default
         self.private = private
         # Used to detect duplicated values. e.g.: en / en or High@L4.0 / High@L4.0 or Progressive / Progressive
@@ -29,7 +29,8 @@ class Property(Reportable):
 
     def extract_value(self, track, context):
         """Extract the property value from a given track."""
-        value = track.get(self.name)
+        names = self.name.split('.')
+        value = track.get(names[0], {}).get(names[1]) if len(names) == 2 else track.get(self.name)
         if value is None:
             if self.default is None:
                 return
@@ -108,11 +109,12 @@ class Configurable(Property):
 class MultiValue(Property):
     """Property with multiple values."""
 
-    def __init__(self, prop=None, delimiter='/', handler=None, name=None, **kwargs):
+    def __init__(self, prop=None, delimiter='/', single=False, handler=None, name=None, **kwargs):
         """Init method."""
         super(MultiValue, self).__init__(prop.name if prop else name, **kwargs)
         self.prop = prop
         self.delimiter = delimiter
+        self.single = single
         self.handler = handler
 
     def handle(self, value, context):
@@ -120,7 +122,7 @@ class MultiValue(Property):
         values = (self._split(value[0], self.delimiter)
                   if len(value) == 1 else value) if isinstance(value, list) else self._split(value, self.delimiter)
         call = self.handler or self.prop.handle
-        if len(values) > 1:
+        if len(values) > 1 and not self.single:
             return [call(item, context) if not _is_unknown(item) else None for item in values]
 
         return call(values[0], context)

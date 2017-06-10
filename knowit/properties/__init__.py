@@ -16,6 +16,7 @@ from .subtitle import (
     SubtitleFormat,
 )
 from .video import (
+    Ratio,
     ScanType,
     VideoCodec,
     VideoEncoder,
