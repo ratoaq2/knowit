@@ -182,5 +182,6 @@ def _print_centered(value):
     spaces = max((53 - len(value)), 0)
     console.info('| %s%s%s |', spaces / 2 * ' ', value, (spaces / 2 + spaces % 2) * ' ')
 
+
 if __name__ == '__main__':
     main(sys.argv[1:])
