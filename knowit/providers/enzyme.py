@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-import os
-
 from collections import defaultdict
 from logging import NullHandler, getLogger
 import enzyme
@@ -44,8 +42,6 @@ class EnzymeProvider(Provider):
         super(EnzymeProvider, self).__init__(config, {
             'general': OrderedDict([
                 ('title', Property('title', description='media title')),
-                ('path', Property('complete_name', description='media path')),
-                ('size', Quantity('file_size', units.byte, description='media size')),
                 ('duration', Duration('duration', description='media duration')),
             ]),
             'video': OrderedDict([
@@ -113,9 +109,6 @@ class EnzymeProvider(Provider):
                 data.update(ff)
                 if 'info' in data and data['info'] is None:
                     return {}
-
-                data['info']['complete_name'] = video_path
-                data['info']['file_size'] = os.path.getsize(video_path)
         except enzyme.MalformedMKVError:  # pragma: no cover
             logger.warning('Invalid file %r', video_path)
             if context.get('fail_on_error'):
@@ -125,7 +118,7 @@ class EnzymeProvider(Provider):
         if context.get('raw'):
             return data
 
-        result = self._describe_tracks(data.get('info'), data.get('video_tracks'),
+        result = self._describe_tracks(video_path, data.get('info', {}), data.get('video_tracks'),
                                        data.get('audio_tracks'), data.get('subtitle_tracks'), context)
 
         result['provider'] = 'Enzyme {0}'.format(enzyme.__version__)

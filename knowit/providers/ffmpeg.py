@@ -228,7 +228,7 @@ class FFmpegProvider(Provider):
             elif track_type == 'subtitle':
                 subtitle_tracks.append(track)
 
-        result = self._describe_tracks(general_track, video_tracks, audio_tracks, subtitle_tracks, context)
+        result = self._describe_tracks(video_path, general_track, video_tracks, audio_tracks, subtitle_tracks, context)
         if not result:
             logger.warning('Invalid file %r', video_path)
             if context.get('fail_on_error'):

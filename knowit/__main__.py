@@ -55,6 +55,8 @@ def build_argument_parser():
                              help='Parse media and report all non-detected values')
     output_opts.add_argument('-y', '--yaml', action='store_true', dest='yaml', default=False,
                              help='Display output in yaml format')
+    output_opts.add_argument('-N', '--no-units', action='store_true', dest='no_units', default=False,
+                             help='Display output without units')
     output_opts.add_argument('-P', '--profile', dest='profile', default='default',
                              help='Display values according to specified profile: code, default, human, technical')
 

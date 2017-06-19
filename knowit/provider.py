@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 from logging import NullHandler, getLogger
 
 from . import OrderedDict
-from .units import units
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -13,8 +13,8 @@ logger.addHandler(NullHandler())
 class Provider(object):
     """Base class for all providers."""
 
-    min_fps = 1. * units.FPS
-    max_fps = 100 * units.FPS
+    min_fps = 10
+    max_fps = 200
 
     def __init__(self, config, mapping, rules=None):
         """Init method."""
@@ -30,9 +30,16 @@ class Provider(object):
         """Read video metadata information."""
         raise NotImplementedError
 
-    def _describe_tracks(self, general_track, video_tracks, audio_tracks, subtitle_tracks, context):
+    def _describe_tracks(self, video_path, general_track, video_tracks, audio_tracks, subtitle_tracks, context):
         logger.debug('Handling general track')
         props = self._describe_track(general_track, 'general', context)
+
+        if 'path' not in props:
+            props['path'] = video_path
+        if 'container' not in props:
+            props['container'] = os.path.splitext(video_path)[1][1:]
+        if 'size' not in props:
+            props['size'] = os.path.getsize(video_path)
 
         for track_type, tracks, in (('video', video_tracks),
                                     ('audio', audio_tracks),
@@ -51,7 +58,16 @@ class Provider(object):
 
     @classmethod
     def _validate_track(cls, track_type, track):
-        if track_type != 'video' or 'frame_rate' not in track or cls.min_fps < track['frame_rate'] < cls.max_fps:
+        if track_type != 'video' or 'frame_rate' not in track:
+            return track
+
+        frame_rate = track['frame_rate']
+        try:
+            frame_rate = frame_rate.magnitude
+        except AttributeError:
+            pass
+
+        if cls.min_fps < frame_rate < cls.max_fps:
             return track
 
     def _describe_track(self, track, track_type, context):

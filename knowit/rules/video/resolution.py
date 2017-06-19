@@ -2,24 +2,23 @@
 from __future__ import unicode_literals
 
 from ...rule import Rule
-from ...units import units
 
 
 class ResolutionRule(Rule):
     """Resolution rule."""
 
     standard_resolutions = (
-        480 * units.pixel,
-        720 * units.pixel,
-        1080 * units.pixel,
-        2160 * units.pixel,
-        4320 * units.pixel,
+        480,
+        720,
+        1080,
+        2160,
+        4320,
     )
     uncommon_resolutions = (
-        240 * units.pixel,
-        288 * units.pixel,
-        360 * units.pixel,
-        576 * units.pixel,
+        240,
+        288,
+        360,
+        576,
     )
     resolutions = list(sorted(standard_resolutions + uncommon_resolutions))
     square = 4. / 3
@@ -42,7 +41,13 @@ class ResolutionRule(Rule):
         if not width or not height:
             return
 
-        dar = props.get('aspect_ratio', width / height)
+        try:
+            width = width.magnitude
+            height = height.magnitude
+        except AttributeError:
+            pass
+
+        dar = props.get('aspect_ratio', float(width) / height)
         par = props.get('pixel_aspect_ratio', 1)
         scan_type = props.get('scan_type', 'p')[0].lower()
 
@@ -50,10 +55,10 @@ class ResolutionRule(Rule):
         selected_dar = max(min(dar, self.wide), self.square)
 
         # mod-16
-        stretched_width = int(round(width.m * par / 16)) * 16 * width.u
+        stretched_width = int(round(width * par / 16)) * 16
 
         # mod-8
-        calculated_height = int(round(stretched_width.magnitude / selected_dar / 8)) * 8 * stretched_width.units
+        calculated_height = int(round(stretched_width / selected_dar / 8)) * 8
 
         selected_resolution = None
         for r in reversed(self.resolutions):
@@ -63,7 +68,7 @@ class ResolutionRule(Rule):
             selected_resolution = r
 
         if selected_resolution:
-            return '{0}{1}'.format(selected_resolution.magnitude, scan_type)
+            return '{0}{1}'.format(selected_resolution, scan_type)
 
         msg = '{width}x{height} - scan_type: {scan_type}, aspect_ratio: {dar}, pixel_aspect_ratio: {par}'.format(
             width=width, height=height, scan_type=scan_type, dar=dar, par=par)

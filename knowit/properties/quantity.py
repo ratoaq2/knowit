@@ -24,4 +24,4 @@ class Quantity(Property):
                 self.report(value, context)
                 return
 
-        return value * self.unit
+        return value if context.get('no_units') else value * self.unit

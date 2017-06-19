@@ -23,9 +23,11 @@ def test_enzyme_provider(monkeypatch, video_path, expected, input):
     expected['provider'] = 'Enzyme {0}'.format(enzyme.__version__)
     monkeypatch.setattr('enzyme.MKV', Mock())
     monkeypatch.setattr('knowit.utils.todict', lambda mkv: input)
+    container = os.path.splitext(video_path)[1][1:]
 
     # When
     actual = knowit.know(video_path, options)
 
     # Then
+    assert container == actual.pop('container', None)
     assert_expected(expected, actual)
