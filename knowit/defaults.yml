@@ -339,6 +339,8 @@ knowledge:
       - TX3G
     DVBSUB:
       - 6
+    MOVTEXT:
+      - MOV_TEXT
 
 profiles:
   VideoCodec:
@@ -623,3 +625,5 @@ profiles:
       default: DVBSub
       human: DVB Subtitle
       technical: Digital Video Broadcasting Subtitles
+    MOVTEXT:
+      default: MOV Text

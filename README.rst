@@ -26,13 +26,14 @@ Extract information from a video file::
 
     $ knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
     For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
-    Knowit 0.2.2-dev found:
+    Knowit 0.2.4 found:
     {
         "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
         "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
         "duration": "0:01:37",
         "size": "40.77 MB",
         "bit_rate": "3.3 Mbps",
+        "container": "mkv",
         "video": [
             {
                 "id": 1,
@@ -94,13 +95,14 @@ Extract information from a video file using ffprobe::
 
     $ knowit --provider ffmpeg /folder/Audio Samples/hd_dtsma_7.1.mkv
     For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
-    Knowit 0.2.2-dev found:
+    Knowit 0.2.4 found:
     {
         "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
         "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
         "duration": "0:01:37",
         "size": "40.77 MB",
         "bit_rate": "3.3 Mbps",
+        "container": "mkv",
         "video": [
             {
                 "id": 0,
@@ -139,9 +141,9 @@ Extract information from a video file using ffprobe::
 All available CLI options::
 
     $ knowit --help
-    usage: knowit [-h] [-p PROVIDER] [-E] [-v] [-r] [--report] [-y]
-                       [-P PROFILE] [--mediainfo MEDIAINFO_PATH]
-                       [--ffmpeg FFMPEG_PATH] [--version]
+    usage: knowit [-h] [-p PROVIDER] [-E] [-v] [-r] [--report] [-y] [-N]
+                       [-P PROFILE] [--mediainfo MEDIAINFO] [--ffmpeg FFMPEG]
+                       [--version]
                        [videopath [videopath ...]]
 
     positional arguments:
@@ -162,17 +164,19 @@ All available CLI options::
       -r, --raw             Display raw properties
       --report              Parse media and report all non-detected values
       -y, --yaml            Display output in yaml format
+      -N, --no-units        Display output without units
       -P PROFILE, --profile PROFILE
                             Display values according to specified profile: code,
                             default, human, technical
 
     Configuration:
-      --mediainfo MEDIAINFO_PATH
+      --mediainfo MEDIAINFO
                             The location to search for MediaInfo binaries
-      --ffmpeg FFMPEG_PATH  The location to search for FFmpeg (ffprobe) binaries
+      --ffmpeg FFMPEG       The location to search for FFmpeg (ffprobe) binaries
 
     Information:
       --version             Display knowit version.
+
 
 
 Installation
