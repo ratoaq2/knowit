@@ -97,7 +97,6 @@ expected:
   video:
   - id: 1
     name: Video Track 1
-    language: und
     width: 1920 pixel
     height: 800 pixel
     scan_type: Progressive
@@ -107,7 +106,6 @@ expected:
   audio:
   - id: 2
     name: Audio Track 1
-    language: und
     codec: DTS
     channels_count: 8
     channels: '7.1'

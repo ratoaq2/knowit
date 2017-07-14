@@ -31,4 +31,3 @@ class LanguageRule(Rule):
                 except babelfish.Error:
                     pass
             logger.info('Invalid %s: %r', self.description, name)
-        return babelfish.Language('und')

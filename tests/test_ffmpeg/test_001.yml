@@ -875,7 +875,6 @@ expected:
     codec: H.264
     profile: High
     default: true
-    language: und
   audio:
   - id: 1
     name: Super Title
