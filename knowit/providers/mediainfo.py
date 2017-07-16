@@ -44,8 +44,10 @@ from ..provider import (
     Provider,
 )
 from ..rules import (
+    AtmosRule,
     AudioChannelsRule,
     ClosedCaptionRule,
+    DtsHdRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
@@ -308,11 +310,13 @@ class MediaInfoProvider(Provider):
             'audio': OrderedDict([
                 ('language', LanguageRule('audio language')),
                 ('channels', AudioChannelsRule('audio channels')),
+                ('_atmosrule', AtmosRule('atmos rule')),
+                ('_dtshdrule', DtsHdRule('dts-hd rule')),
             ]),
             'subtitle': OrderedDict([
                 ('language', LanguageRule('subtitle language')),
                 ('hearing_impaired', HearingImpairedRule('subtitle hearing impaired')),
-                ('closed_caption', ClosedCaptionRule('closed caption'))
+                ('closed_caption', ClosedCaptionRule('closed caption')),
             ])
         })
         self.executor = MediaInfoExecutor.get_executor_instance(suggested_path)

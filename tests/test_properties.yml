@@ -188,11 +188,11 @@ AudioProfile:
   High Efficiency v2: HE-AACv2
   Master Audio: MA
   Low Complexity: LC
-  Core: Core
   High Resolution Audio: HRA
   96/24: 96/24
-  ES Discrete: ES Discrete
-  ES Matrix: ES Matrix
+  Extended Surround:
+    - ES Discrete
+    - ES Matrix
   Layer 2: Layer 2
   Layer 3: Layer 3
   Pro: Pro

@@ -204,24 +204,13 @@ expected:
     language: en
     duration: '0:20:34.568000'
     codec: DTS-HD
-    profile:
-      - Master Audio
-      - Core
-    channels_count:
-    - 8
-    - 6
+    profile: Master Audio
+    channels_count: 8
     channels: '7.1'
     bit_depth: 24 bit
-    bit_rate:
-    - null
-    - 1509000 bps
-    bit_rate_mode:
-    - Variable
-    - Constant
+    bit_rate_mode: Variable
     sampling_rate: 48000 Hz
-    compression:
-    - Lossless
-    - Lossy
+    compression: Lossless
     default: true
   subtitle:
   - id: 3

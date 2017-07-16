@@ -61,29 +61,13 @@ Extract information from a video file::
                 "language": "English",
                 "duration": "0:01:37",
                 "codec": "DTS-HD",
-                "profile": [
-                    "Master Audio",
-                    "Core"
-                ],
-                "channels_count": [
-                    8,
-                    6
-                ],
+                "profile": "Master Audio",
+                "channels_count": 8,
                 "channels": "7.1",
                 "bit_depth": "24 bit",
-                "bit_rate": [
-                    null,
-                    "1.5 Mbps"
-                ],
-                "bit_rate_mode": [
-                    "Variable",
-                    "Constant"
-                ],
+                "bit_rate_mode": "Variable",
                 "sampling_rate": "48.0 KHz",
-                "compression": [
-                    "Lossless",
-                    "Lossy"
-                ],
+                "compression": "Lossless",
                 "default": true
             }
         ],
