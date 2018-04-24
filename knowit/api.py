@@ -37,6 +37,11 @@ def know(video_path, context=None):
     :return:
     :rtype: dict
     """
+    try:
+        # handle path-like objects
+        video_path = video_path.__fspath__()
+    except AttributeError:
+        pass
     context = context or {}
     context.setdefault('profile', 'default')
     initialize(context)
