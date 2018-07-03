@@ -26,6 +26,9 @@ install_requirements = ['babelfish>=0.5.2', 'enzyme>=0.4.1', 'pint>=0.8', 'pymed
                         'six>=1.9.0']
 test_requirements = ['flake8_docstrings', 'flake8-import-order', 'pydocstyle',
                      'pep8-naming', 'pytest>=2.8', 'pytest-cov', 'pytest-flake8']
+# Remove the following line when `flake8` supports `pycodestyle` >= 2.4.0
+#   See https://gitlab.com/pycqa/flake8/issues/415
+test_requirements.append('pycodestyle<2.4.0')
 
 if sys.version_info < (3, 3):
     test_requirements.append('mock')
