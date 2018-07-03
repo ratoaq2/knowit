@@ -3,10 +3,8 @@ from __future__ import print_function, unicode_literals
 
 import re
 import sys
-
 from collections import Mapping
 from datetime import timedelta
-
 from pkg_resources import resource_exists, resource_isdir, resource_listdir, resource_stream
 from six import string_types
 import yaml
@@ -17,7 +15,7 @@ from knowit.units import units
 
 try:
     from mock import Mock
-except:
+except ImportError:
     from unittest.mock import Mock
 
 
