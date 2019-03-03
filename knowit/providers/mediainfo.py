@@ -10,6 +10,7 @@ from xml.etree import ElementTree
 
 from pymediainfo import MediaInfo
 from pymediainfo import __version__ as pymediainfo_version
+from six import text_type
 
 from .. import (
     OrderedDict,
@@ -130,15 +131,18 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
 
     def _execute(self, filename):
         output_type = 'OLDXML' if self.version >= (17, 10) else 'XML'
+        output = check_output([self.location, '--Output=' + output_type, '--Full', filename])
+        if isinstance(output, bytes):
+            output = output.decode('utf-8')
 
-        return MediaInfo(check_output([self.location, '--Output=' + output_type, '--Full', filename]))
+        return MediaInfo(output)
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                output = check_output([candidate, '--version'])
+                output = text_type(check_output([candidate, '--version']))
                 version = cls._get_version(output)
                 if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)

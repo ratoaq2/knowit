@@ -7,6 +7,8 @@ import re
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
+from six import text_type
+
 from .. import (
     OrderedDict,
     VIDEO_EXTENSIONS,
@@ -126,7 +128,7 @@ class FFmpegCliExecutor(FFmpegExecutor):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                output = check_output([candidate, '-version'])
+                output = text_type(check_output([candidate, '-version']))
                 version = cls._get_version(output)
                 if version:
                     logger.debug('FFmpeg cli detected: %s v%s', candidate, '.'.join(map(str, version)))

@@ -22,10 +22,10 @@ def find_version(*file_paths):
 
 
 setup_requirements = ['pytest-runner'] if {'pytest', 'test', 'ptr'}.intersection(sys.argv) else []
-install_requirements = ['babelfish>=0.5.2', 'enzyme>=0.4.1', 'pint>=0.8', 'pymediainfo>=2.1.5', 'PyYAML',
-                        'six>=1.9.0']
+install_requirements = ['babelfish>=0.5.5', 'enzyme>=0.4.1', 'pint>=0.9', 'pymediainfo>=3.0', 'PyYAML>=3.13',
+                        'six>=1.12.0']
 test_requirements = ['flake8_docstrings', 'flake8-import-order', 'pydocstyle',
-                     'pep8-naming', 'pytest>=2.8', 'pytest-cov', 'pytest-flake8', 'requests>=2.0']
+                     'pep8-naming', 'pytest>=4.3.0', 'pytest-cov', 'pytest-flake8', 'requests>=2.21.0']
 
 if sys.version_info < (3, 3):
     test_requirements.append('mock')
@@ -45,7 +45,7 @@ setup(
             'knowit = knowit.__main__:main'
         ]},
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
@@ -53,9 +53,10 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Multimedia :: Video'
     ],
