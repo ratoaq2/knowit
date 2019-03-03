@@ -28,4 +28,5 @@ audio:
   channels: '2.0'
   sampling_rate: 48.0 KHz
   compression: Lossy
-provider: libmediainfo.so.0
+provider:
+  name: mediainfo

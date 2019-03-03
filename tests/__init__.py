@@ -304,6 +304,9 @@ def check_mapping_equals(expected, actual, different, options, prefix=''):
 
 
 def assert_expected(expected, actual, options=None):
+    if 'provider' in actual:
+        del actual['provider']['version']
+
     different = []
     check_equals(expected, actual, different=different, options=options or {'profile': 'default'})
     for (key, expected, actual) in different:

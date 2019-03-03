@@ -329,6 +329,7 @@ knowledge:
     SUBRIP:
       - SUBRIP
       - UTF8
+      - SRT
     # https://en.wikipedia.org/wiki/SubStation_Alpha
     SSA:
       - SSA

@@ -135,10 +135,14 @@ class EnzymeProvider(Provider):
         result = self._describe_tracks(video_path, data.get('info', {}), data.get('video_tracks'),
                                        data.get('audio_tracks'), data.get('subtitle_tracks'), context)
 
-        result['provider'] = 'Enzyme {0}'.format(enzyme.__version__)
+        result['provider'] = {
+            'name': 'enzyme',
+            'version': self.version
+        }
+
         return result
 
     @property
     def version(self):
         """Return enzyme version information."""
-        return enzyme.__version__, None
+        return {'enzyme': enzyme.__version__}

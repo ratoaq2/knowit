@@ -28,4 +28,5 @@ audio:
   bit_depth: 24 bit
   sampling_rate: 48.0 KHz
   default: true
-provider: ffprobe
+provider:
+  name: ffmpeg

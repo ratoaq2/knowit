@@ -18,4 +18,5 @@ audio:
   channels_count: 6
   channels: '5.1'
   default: true
-provider: Enzyme 0.4.1
+provider:
+  name: enzyme

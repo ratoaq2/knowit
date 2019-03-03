@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 import logging
+import re
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
@@ -69,15 +70,17 @@ To load FFmpeg (ffprobe) from a specific location, please define the location as
 class FFmpegExecutor(object):
     """Executor that knows how to execute media info: using ctypes or cli."""
 
+    version_re = re.compile(r'\bversion\s+(?P<version>\d+(?:\.\d+)+)\b')
     locations = {
         'unix': ('/usr/local/ffmpeg/lib', '/usr/local/ffmpeg/bin', '__PATH__'),
         'windows': ('__PATH__', ),
         'macos': ('__PATH__', ),
     }
 
-    def __init__(self, location):
+    def __init__(self, location, version):
         """Constructor."""
         self.location = location
+        self.version = version
 
     def extract_info(self, filename):
         """Extract media info."""
@@ -86,6 +89,13 @@ class FFmpegExecutor(object):
 
     def _execute(self, filename):
         raise NotImplementedError
+
+    @classmethod
+    def _get_version(cls, output):
+        match = cls.version_re.search(output)
+        if match:
+            version = tuple([int(v) for v in match.groupdict()['version'].split('.')])
+            return version
 
     @classmethod
     def get_executor_instance(cls, suggested_path=None):
@@ -116,9 +126,11 @@ class FFmpegCliExecutor(FFmpegExecutor):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                check_output([candidate, '-version'])
-                logger.debug('FFmpeg cli detected: %s', candidate)
-                return FFmpegCliExecutor(candidate)
+                output = check_output([candidate, '-version'])
+                version = cls._get_version(output)
+                if version:
+                    logger.debug('FFmpeg cli detected: %s v%s', candidate, '.'.join(map(str, version)))
+                    return FFmpegCliExecutor(candidate, version)
             except OSError:
                 pass
 
@@ -242,9 +254,17 @@ class FFmpegProvider(Provider):
                 raise MalformedFileError
 
         result['provider'] = self.executor.location
+        result['provider'] = {
+            'name': 'ffmpeg',
+            'version': self.version
+        }
+
         return result
 
     @property
     def version(self):
         """Return ffmpeg version information."""
-        return None, self.executor.location if self.executor else None
+        if not self.executor:
+            return {}
+
+        return {self.executor.location: 'v{}'.format('.'.join(map(str, self.executor.version)))}

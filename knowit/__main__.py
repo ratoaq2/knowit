@@ -154,16 +154,9 @@ def main(args=None):
                 _print_centered('')
             first = False
 
-            version, location = info
-            if version:
-                _print_centered('{0} {1}'.format(key, version))
-                if location:
-                    _print_centered(location)
-            elif not location:
-                _print_centered('{0} not available'.format(key, version))
-            else:
-                _print_centered(key)
-                _print_centered(location)
+            for k, v in info.items():
+                _print_centered(k)
+                _print_centered(v)
 
         console.info('+-------------------------------------------------------+')
         console.info('|      Please report any bug or feature request at      |')

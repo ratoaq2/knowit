@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 import re
+from ctypes import c_void_p, c_wchar_p
 from logging import DEBUG, NullHandler, getLogger
-from subprocess import check_output, CalledProcessError
+from subprocess import CalledProcessError, check_output
 from xml.dom import minidom
 from xml.etree import ElementTree
 
@@ -80,15 +81,18 @@ To load MediaInfo from a specific location, please define the location as follow
 class MediaInfoExecutor(object):
     """Media info executable knows how to execute media info: using ctypes or cli."""
 
+    version_re = re.compile(r'\bv(?P<version>\d+(?:\.\d+)+)\b')
+
     locations = {
         'unix': ('/usr/local/mediainfo/lib', '/usr/local/mediainfo/bin', '__PATH__'),
         'windows': ('__PATH__', ),
         'macos': ('__PATH__', ),
     }
 
-    def __init__(self, location):
+    def __init__(self, location, version):
         """Constructor."""
         self.location = location
+        self.version = version
 
     def extract_info(self, filename):
         """Extract media info."""
@@ -96,6 +100,13 @@ class MediaInfoExecutor(object):
 
     def _execute(self, filename):
         raise NotImplementedError
+
+    @classmethod
+    def _get_version(cls, output):
+        match = cls.version_re.search(output)
+        if match:
+            version = tuple([int(v) for v in match.groupdict()['version'].split('.')])
+            return version
 
     @classmethod
     def get_executor_instance(cls, suggested_path=None):
@@ -111,30 +122,16 @@ class MediaInfoExecutor(object):
 class MediaInfoCliExecutor(MediaInfoExecutor):
     """Media info using cli."""
 
-    version_re = re.compile(r'\bv(?P<major>\d+)\.(?P<minor>\d+)\b')
-
     names = {
         'unix': ('mediainfo', ),
         'windows': ('MediaInfo.exe', ),
         'macos': ('mediainfo', ),
     }
 
-    def __init__(self, location, version):
-        """Constructor."""
-        super(MediaInfoCliExecutor, self).__init__(location)
-        self.version = version
-
     def _execute(self, filename):
         output_type = 'OLDXML' if self.version >= (17, 10) else 'XML'
 
         return MediaInfo(check_output([self.location, '--Output=' + output_type, '--Full', filename]))
-
-    @classmethod
-    def _get_version(cls, output):
-        match = cls.version_re.search(output)
-        if match:
-            match_dict = match.groupdict()
-            return int(match_dict['major']), int(match_dict['minor'])
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
@@ -147,7 +144,7 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
                     logger.debug('MediaInfo cli detected: %s', candidate)
                     return MediaInfoCliExecutor(candidate, version)
             except CalledProcessError as e:
-                # old mediainfo returns non-zero for mediainfo --version
+                # old mediainfo returns non-zero exit code for mediainfo --version
                 version = cls._get_version(e.output)
                 if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)
@@ -165,10 +162,6 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
         'macos': ('libmediainfo.0.dylib', 'libmediainfo.dylib'),
     }
 
-    def __init__(self, location):
-        """Constructor."""
-        super(MediaInfoCTypesExecutor, self).__init__(location)
-
     def _execute(self, filename):
         # Create a MediaInfo handle
         return MediaInfo.parse(filename, library_file=self.location)
@@ -178,8 +171,13 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             if MediaInfo.can_parse(candidate):
-                logger.debug('MediaInfo library detected: %s', candidate)
-                return MediaInfoCTypesExecutor(candidate)
+                lib = MediaInfo._get_library(candidate)
+                lib.MediaInfo_Option.argtypes = [c_void_p, c_wchar_p, c_wchar_p]
+                lib.MediaInfo_Option.restype = c_wchar_p
+                version = MediaInfoExecutor._get_version(lib.MediaInfo_Option(None, "Info_Version", ""))
+
+                logger.debug('MediaInfo library detected: %s (v%s)', candidate, '.'.join(map(str, version)))
+                return MediaInfoCTypesExecutor(candidate, version)
 
 
 class MediaInfoProvider(Provider):
@@ -316,10 +314,18 @@ class MediaInfoProvider(Provider):
             if context.get('fail_on_error', True):
                 raise MalformedFileError
 
-        result['provider'] = self.executor.location
+        result['provider'] = {
+            'name': 'mediainfo',
+            'version': self.version
+        }
+
         return result
 
     @property
     def version(self):
         """Return mediainfo version information."""
-        return pymediainfo_version, self.executor.location if self.executor else None
+        versions = [('pymediainfo', pymediainfo_version)]
+        if self.executor:
+            versions.append((self.executor.location, 'v{}'.format('.'.join(map(str, self.executor.version)))))
+
+        return OrderedDict(versions)

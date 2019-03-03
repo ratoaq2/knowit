@@ -65,4 +65,5 @@ subtitle:
   format: SubRip
 - id: 7
   format: SubRip
-provider: libmediainfo.so.0
+provider:
+  name: mediainfo

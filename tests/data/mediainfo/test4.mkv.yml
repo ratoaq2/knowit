@@ -22,4 +22,5 @@ audio:
   sampling_rate: 48.0 KHz
   compression: Lossy
   default: true
-provider: libmediainfo.so.0
+provider:
+  name: mediainfo

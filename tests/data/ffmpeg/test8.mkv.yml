@@ -23,4 +23,5 @@ audio:
   channels_count: 2
   channels: '2.0'
   sampling_rate: 48.0 KHz
-provider: ffprobe
+provider:
+  name: ffmpeg

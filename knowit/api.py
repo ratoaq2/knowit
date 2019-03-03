@@ -63,6 +63,6 @@ def dependencies(context=None):
         if name in available_providers:
             deps[name] = available_providers[name].version
         else:
-            deps[name] = None, None
+            deps[name] = {}
 
     return deps

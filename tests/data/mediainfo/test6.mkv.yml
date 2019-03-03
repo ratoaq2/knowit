@@ -26,4 +26,5 @@ audio:
   bit_rate_mode: Variable
   sampling_rate: 48.0 KHz
   compression: Lossy
-provider: libmediainfo.so.0
+provider:
+  name: mediainfo
