@@ -1,0 +1,21 @@
+title: 7.1Ch DTS-HD MA - Speaker Mapping Test File
+path: tests/data/7.1-dts-hd-ma-speaker-mapping-test-file.mkv
+duration: 0:01:37
+container: mkv
+video:
+- id: 1
+  language: Undetermined
+  width: 1920 pixel
+  height: 1080 pixel
+  scan_type: Progressive
+  resolution: 1080p
+  codec: H.264
+  default: true
+audio:
+- id: 2
+  name: 7.1Ch DTS-HD MA
+  codec: DTS
+  channels_count: 6
+  channels: '5.1'
+  default: true
+provider: Enzyme 0.4.1

@@ -1,0 +1,29 @@
+title: Big Buck Bunny - test 6
+path: tests/data/videos/test6.mkv
+duration: 0:01:27
+size: 23.34 MB
+bit_rate: 2.1 Mbps
+container: mkv
+video:
+- id: 1
+  duration: 0:01:27
+  width: 854 pixel
+  height: 480 pixel
+  scan_type: Progressive
+  aspect_ratio: 1.779
+  pixel_aspect_ratio: 1.0
+  resolution: 480p
+  frame_rate: 24.0 FPS
+  codec: Microsoft MPEG-4 v2
+  media_type: video/MP4V-ES
+audio:
+- id: 2
+  duration: 0:01:27
+  codec: MP3
+  profile: Layer 3
+  channels_count: 2
+  channels: '2.0'
+  bit_rate_mode: Variable
+  sampling_rate: 48.0 KHz
+  compression: Lossy
+provider: libmediainfo.so.0

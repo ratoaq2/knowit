@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 import re
-
 from logging import NullHandler, getLogger
+
 import babelfish
 
 from ..rule import Rule

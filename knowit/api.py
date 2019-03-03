@@ -12,8 +12,10 @@ from .providers import (
 _provider_map = OrderedDict([
     ('mediainfo', MediaInfoProvider),
     ('ffmpeg', FFmpegProvider),
-    ('enzyme', EnzymeProvider),
+    ('enzyme', EnzymeProvider)
 ])
+
+provider_names = _provider_map.keys()
 
 available_providers = OrderedDict([])
 
@@ -46,7 +48,9 @@ def know(video_path, context=None):
             continue
 
         if provider.accepts(video_path):
-            return provider.describe(video_path, context)
+            result = provider.describe(video_path, context)
+            if result:
+                return result
 
     return {}
 

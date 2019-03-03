@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import locale
-import os
-import sys
-
-from ctypes import c_size_t, c_void_p, c_wchar_p
-from logging import NullHandler, getLogger
+import re
+from logging import DEBUG, NullHandler, getLogger
 from subprocess import check_output
+from xml.dom import minidom
+from xml.etree import ElementTree
 
 from pymediainfo import MediaInfo
 from pymediainfo import __version__ as pymediainfo_version
@@ -62,7 +60,7 @@ logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
 
-WARN_MSG = '''
+WARN_MSG = r'''
 =========================================================================================
 MediaInfo not found on your system or could not be loaded.
 Visit https://mediaarea.net/ to download it.
@@ -82,20 +80,25 @@ To load MediaInfo from a specific location, please define the location as follow
 class MediaInfoExecutor(object):
     """Media info executable knows how to execute media info: using ctypes or cli."""
 
+    locations = {
+        'unix': ('/usr/local/mediainfo/lib', '/usr/local/mediainfo/bin', '__PATH__'),
+        'windows': ('__PATH__', ),
+        'macos': ('__PATH__', ),
+    }
+
     def __init__(self, location):
         """Constructor."""
         self.location = location
 
     def extract_info(self, filename):
         """Extract media info."""
-        xml = self._execute(filename)
-        return MediaInfo(xml)
+        return self._execute(filename)
 
     def _execute(self, filename):
         raise NotImplementedError
 
     @classmethod
-    def get_executor_instance(cls, suggested_path):
+    def get_executor_instance(cls, suggested_path=None):
         """Return the executor instance."""
         os_family = detect_os()
         logger.debug('Detected os: %s', os_family)
@@ -108,29 +111,36 @@ class MediaInfoExecutor(object):
 class MediaInfoCliExecutor(MediaInfoExecutor):
     """Media info using cli."""
 
+    version_re = re.compile(r'\bv(?P<major>\d+)\.(?P<minor>\d+)\b')
+
     names = {
-        'unix': ['mediainfo'],
-        'windows': ['MediaInfo.exe'],
-        'macos': ['mediainfo'],
+        'unix': ('mediainfo', ),
+        'windows': ('MediaInfo.exe', ),
+        'macos': ('mediainfo', ),
     }
 
-    locations = {
-        'unix': ['/usr/local/mediainfo/bin', '__PATH__'],
-        'windows': ['__PATH__'],
-        'macos': ['__PATH__'],
-    }
+    def __init__(self, location, version):
+        """Constructor."""
+        super(MediaInfoCliExecutor, self).__init__(location)
+        self.version = version
 
     def _execute(self, filename):
-        return check_output([self.location, '--Output=XML', '--Full', filename])
+        output_type = 'OLDXML' if self.version >= (17, 10) else 'XML'
+
+        return MediaInfo(check_output([self.location, '--Output=' + output_type, '--Full', filename]))
 
     @classmethod
-    def create(cls, os_family, suggested_path):
+    def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
-        for candidate in define_candidate(os_family, cls.locations, cls.names, suggested_path):
+        for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                check_output([candidate, '--version'])
-                logger.debug('MediaInfo cli detected: %s', candidate)
-                return MediaInfoCliExecutor(candidate)
+                output = check_output([candidate, '--version'])
+                match = cls.version_re.search(output)
+                if match:
+                    match_dict = match.groupdict()
+                    version = int(match_dict['major']), int(match_dict['minor'])
+                    logger.debug('MediaInfo cli detected: %s', candidate)
+                    return MediaInfoCliExecutor(candidate, version)
             except OSError:
                 pass
 
@@ -139,94 +149,26 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
     """Media info ctypes."""
 
     names = {
-        'unix': ['libmediainfo.so.0'],
-        'windows': ['MediaInfo.dll'],
-        'macos': ['libmediainfo.0.dylib', 'libmediainfo.dylib'],
+        'unix': ('libmediainfo.so.0', ),
+        'windows': ('MediaInfo.dll', ),
+        'macos': ('libmediainfo.0.dylib', 'libmediainfo.dylib'),
     }
 
-    locations = {
-        'unix': ['/usr/local/mediainfo/lib', '__PATH__'],
-        'windows': ['__PATH__'],  # 'C:\Program Files\MediaInfo', 'C:\Program Files (x86)\MediaInfo'],
-        'macos': ['__PATH__'],
-    }
-
-    def __init__(self, location, lib):
+    def __init__(self, location):
         """Constructor."""
         super(MediaInfoCTypesExecutor, self).__init__(location)
-        self.lib = lib
 
     def _execute(self, filename):
         # Create a MediaInfo handle
-        handle = self.lib.MediaInfo_New()
-        try:
-            self.lib.MediaInfo_Option(handle, 'CharSet', 'UTF-8')
-            # Fix for https://github.com/sbraz/pymediainfo/issues/22
-            # Python 2 does not change LC_CTYPE
-            # at startup: https://bugs.python.org/issue6203
-            if sys.version_info < (3, ) and os.name == 'posix' and locale.getlocale() == (None, None):
-                locale.setlocale(locale.LC_CTYPE, locale.getdefaultlocale())
-            self.lib.MediaInfo_Option(None, 'Inform', 'XML')
-            self.lib.MediaInfo_Option(None, 'Complete', '1')
-            self.lib.MediaInfo_Open(handle, filename)
-            return self.lib.MediaInfo_Inform(handle, 0)
-        finally:
-            # Delete the handle
-            self.lib.MediaInfo_Close(handle)
-            self.lib.MediaInfo_Delete(handle)
+        return MediaInfo.parse(filename, library_file=self.location)
 
     @classmethod
-    def create(cls, os_family, suggested_path):
+    def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
-        for candidate in define_candidate(os_family, cls.locations, cls.names, suggested_path):
-            lib = cls._get_native_lib(os_family, candidate)
-            if lib:
+        for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
+            if MediaInfo.can_parse(candidate):
                 logger.debug('MediaInfo library detected: %s', candidate)
-                return MediaInfoCTypesExecutor(candidate, lib)
-
-    @classmethod
-    def _get_native_lib(cls, os_family, library_path):
-        if os_family == 'windows':
-            return cls._get_windows_lib(library_path)
-
-        # works for unix and macos
-        return cls._get_unix_lib(library_path)
-
-    @classmethod
-    def _get_windows_lib(cls, library_path):
-        from ctypes import windll
-        try:
-            if sys.version_info[:3] == (2, 7, 13):
-                # http://bugs.python.org/issue29082
-                library_path = str(library_path)
-            lib = windll.MediaInfo = windll.LoadLibrary(library_path)
-            return cls._initialize_lib(lib)
-        except OSError:
-            pass
-
-    @classmethod
-    def _get_unix_lib(cls, library_path):
-        from ctypes import CDLL
-        try:
-            return cls._initialize_lib(CDLL(library_path))
-        except OSError:
-            pass
-
-    @classmethod
-    def _initialize_lib(cls, lib):
-        lib.MediaInfo_Inform.restype = c_wchar_p
-        lib.MediaInfo_New.argtypes = []
-        lib.MediaInfo_New.restype = c_void_p
-        lib.MediaInfo_Option.argtypes = [c_void_p, c_wchar_p, c_wchar_p]
-        lib.MediaInfo_Option.restype = c_wchar_p
-        lib.MediaInfo_Inform.argtypes = [c_void_p, c_size_t]
-        lib.MediaInfo_Inform.restype = c_wchar_p
-        lib.MediaInfo_Open.argtypes = [c_void_p, c_wchar_p]
-        lib.MediaInfo_Open.restype = c_size_t
-        lib.MediaInfo_Delete.argtypes = [c_void_p]
-        lib.MediaInfo_Delete.restype = None
-        lib.MediaInfo_Close.argtypes = [c_void_p]
-        lib.MediaInfo_Close.restype = None
-        return lib
+                return MediaInfoCTypesExecutor(candidate)
 
 
 class MediaInfoProvider(Provider):
@@ -331,30 +273,36 @@ class MediaInfoProvider(Provider):
 
     def describe(self, video_path, context):
         """Return video metadata."""
-        data = self.executor.extract_info(video_path).to_data()
-        if context.get('raw'):
-            return data
+        media_info = self.executor.extract_info(video_path)
+        if logger.isEnabledFor(DEBUG):
+            xml = ElementTree.tostring(media_info.xml_dom).replace('\r', '').replace('\n', '')
+            logger.debug('Video %r scanned using mediainfo %r has raw data:\n%s',
+                         video_path, self.executor.location,
+                         minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8'))
 
-        general_tracks = []
-        video_tracks = []
-        audio_tracks = []
-        subtitle_tracks = []
-        for track in data.get('tracks'):
-            track_type = track.get('track_type')
-            if track_type == 'General':
-                general_tracks.append(track)
-            elif track_type == 'Video':
-                video_tracks.append(track)
-            elif track_type == 'Audio':
-                audio_tracks.append(track)
-            elif track_type == 'Text':
-                subtitle_tracks.append(track)
+        data = media_info.to_data()
+        result = {}
+        if data.get('tracks'):
+            general_tracks = []
+            video_tracks = []
+            audio_tracks = []
+            subtitle_tracks = []
+            for track in data.get('tracks'):
+                track_type = track.get('track_type')
+                if track_type == 'General':
+                    general_tracks.append(track)
+                elif track_type == 'Video':
+                    video_tracks.append(track)
+                elif track_type == 'Audio':
+                    audio_tracks.append(track)
+                elif track_type == 'Text':
+                    subtitle_tracks.append(track)
 
-        result = self._describe_tracks(video_path, general_tracks[0] if general_tracks else {},
-                                       video_tracks, audio_tracks, subtitle_tracks, context)
+            result = self._describe_tracks(video_path, general_tracks[0] if general_tracks else {},
+                                           video_tracks, audio_tracks, subtitle_tracks, context)
         if not result:
             logger.warning('Invalid file %r', video_path)
-            if context.get('fail_on_error'):
+            if context.get('fail_on_error', True):
                 raise MalformedFileError
 
         result['provider'] = self.executor.location

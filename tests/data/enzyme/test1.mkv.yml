@@ -1,0 +1,20 @@
+duration: 0:01:27
+path: tests/data/videos/test1.mkv
+container: mkv
+size: 23.34 MB
+video:
+- id: 1
+  language: Undetermined
+  width: 854 pixel
+  height: 480 pixel
+  scan_type: Progressive
+  resolution: 480p
+  default: true
+audio:
+- id: 2
+  language: Undetermined
+  codec: MP3
+  channels_count: 2
+  channels: '2.0'
+  default: true
+provider: Enzyme 0.4.1

@@ -1,0 +1,45 @@
+{
+    "info": {
+        "duration": "0:01:37",
+        "muxing_app": "libebml v1.3.0 + libmatroska v1.4.1",
+        "date_utc": "2013-12-13 17:49:28",
+        "writing_app": "mkvmerge v6.6.0 ('The Edge Of The In Between') built on Dec  1 2013 17:55:00",
+        "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File"
+    },
+    "video_tracks": [
+        {
+            "forced": false,
+            "display_height": 1080,
+            "language": "und",
+            "default": true,
+            "enabled": true,
+            "number": 1,
+            "crop": {},
+            "height": 1080,
+            "width": 1920,
+            "codec_id": "V_MPEG4/ISO/AVC",
+            "lacing": false,
+            "type": 1,
+            "display_width": 1920,
+            "interlaced": false
+        }
+    ],
+    "tags": [],
+    "chapters": [],
+    "audio_tracks": [
+        {
+            "forced": false,
+            "name": "7.1Ch DTS-HD MA",
+            "default": true,
+            "enabled": true,
+            "number": 2,
+            "sampling_frequency": 48000.0,
+            "channels": 6,
+            "codec_id": "A_DTS",
+            "lacing": true,
+            "type": 2
+        }
+    ],
+    "recurse_seek_head": false,
+    "subtitle_tracks": []
+}

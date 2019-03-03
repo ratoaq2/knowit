@@ -1,0 +1,43 @@
+duration: 0:00:46
+path: tests/data/videos/test5.mkv
+container: mkv
+size: 31.76 MB
+video:
+- id: 1
+  language: Undetermined
+  width: 1024 pixel
+  height: 576 pixel
+  scan_type: Progressive
+  resolution: 576p
+  codec: H.264
+  default: true
+audio:
+- id: 2
+  language: Undetermined
+  codec: AAC
+  channels_count: 2
+  channels: '2.0'
+  default: true
+- id: 10
+  name: Commentary
+  codec: AAC
+  channels_count: 1
+  channels: '1.0'
+subtitle:
+- id: 3
+  default: true
+- id: 4
+  language: Hungarian
+- id: 5
+  language: German
+- id: 6
+  language: French
+- id: 8
+  language: Spanish
+- id: 9
+  language: Italian
+- id: 11
+  language: Japanese
+- id: 7
+  language: Undetermined
+provider: Enzyme 0.4.1

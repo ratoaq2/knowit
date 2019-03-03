@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+import logging
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
@@ -40,6 +41,7 @@ from ..rules import (
     LanguageRule,
     ResolutionRule,
 )
+from ..serializer import get_json_encoder
 from ..units import units
 from ..utils import (
     define_candidate,
@@ -67,6 +69,12 @@ To load FFmpeg (ffprobe) from a specific location, please define the location as
 class FFmpegExecutor(object):
     """Executor that knows how to execute media info: using ctypes or cli."""
 
+    locations = {
+        'unix': ('/usr/local/ffmpeg/lib', '/usr/local/ffmpeg/bin', '__PATH__'),
+        'windows': ('__PATH__', ),
+        'macos': ('__PATH__', ),
+    }
+
     def __init__(self, location):
         """Constructor."""
         self.location = location
@@ -80,7 +88,7 @@ class FFmpegExecutor(object):
         raise NotImplementedError
 
     @classmethod
-    def get_executor_instance(cls, suggested_path):
+    def get_executor_instance(cls, suggested_path=None):
         """Return executor instance."""
         os_family = detect_os()
         logger.debug('Detected os: %s', os_family)
@@ -94,15 +102,9 @@ class FFmpegCliExecutor(FFmpegExecutor):
     """Executor that uses FFmpeg (ffprobe) cli."""
 
     names = {
-        'unix': ['ffprobe'],
-        'windows': ['ffprobe.exe'],
-        'macos': ['ffprobe'],
-    }
-
-    locations = {
-        'unix': ['/usr/local/ffmpeg/bin', '__PATH__'],
-        'windows': ['__PATH__'],
-        'macos': ['__PATH__'],
+        'unix': ('ffprobe', ),
+        'windows': ('ffprobe.exe', ),
+        'macos': ('ffprobe', ),
     }
 
     def _execute(self, filename):
@@ -110,9 +112,9 @@ class FFmpegCliExecutor(FFmpegExecutor):
                              '-show_format', '-show_streams', '-sexagesimal', filename])
 
     @classmethod
-    def create(cls, os_family, suggested_path):
+    def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
-        for candidate in define_candidate(os_family, cls.locations, cls.names, suggested_path):
+        for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
                 check_output([candidate, '-version'])
                 logger.debug('FFmpeg cli detected: %s', candidate)
@@ -124,7 +126,7 @@ class FFmpegCliExecutor(FFmpegExecutor):
 class FFmpegProvider(Provider):
     """FFmpeg provider."""
 
-    def __init__(self, config, suggested_path):
+    def __init__(self, config, suggested_path=None):
         """Init method."""
         super(FFmpegProvider, self).__init__(config, {
             'general': OrderedDict([
@@ -212,10 +214,15 @@ class FFmpegProvider(Provider):
     def describe(self, video_path, context):
         """Return video metadata."""
         data = self.executor.extract_info(video_path)
-        if context.get('raw'):
-            return data
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug('Video %r scanned using ffmpeg %r has raw data:\n%s',
+                         video_path, self.executor.location,
+                         json.dumps(data, cls=get_json_encoder(context), indent=4, ensure_ascii=False))
 
         general_track = data.get('format') or {}
+        if 'tags' in general_track:
+            general_track['tags'] = {k.lower(): v for k, v in general_track['tags'].items()}
+
         video_tracks = []
         audio_tracks = []
         subtitle_tracks = []
@@ -231,7 +238,7 @@ class FFmpegProvider(Provider):
         result = self._describe_tracks(video_path, general_track, video_tracks, audio_tracks, subtitle_tracks, context)
         if not result:
             logger.warning('Invalid file %r', video_path)
-            if context.get('fail_on_error'):
+            if context.get('fail_on_error', True):
                 raise MalformedFileError
 
         result['provider'] = self.executor.location

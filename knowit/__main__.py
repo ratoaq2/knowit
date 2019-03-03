@@ -43,14 +43,12 @@ def build_argument_parser():
                                help='The provider to be used: mediainfo, ffmpeg or enzyme.')
 
     input_opts = opts.add_argument_group('Input')
-    input_opts.add_argument('-E', '--fail-on-error', action='store_true', dest='fail_on_error', default=False,
+    input_opts.add_argument('-E', '--fail-on-error', action='store_true', dest='fail_on_error', default=True,
                             help='Fail when errors are found on the media file.')
 
     output_opts = opts.add_argument_group('Output')
-    output_opts.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
-                             help='Display debug output')
-    output_opts.add_argument('-r', '--raw', action='store_true', dest='raw', default=False,
-                             help='Display raw properties')
+    output_opts.add_argument('--debug', action='store_true', dest='debug', default=False,
+                             help='Print useful information for debugging knowit and for reporting bugs.')
     output_opts.add_argument('--report', action='store_true', dest='report', default=False,
                              help='Parse media and report all non-detected values')
     output_opts.add_argument('-y', '--yaml', action='store_true', dest='yaml', default=False,
@@ -109,7 +107,7 @@ def main(args=None):
     args = args or sys.argv[1:]
     options = argument_parser.parse_args(args)
 
-    if options.verbose:
+    if options.debug:
         logger.setLevel(logging.DEBUG)
         logging.getLogger('enzyme').setLevel(logging.INFO)
     else:

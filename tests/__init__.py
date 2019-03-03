@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
+import json
+import os
 import re
 import sys
-
 from collections import Mapping
 from datetime import timedelta
+from zipfile import ZipFile
 
-from pkg_resources import resource_exists, resource_isdir, resource_listdir, resource_stream
-from six import string_types
+import requests
+from six import BytesIO, string_types
 import yaml
 from yaml.constructor import Constructor
 
 from knowit import serializer
+from knowit.api import provider_names
+from knowit.serializer import format_property
 from knowit.units import units
 
 try:
     from mock import Mock
-except:
+except ImportError:
     from unittest.mock import Mock
+
+
+YAML_EXTENSIONS = ('.yml', '.yaml')
 
 
 duration_re = re.compile(r'(?P<hours>\d{1,2}):'
@@ -36,22 +43,16 @@ serializer.YAMLLoader = serializer.get_yaml_loader({
 def parameters_from_yaml(name, input_key=None, expected_key=None):
     package_name, resource_name = name.split('.', 1)
 
-    resources = []
-    if resource_isdir(package_name, resource_name):
-        resources.extend([resource_name + '/' + r
-                          for r in resource_listdir(package_name, resource_name) if r.endswith(('.yml', '.yaml'))])
-    elif resource_exists(package_name, resource_name + '.yml'):
-        resources.append(resource_name + '.yml')
-    elif resource_exists(package_name, resource_name + '.yaml'):
-        resources.append(resource_name + '.yaml')
-
-    if not resources:
-        raise RuntimeError('Not able to load any yaml file for {0}'.format(name))
+    files = []
+    for yaml_ext in YAML_EXTENSIONS:
+        yaml_file = os.path.join(package_name, resource_name + yaml_ext)
+        if os.path.isfile(yaml_file):
+            files.append(yaml_file)
+            break
 
     parameters = []
-    for resource_name in resources:
-        with resource_stream(package_name, resource_name) as stream:
-            data = yaml.load(stream, Loader=serializer.YAMLLoader)
+    for file_path in files:
+        data = read_yaml(file_path)
 
         if input_key and expected_key:
             parameters.append((data[expected_key], data[input_key]))
@@ -67,6 +68,172 @@ def parameters_from_yaml(name, input_key=None, expected_key=None):
                     parameters.append((root_key, properties))
 
     return parameters
+
+
+def read_file(file_path):
+    with open(file_path, 'r') as f:
+        return f.read()
+
+
+def read_yaml(file_path):
+    with open(file_path, 'r') as f:
+        return yaml.load(f, Loader=serializer.YAMLLoader)
+
+
+def read_json(file_path):
+    with open(file_path, 'r') as f:
+        return json.loads(f.read())
+
+
+def id_func(param):
+    return repr(param)
+
+
+class MediaFiles(object):
+    """Represent media files in test/data folder."""
+
+    def __init__(self):
+        """Constructor."""
+        self.videos = MediaFiles._videos()
+        self.datafiles = MediaFiles._provider_datafiles()
+
+    @staticmethod
+    def _videos():
+        data_path = os.path.join('tests', 'data', 'videos')
+
+        # download matroska test suite
+        if not os.path.exists(data_path) or len(os.listdir(data_path)) != 8:
+            r = requests.get('http://downloads.sourceforge.net/project/matroska/test_files/matroska_test_w1_1.zip')
+            with ZipFile(BytesIO(r.content), 'r') as f:
+                f.extractall(data_path, [m for m in f.namelist() if os.path.splitext(m)[1] == '.mkv'])
+
+        # populate a dict with mkv files
+        files = []
+        for path in os.listdir(data_path):
+            name, _ = os.path.splitext(path)
+            files.append(os.path.join(data_path, path))
+
+        return files
+
+    @staticmethod
+    def _provider_datafiles():
+        datafiles = {}
+        for provider in provider_names:
+            files = []
+            data_path = os.path.join('tests', 'data', provider)
+            for path in os.listdir(data_path):
+                if not path.lower().endswith(YAML_EXTENSIONS):
+                    files.append(os.path.join(data_path, path))
+
+            datafiles[provider] = files
+
+        return datafiles
+
+    def get_real_media(self, provider_name):
+        """Return only real video files."""
+        return [Media(f, provider_name) for f in self.videos]
+
+    def get_xml_media(self, provider_name):
+        """Return all videos metadata as xml."""
+        return [XmlMedia(f, provider_name) for f in self.datafiles[provider_name]]
+
+    def get_yaml_media(self, provider_name):
+        """Return all videos metadata as yaml."""
+        return [YamlMedia(f, provider_name) for f in self.datafiles[provider_name]]
+
+    def get_json_media(self, provider_name):
+        """Return all videos metadata as json."""
+        return [JsonMedia(f, provider_name) for f in self.datafiles[provider_name]]
+
+
+mediafiles = MediaFiles()
+
+
+class Media(object):
+    """Represent a media."""
+
+    def __init__(self, file_path, provider_name):
+        """Constructor."""
+        self.file_path = file_path
+        self.provider_name = provider_name
+
+    @property
+    def video_path(self):
+        """Return the video path."""
+        return self.file_path
+
+    @property
+    def expected_data(self):
+        """Return the expected video metadata."""
+        yaml_file = None
+        yaml_folder = os.path.normpath(os.path.join(os.path.split(self.video_path)[0], os.pardir))
+        for yaml_ext in YAML_EXTENSIONS:
+            yaml_file = os.path.join(yaml_folder, self.provider_name, os.path.basename(self.video_path) + yaml_ext)
+            if os.path.isfile(yaml_file):
+                break
+
+        if not yaml_file or not os.path.isfile(yaml_file):
+            raise IOError('Unable to find expected file for {!r}', self.video_path)
+
+        return read_yaml(yaml_file)
+
+    def __repr__(self):
+        """Return the media representation."""
+        return '<{} [{}]>'.format(self.__class__.__name__, self.video_path)
+
+    def __str__(self):
+        """Return the media path."""
+        return self.video_path
+
+
+class DataMedia(Media):
+    """Represent a video without the real file, only the video metadata."""
+
+    @property
+    def video_path(self):
+        """Return the video path."""
+        return os.path.splitext(self.file_path)[0]
+
+    @property
+    def expected_data(self):
+        """Return the expected video metadata."""
+        yaml_file = None
+        for yaml_ext in YAML_EXTENSIONS:
+            yaml_file = self.video_path + yaml_ext
+            if os.path.isfile(yaml_file):
+                break
+
+        if not yaml_file or not os.path.isfile(yaml_file):
+            raise IOError('Unable to find expected file for {!r}', self.video_path)
+
+        return read_yaml(yaml_file)
+
+
+class XmlMedia(DataMedia):
+    """Represent a video without the real file, only the video metadata as xml."""
+
+    @property
+    def input_data(self):
+        """Return the video metadata as xml."""
+        return read_file(self.file_path)
+
+
+class YamlMedia(DataMedia):
+    """Represent a video without the real file, only the video metadata as yaml."""
+
+    @property
+    def input_data(self):
+        """Return the video metadata as yaml."""
+        return read_yaml(self.file_path)
+
+
+class JsonMedia(DataMedia):
+    """Represent a video without the real file, only the video metadata as json."""
+
+    @property
+    def input_data(self):
+        """Return the video metadata as json."""
+        return read_yaml(self.file_path)
 
 
 def _parse_value(node):
@@ -96,16 +263,16 @@ def is_iterable(obj):
     return isinstance(obj, (tuple, list))
 
 
-def check_equals(expected, actual, different, prefix=''):
+def check_equals(expected, actual, different, options, prefix=''):
     if isinstance(expected, Mapping):
-        check_mapping_equals(expected, actual, different=different, prefix=prefix)
+        check_mapping_equals(expected, actual, different=different, options=options, prefix=prefix)
     elif is_iterable(expected):
-        check_sequence_equals(expected, actual, different=different, prefix=prefix)
-    elif expected != actual:
+        check_sequence_equals(expected, actual, different=different, options=options, prefix=prefix)
+    elif format_property(expected, options) != format_property(actual, options):
         different.append((prefix, expected, actual))
 
 
-def check_sequence_equals(expected, actual, different, prefix=''):
+def check_sequence_equals(expected, actual, different, options, prefix=''):
     if not is_iterable(actual) or len(expected) != len(actual):
         different.append((prefix, expected, actual))
         return
@@ -113,10 +280,10 @@ def check_sequence_equals(expected, actual, different, prefix=''):
     for i, expected_value in enumerate(expected):
         actual_value = actual[i]
         key = '{0}[{1}].'.format(prefix, i)
-        check_equals(expected_value, actual_value, different=different, prefix=key)
+        check_equals(expected_value, actual_value, different=different, options=options, prefix=key)
 
 
-def check_mapping_equals(expected, actual, different, prefix=''):
+def check_mapping_equals(expected, actual, different, options, prefix=''):
     if not isinstance(actual, Mapping):
         different.append(('', expected, actual))
         return
@@ -128,7 +295,7 @@ def check_mapping_equals(expected, actual, different, prefix=''):
 
         actual_value = actual[expected_key]
         key = prefix + expected_key
-        check_equals(expected_value, actual_value, different=different, prefix=key)
+        check_equals(expected_value, actual_value, different=different, options=options, prefix=key)
 
     for actual_key, actual_value in actual.items():
         if actual_key not in expected:
@@ -136,9 +303,9 @@ def check_mapping_equals(expected, actual, different, prefix=''):
             continue
 
 
-def assert_expected(expected, actual):
+def assert_expected(expected, actual, options=None):
     different = []
-    check_equals(expected, actual, different=different)
+    check_equals(expected, actual, different=different, options=options or {'profile': 'default'})
     for (key, expected, actual) in different:
         print('{0}: Expected {1} got {2}'.format(key, expected, actual), file=sys.stderr)
 

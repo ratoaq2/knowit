@@ -1,39 +1,36 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-
 import pytest
 
-from knowit import (
-    api,
-    know,
-)
-from knowit.providers.ffmpeg import FFmpegExecutor
+from knowit import know
 
 from . import (
-    Mock,
     assert_expected,
-    parameters_from_yaml,
+    id_func,
+    mediafiles
 )
 
 
-@pytest.mark.parametrize('expected,input', parameters_from_yaml(__name__, expected_key='expected', input_key='input'))
-def test_ffmpeg_provider(monkeypatch, video_path, expected, input):
+@pytest.mark.parametrize('media', mediafiles.get_json_media('ffmpeg'), ids=id_func)
+def test_ffmpeg_provider(ffmpeg, media, options):
     # Given
-    api.available_providers.clear()
-    options = {'provider': 'ffmpeg'}
-    expected['provider'] = 'ffprobe'
-    executor = FFmpegExecutor(expected['provider'])
-    get_executor = Mock()
-    get_executor.return_value = executor
-    monkeypatch.setattr(FFmpegExecutor, 'get_executor_instance', get_executor)
-    monkeypatch.setattr(executor, 'extract_info', lambda v: input)
-    container = os.path.splitext(video_path)[1][1:]
+    ffmpeg[media.video_path] = media.input_data
 
     # When
-    actual = know(video_path, options)
+    actual = know(media.video_path, options)
 
     # Then
-    assert container == actual.pop('container', None)
-    assert_expected(expected, actual)
+    assert_expected(media.expected_data, actual, options)
+
+
+@pytest.mark.parametrize('media', mediafiles.get_real_media('ffmpeg'), ids=id_func)
+def test_ffmpeg_provider_real_media(media, options):
+    # Given
+    options['provider'] = 'ffmpeg'
+
+    # When
+    actual = know(media.video_path, options)
+
+    # Then
+    assert_expected(media.expected_data, actual, options)

@@ -1,0 +1,29 @@
+title: Elephant Dream - test 3
+path: tests/data/videos/test3.mkv
+duration: 0:00:49
+size: 21.06 MB
+bit_rate: 3.4 Mbps
+container: mkv
+video:
+- id: 0
+  width: 1024 pixel
+  height: 576 pixel
+  scan_type: Progressive
+  aspect_ratio: 1.778
+  pixel_aspect_ratio: 1.0
+  resolution: 576p
+  frame_rate: 24.0 FPS
+  bit_depth: 8 bit
+  codec: H.264
+  profile: Main
+  default: true
+audio:
+- id: 1
+  language: English
+  codec: MP3
+  channels_count: 2
+  channels: '2.0'
+  bit_rate: 172.0 Kbps
+  sampling_rate: 48.0 KHz
+  default: true
+provider: ffprobe

@@ -1,0 +1,25 @@
+path: tests/data/videos/test4.mkv
+size: 21.31 MB
+container: mkv
+video:
+- id: 1
+  width: 1280 pixel
+  height: 720 pixel
+  scan_type: Progressive
+  aspect_ratio: 1.778
+  pixel_aspect_ratio: 1.0
+  resolution: 720p
+  frame_rate: 24.0 FPS
+  bit_rate: 2.5 Mbps
+  default: true
+audio:
+- id: 2
+  codec: Vorbis
+  channels_count: 2
+  channels: '2.0'
+  bit_rate: 192.0 Kbps
+  bit_rate_mode: Variable
+  sampling_rate: 48.0 KHz
+  compression: Lossy
+  default: true
+provider: libmediainfo.so.0

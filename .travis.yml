@@ -2,15 +2,24 @@ sudo: false
 
 language: python
 
+dist: xenial
+
 python:
   - 2.7
   - 3.3
   - 3.4
   - 3.5
   - 3.6
+  - 3.7
 
 env:
   - PARSER=native
+
+addons:
+  apt:
+    packages:
+    - mediainfo
+    - ffmpeg
 
 cache:
   directories:
