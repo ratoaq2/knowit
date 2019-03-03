@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import re
 from logging import DEBUG, NullHandler, getLogger
-from subprocess import check_output
+from subprocess import check_output, CalledProcessError
 from xml.dom import minidom
 from xml.etree import ElementTree
 
@@ -130,15 +130,26 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
         return MediaInfo(check_output([self.location, '--Output=' + output_type, '--Full', filename]))
 
     @classmethod
+    def _get_version(cls, output):
+        match = cls.version_re.search(output)
+        if match:
+            match_dict = match.groupdict()
+            return int(match_dict['major']), int(match_dict['minor'])
+
+    @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
                 output = check_output([candidate, '--version'])
-                match = cls.version_re.search(output)
-                if match:
-                    match_dict = match.groupdict()
-                    version = int(match_dict['major']), int(match_dict['minor'])
+                version = cls._get_version(output)
+                if version:
+                    logger.debug('MediaInfo cli detected: %s', candidate)
+                    return MediaInfoCliExecutor(candidate, version)
+            except CalledProcessError as e:
+                # old mediainfo returns non-zero for mediainfo --version
+                version = cls._get_version(e.output)
+                if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)
                     return MediaInfoCliExecutor(candidate, version)
             except OSError:
