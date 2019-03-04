@@ -7,7 +7,7 @@ import re
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
-from six import text_type
+from six import ensure_text
 
 from .. import (
     OrderedDict,
@@ -120,15 +120,15 @@ class FFmpegCliExecutor(FFmpegExecutor):
     }
 
     def _execute(self, filename):
-        return check_output([self.location, '-v', 'quiet', '-print_format', 'json',
-                             '-show_format', '-show_streams', '-sexagesimal', filename])
+        return ensure_text(check_output([self.location, '-v', 'quiet', '-print_format', 'json',
+                                         '-show_format', '-show_streams', '-sexagesimal', filename]))
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                output = text_type(check_output([candidate, '-version']))
+                output = ensure_text(check_output([candidate, '-version']))
                 version = cls._get_version(output)
                 if version:
                     logger.debug('FFmpeg cli detected: %s v%s', candidate, '.'.join(map(str, version)))
