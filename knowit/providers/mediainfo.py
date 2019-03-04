@@ -149,7 +149,7 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
                     return MediaInfoCliExecutor(candidate, version)
             except CalledProcessError as e:
                 # old mediainfo returns non-zero exit code for mediainfo --version
-                version = cls._get_version(e.output)
+                version = cls._get_version(text_type(e.output))
                 if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)
                     return MediaInfoCliExecutor(candidate, version)
