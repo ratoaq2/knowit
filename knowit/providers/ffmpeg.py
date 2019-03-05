@@ -228,10 +228,16 @@ class FFmpegProvider(Provider):
     def describe(self, video_path, context):
         """Return video metadata."""
         data = self.executor.extract_info(video_path)
+
+        def debug_data():
+            """Debug data."""
+            return json.dumps(data, cls=get_json_encoder(context), indent=4, ensure_ascii=False)
+
+        context['debug_data'] = debug_data
+
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug('Video %r scanned using ffmpeg %r has raw data:\n%s',
-                         video_path, self.executor.location,
-                         json.dumps(data, cls=get_json_encoder(context), indent=4, ensure_ascii=False))
+                         video_path, self.executor.location, debug_data())
 
         general_track = data.get('format') or {}
         if 'tags' in general_track:
@@ -251,9 +257,7 @@ class FFmpegProvider(Provider):
 
         result = self._describe_tracks(video_path, general_track, video_tracks, audio_tracks, subtitle_tracks, context)
         if not result:
-            logger.warning('Invalid file %r', video_path)
-            if context.get('fail_on_error', True):
-                raise MalformedFileError
+            raise MalformedFileError
 
         result['provider'] = self.executor.location
         result['provider'] = {

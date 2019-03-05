@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import pytest
-from knowit import know
+from knowit import KnowitException, know
 
 from . import (
     assert_expected,
@@ -30,7 +30,11 @@ def test_enzyme_provider_real_media(media, options):
     options['fail_on_error'] = False
 
     # When
-    actual = know(media.video_path, options)
+    if not media.expected_data:
+        with pytest.raises(KnowitException):
+            know(media.video_path, options)
+    else:
+        actual = know(media.video_path, options)
 
-    # Then
-    assert_expected(media.expected_data, actual, options)
+        # Then
+        assert_expected(media.expected_data, actual, options)

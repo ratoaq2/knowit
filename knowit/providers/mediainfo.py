@@ -283,11 +283,17 @@ class MediaInfoProvider(Provider):
     def describe(self, video_path, context):
         """Return video metadata."""
         media_info = self.executor.extract_info(video_path)
+
+        def debug_data():
+            """Debug data."""
+            xml = ensure_text(ElementTree.tostring(media_info.xml_dom)).replace('\r', '').replace('\n', '')
+            return ensure_text(minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8'))
+
+        context['debug_data'] = debug_data
+
         if logger.isEnabledFor(DEBUG):
-            xml = ElementTree.tostring(media_info.xml_dom).replace('\r', '').replace('\n', '')
             logger.debug('Video %r scanned using mediainfo %r has raw data:\n%s',
-                         video_path, self.executor.location,
-                         minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8'))
+                         video_path, self.executor.location, debug_data())
 
         data = media_info.to_data()
         result = {}
@@ -310,9 +316,7 @@ class MediaInfoProvider(Provider):
             result = self._describe_tracks(video_path, general_tracks[0] if general_tracks else {},
                                            video_tracks, audio_tracks, subtitle_tracks, context)
         if not result:
-            logger.warning('Invalid file %r', video_path)
-            if context.get('fail_on_error', True):
-                raise MalformedFileError
+            raise MalformedFileError
 
         result['provider'] = {
             'name': 'mediainfo',

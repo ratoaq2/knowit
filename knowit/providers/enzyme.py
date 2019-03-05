@@ -114,19 +114,21 @@ class EnzymeProvider(Provider):
         try:
             data = defaultdict(dict)
             ff = self.extract_info(video_path)
+
+            def debug_data():
+                """Debug data."""
+                return json.dumps(ff, cls=get_json_encoder(context), indent=4, ensure_ascii=False)
+            context['debug_data'] = debug_data
+
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug('Video %r scanned using enzyme %r has raw data:\n%s',
-                             video_path, enzyme.__version__,
-                             json.dumps(ff, cls=get_json_encoder(context), indent=4, ensure_ascii=False))
+                             video_path, enzyme.__version__, debug_data)
 
             data.update(ff)
             if 'info' in data and data['info'] is None:
                 return {}
         except enzyme.MalformedMKVError:  # pragma: no cover
-            logger.warning('Invalid file %r', video_path)
-            if context.get('fail_on_error', True):
-                raise MalformedFileError
-            return {}
+            raise MalformedFileError
 
         if logger.level == logging.DEBUG:
             logger.debug('Video {video_path} scanned using Enzyme {version} has raw data:\n{data}',
@@ -134,6 +136,9 @@ class EnzymeProvider(Provider):
 
         result = self._describe_tracks(video_path, data.get('info', {}), data.get('video_tracks'),
                                        data.get('audio_tracks'), data.get('subtitle_tracks'), context)
+
+        if not result:
+            raise MalformedFileError
 
         result['provider'] = {
             'name': 'enzyme',

@@ -24,4 +24,4 @@ try:
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
-from .api import know
+from .api import KnowitException, know
