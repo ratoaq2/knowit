@@ -72,7 +72,7 @@ To load FFmpeg (ffprobe) from a specific location, please define the location as
 class FFmpegExecutor(object):
     """Executor that knows how to execute media info: using ctypes or cli."""
 
-    version_re = re.compile(r'\bversion\s+(?P<version>\d+(?:\.\d+)+)\b')
+    version_re = re.compile(r'\bversion\s+(?P<version>[^\b\s]+)')
     locations = {
         'unix': ('/usr/local/ffmpeg/lib', '/usr/local/ffmpeg/bin', '__PATH__'),
         'windows': ('__PATH__', ),
@@ -96,7 +96,7 @@ class FFmpegExecutor(object):
     def _get_version(cls, output):
         match = cls.version_re.search(output)
         if match:
-            version = tuple([int(v) for v in match.groupdict()['version'].split('.')])
+            version = match.groupdict()['version']
             return version
 
     @classmethod
@@ -131,8 +131,8 @@ class FFmpegCliExecutor(FFmpegExecutor):
                 output = ensure_text(check_output([candidate, '-version']))
                 version = cls._get_version(output)
                 if version:
-                    logger.debug('FFmpeg cli detected: %s v%s', candidate, '.'.join(map(str, version)))
-                    return FFmpegCliExecutor(candidate, version)
+                    logger.debug('FFmpeg cli detected: %s v%s', candidate, version)
+                    return FFmpegCliExecutor(candidate, version.split('.'))
             except OSError:
                 pass
 
