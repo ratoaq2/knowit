@@ -21,7 +21,7 @@ class Property(Reportable):
 
     def __init__(self, name, default=None, private=False, description=None, delimiter=' / ', **kwargs):
         """Init method."""
-        super(Property, self).__init__(name, description, **kwargs)
+        super().__init__(name, description, **kwargs)
         self.default = default
         self.private = private
         # Used to detect duplicated values. e.g.: en / en or High@L4.0 / High@L4.0 or Progressive / Progressive
@@ -67,7 +67,7 @@ class Configurable(Property):
 
     def __init__(self, config, *args, **kwargs):
         """Init method."""
-        super(Configurable, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.mapping = getattr(config, self.__class__.__name__)
 
     @classmethod
@@ -111,7 +111,7 @@ class MultiValue(Property):
 
     def __init__(self, prop=None, delimiter='/', single=False, handler=None, name=None, **kwargs):
         """Init method."""
-        super(MultiValue, self).__init__(prop.name if prop else name, **kwargs)
+        super().__init__(prop.name if prop else name, **kwargs)
         self.prop = prop
         self.delimiter = delimiter
         self.single = single

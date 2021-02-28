@@ -11,7 +11,7 @@ class Quantity(Property):
 
     def __init__(self, name, unit, data_type=int, **kwargs):
         """Init method."""
-        super(Quantity, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self.unit = unit
         self.data_type = data_type
 

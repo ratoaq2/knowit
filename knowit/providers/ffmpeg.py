@@ -139,7 +139,7 @@ class FFmpegProvider(Provider):
 
     def __init__(self, config, suggested_path=None):
         """Init method."""
-        super(FFmpegProvider, self).__init__(config, {
+        super().__init__(config, {
             'general': {
                 'title': Property('tags.title', description='media title'),
                 'path': Property('filename', description='media path'),

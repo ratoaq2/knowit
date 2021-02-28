@@ -9,7 +9,7 @@ class Rule(Reportable):
 
     def __init__(self, name, override=False, **kwargs):
         """Initialize the object."""
-        super(Rule, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self.override = override
 
     def execute(self, props, pv_props, context):

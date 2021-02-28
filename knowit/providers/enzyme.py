@@ -41,7 +41,7 @@ class EnzymeProvider(Provider):
 
     def __init__(self, config, *args, **kwargs):
         """Init method."""
-        super(EnzymeProvider, self).__init__(config, {
+        super().__init__(config, {
             'general': {
                 'title': Property('title', description='media title'),
                 'duration': Duration('duration', description='media duration'),

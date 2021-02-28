@@ -13,7 +13,7 @@ class YesNo(Property):
 
     def __init__(self, name, yes=True, no=False, hide_value=None, **kwargs):
         """Init method."""
-        super(YesNo, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self.yes = yes
         self.no = no
         self.hide_value = hide_value

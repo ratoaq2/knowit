@@ -184,7 +184,7 @@ class MediaInfoProvider(Provider):
 
     def __init__(self, config, suggested_path):
         """Init method."""
-        super(MediaInfoProvider, self).__init__(config, {
+        super().__init__(config, {
             'general': {
                 'title': Property('title', description='media title'),
                 'path': Property('complete_name', description='media path'),

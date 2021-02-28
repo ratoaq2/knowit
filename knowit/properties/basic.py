@@ -11,7 +11,7 @@ class Basic(Property):
 
     def __init__(self, name, data_type, allow_fallback=False, **kwargs):
         """Init method."""
-        super(Basic, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self.data_type = data_type
         self.allow_fallback = allow_fallback
 
