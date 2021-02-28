@@ -24,7 +24,7 @@ class _Value(typing.NamedTuple):
 _valid_aliases = _Value._fields
 
 
-class Config(object):
+class Config:
     """Application config class."""
 
     @classmethod

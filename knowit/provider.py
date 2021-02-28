@@ -14,7 +14,7 @@ logger.addHandler(NullHandler())
 size_property = Quantity('size', units.byte, description='media size')
 
 
-class Provider(object):
+class Provider:
     """Base class for all providers."""
 
     min_fps = 10

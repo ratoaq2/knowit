@@ -76,7 +76,7 @@ To load MediaInfo from a specific location, please define the location as follow
 '''
 
 
-class MediaInfoExecutor(object):
+class MediaInfoExecutor:
     """Media info executable knows how to execute media info: using ctypes or cli."""
 
     version_re = re.compile(r'\bv(?P<version>\d+(?:\.\d+)+)\b')

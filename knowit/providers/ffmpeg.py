@@ -66,7 +66,7 @@ To load FFmpeg (ffprobe) from a specific location, please define the location as
 '''
 
 
-class FFmpegExecutor(object):
+class FFmpegExecutor:
     """Executor that knows how to execute media info: using ctypes or cli."""
 
     version_re = re.compile(r'\bversion\s+(?P<version>[^\b\s]+)')

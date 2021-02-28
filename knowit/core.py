@@ -9,7 +9,7 @@ logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
 
-class Reportable(object):
+class Reportable:
     """Reportable abstract class."""
 
     def __init__(self, name, description=None, reportable=True):
