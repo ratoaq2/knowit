@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import re
 from ctypes import c_void_p, c_wchar_p

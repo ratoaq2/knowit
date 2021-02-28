@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Know your media files better."""
-from __future__ import unicode_literals
 
 __title__ = 'knowit'
 __version__ = '0.3.0-dev'

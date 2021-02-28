@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 from .codec import VideoCodec
 from .encoder import VideoEncoder
