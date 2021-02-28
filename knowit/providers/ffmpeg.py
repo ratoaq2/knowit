@@ -80,7 +80,7 @@ class FFmpegExecutor(object):
     }
 
     def __init__(self, location, version):
-        """Constructor."""
+        """Initialize the object."""
         self.location = location
         self.version = version
 

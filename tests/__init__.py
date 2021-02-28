@@ -93,7 +93,7 @@ class MediaFiles(object):
     """Represent media files in test/data folder."""
 
     def __init__(self):
-        """Constructor."""
+        """Initialize the object."""
         self.videos = MediaFiles._videos()
         self.datafiles = MediaFiles._provider_datafiles()
 
@@ -153,7 +153,7 @@ class Media(object):
     """Represent a media."""
 
     def __init__(self, file_path, provider_name):
-        """Constructor."""
+        """Initialize the object."""
         self.file_path = file_path
         self.provider_name = provider_name
 

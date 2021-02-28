@@ -8,7 +8,7 @@ class Rule(Reportable):
     """Rule abstract class."""
 
     def __init__(self, name, override=False, **kwargs):
-        """Constructor."""
+        """Initialize the object."""
         super(Rule, self).__init__(name, **kwargs)
         self.override = override
 
