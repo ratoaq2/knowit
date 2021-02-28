@@ -66,8 +66,7 @@ class ResolutionRule(Rule):
             selected_resolution = r
 
         if selected_resolution:
-            return '{0}{1}'.format(selected_resolution, scan_type)
+            return f'{selected_resolution}{scan_type}'
 
-        msg = '{width}x{height} - scan_type: {scan_type}, aspect_ratio: {dar}, pixel_aspect_ratio: {par}'.format(
-            width=width, height=height, scan_type=scan_type, dar=dar, par=par)
+        msg = f'{width}x{height} - scan_type: {scan_type}, aspect_ratio: {dar}, pixel_aspect_ratio: {par}'
         self.report(msg, context)

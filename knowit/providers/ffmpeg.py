@@ -265,5 +265,6 @@ class FFmpegProvider(Provider):
         """Return ffmpeg version information."""
         if not self.executor:
             return {}
+        version = '.'.join(map(str, self.executor.version))
 
-        return {self.executor.location: 'v{}'.format('.'.join(map(str, self.executor.version)))}
+        return {self.executor.location: f'v{version}'}

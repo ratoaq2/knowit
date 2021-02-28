@@ -324,5 +324,6 @@ class MediaInfoProvider(Provider):
         """Return mediainfo version information."""
         versions = {'pymediainfo': pymediainfo_version}
         if self.executor:
-            versions[self.executor.location] = 'v{}'.format('.'.join(map(str, self.executor.version)))
+            executor_version = '.'.join(map(str, self.executor.version))
+            versions[self.executor.location] = f'v{executor_version}'
         return versions

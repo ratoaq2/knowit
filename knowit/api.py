@@ -88,13 +88,13 @@ def dependencies(context=None):
 
 def _centered(value):
     value = value[-52:]
-    return '| {msg:^53} |'.format(msg=value)
+    return f'| {value:^53} |'
 
 
 def debug_info(context=None, exc_info=False):
     lines = [
         '+-------------------------------------------------------+',
-        _centered('KnowIt {0}'.format(__version__)),
+        _centered(f'KnowIt {__version__}'),
         '+-------------------------------------------------------+'
     ]
 
@@ -114,7 +114,7 @@ def debug_info(context=None, exc_info=False):
         lines.append('+-------------------------------------------------------+')
         for k, v in context.items():
             if v:
-                lines.append(_centered('{}: {}'.format(k, v)))
+                lines.append(_centered(f'{k}: {v}'))
 
         if debug_data:
             lines.append('+-------------------------------------------------------+')
