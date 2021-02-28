@@ -6,7 +6,6 @@ import logging
 import sys
 from argparse import ArgumentParser
 
-from six import PY2
 import yaml
 
 from . import (
@@ -88,9 +87,6 @@ def dump(info, options, context):
         data = {info['path']: info} if 'path' in info else info
         result = yaml.dump(data, Dumper=get_yaml_dumper(context),
                            default_flow_style=False, allow_unicode=True)
-        if PY2:
-            result = result.decode('utf-8')
-
     else:
         result = json.dumps(info, cls=get_json_encoder(context), indent=4, ensure_ascii=False)
 

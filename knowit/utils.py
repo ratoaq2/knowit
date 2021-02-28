@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-from six import PY2, string_types, text_type
+from six import string_types, text_type
 
 from . import VIDEO_EXTENSIONS
 
@@ -25,15 +25,12 @@ def recurse_paths(paths):
     encoding = sys.getfilesystemencoding()
     for path in paths:
         if os.path.isfile(path):
-            enc_paths.append(path.decode(encoding) if PY2 else path)
+            enc_paths.append(path)
         if os.path.isdir(path):
             for root, directories, filenames in os.walk(path):
                 for filename in filenames:
                     if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
-                        if PY2 and os.name == 'nt':
-                            fullpath = os.path.join(root, filename.decode(encoding))
-                        else:
-                            fullpath = os.path.join(root, filename).decode(encoding)
+                        fullpath = os.path.join(root, filename).decode(encoding)
                         enc_paths.append(fullpath)
 
     # Lets remove any dupes since mediainfo is rather slow.

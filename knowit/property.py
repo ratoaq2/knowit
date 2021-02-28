@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from logging import NullHandler, getLogger
-from six import PY3, binary_type, string_types, text_type
+from six import binary_type, string_types, text_type
 
 from .core import Reportable
 
@@ -133,5 +133,4 @@ class MultiValue(Property):
             return
 
         v = text_type(value)
-        result = map(text_type.strip, v.split(delimiter))
-        return list(result) if PY3 else result
+        return [x.strip() for x in v.split(delimiter)]
