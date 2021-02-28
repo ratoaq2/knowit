@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from .atmos import AtmosRule
 from .channels import AudioChannelsRule

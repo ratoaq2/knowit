@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Provider package."""
 
 from .enzyme import EnzymeProvider

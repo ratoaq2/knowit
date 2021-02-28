@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Know your media files better."""
 
 __title__ = 'knowit'

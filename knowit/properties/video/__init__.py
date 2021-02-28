@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from .codec import VideoCodec
 from .encoder import VideoEncoder

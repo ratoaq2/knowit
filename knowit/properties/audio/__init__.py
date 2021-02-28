@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from .bitratemode import BitRateMode
 from .channels import AudioChannels

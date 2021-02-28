@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 import re
 from ctypes import c_void_p, c_wchar_p

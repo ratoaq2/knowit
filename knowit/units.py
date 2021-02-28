@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 
 def _build_unit_registry():
