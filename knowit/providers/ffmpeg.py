@@ -7,8 +7,6 @@ import re
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
-from six import ensure_text
-
 from .. import VIDEO_EXTENSIONS
 from ..properties import (
     AudioChannels,
@@ -117,15 +115,15 @@ class FFmpegCliExecutor(FFmpegExecutor):
     }
 
     def _execute(self, filename):
-        return ensure_text(check_output([self.location, '-v', 'quiet', '-print_format', 'json',
-                                         '-show_format', '-show_streams', '-sexagesimal', filename]))
+        return check_output([self.location, '-v', 'quiet', '-print_format', 'json',
+                            '-show_format', '-show_streams', '-sexagesimal', filename]).decode()
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                output = ensure_text(check_output([candidate, '-version']))
+                output = check_output([candidate, '-version']).decode()
                 version = cls._get_version(output)
                 if version:
                     logger.debug('FFmpeg cli detected: %s v%s', candidate, version)

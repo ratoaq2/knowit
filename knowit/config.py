@@ -5,7 +5,6 @@ import typing
 from logging import NullHandler, getLogger
 
 from pkg_resources import resource_stream
-from six import text_type
 import yaml
 
 from .serializer import get_yaml_loader
@@ -59,7 +58,7 @@ class Config:
                 alias_map.setdefault('technical', alias_map['human'])
                 value = _Value(**{k: v for k, v in alias_map.items() if k in _valid_aliases})
                 for detection_value in detection_values:
-                    data[class_name][text_type(detection_value)] = value
+                    data[class_name][str(detection_value)] = value
 
         config = Config()
         config.__dict__ = data

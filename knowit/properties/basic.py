@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import text_type
-
 from ..property import Property
 
 
@@ -21,7 +19,7 @@ class Basic(Property):
             return value
 
         try:
-            return self.data_type(text_type(value))
+            return self.data_type(value)
         except ValueError:
             if not self.allow_fallback:
                 self.report(value, context)

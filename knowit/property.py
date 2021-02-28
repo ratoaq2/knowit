@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from logging import NullHandler, getLogger
-from six import binary_type, string_types, text_type
 
 from .core import Reportable
 
@@ -13,7 +12,7 @@ _visible_chars_table = dict.fromkeys(range(32))
 
 
 def _is_unknown(value):
-    return isinstance(value, text_type) and (not value or value.lower() == 'unknown')
+    return isinstance(value, str) and (not value or value.lower() == 'unknown')
 
 
 class Property(Reportable):
@@ -37,13 +36,13 @@ class Property(Reportable):
 
             value = self.default
 
-        if isinstance(value, string_types):
-            if isinstance(value, binary_type):
-                value = text_type(value)
-            else:
-                value = value.translate(_visible_chars_table).strip()
-                if _is_unknown(value):
-                    return
+        if isinstance(value, bytes):
+            value = value.decode()
+
+        if isinstance(value, str):
+            value = value.translate(_visible_chars_table).strip()
+            if _is_unknown(value):
+                return
             value = self._deduplicate(value)
 
         result = self.handle(value, context)
@@ -72,7 +71,7 @@ class Configurable(Property):
 
     @classmethod
     def _extract_key(cls, value):
-        return text_type(value).upper()
+        return value.upper()
 
     @classmethod
     def _extract_fallback_key(cls, value, key):
@@ -132,5 +131,4 @@ class MultiValue(Property):
         if value is None:
             return
 
-        v = text_type(value)
-        return [x.strip() for x in v.split(delimiter)]
+        return [x.strip() for x in str(value).split(delimiter)]

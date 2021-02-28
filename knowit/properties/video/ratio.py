@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 
 import re
 
-from six import text_type
-
 from ...property import Property
 
 
@@ -20,7 +18,7 @@ class Ratio(Property):
 
     def handle(self, value, context):
         """Handle ratio."""
-        match = self.ratio_re.match(text_type(value))
+        match = self.ratio_re.match(value)
         if match:
             width, height = match.groups()
             if (width, height) == ('0', '1'):  # identity

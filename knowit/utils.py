@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 import os
 import sys
 
-from six import string_types, text_type
-
 from . import VIDEO_EXTENSIONS
 
 
@@ -19,7 +17,7 @@ def recurse_paths(paths):
     """
     enc_paths = []
 
-    if isinstance(paths, (string_types, text_type)):
+    if isinstance(paths, str):
         paths = [p.strip() for p in paths.split(',')] if ',' in paths else paths.split()
 
     encoding = sys.getfilesystemencoding()
@@ -41,7 +39,7 @@ def recurse_paths(paths):
 
 def todict(obj, classkey=None):
     """Transform an object to dict."""
-    if isinstance(obj, string_types):
+    if isinstance(obj, str):
         return obj
     elif isinstance(obj, dict):
         data = {}

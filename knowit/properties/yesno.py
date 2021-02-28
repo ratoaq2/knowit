@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import text_type
-
 from ..property import Property
 
 
@@ -20,6 +18,5 @@ class YesNo(Property):
 
     def handle(self, value, context):
         """Handle boolean values."""
-        v = text_type(value).lower()
-        result = self.yes if v in self.mapping else self.no
+        result = self.yes if str(value).lower() in self.mapping else self.no
         return result if result != self.hide_value else None

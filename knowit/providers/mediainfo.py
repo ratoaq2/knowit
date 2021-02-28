@@ -10,7 +10,6 @@ from xml.etree import ElementTree
 
 from pymediainfo import MediaInfo
 from pymediainfo import __version__ as pymediainfo_version
-from six import ensure_text
 
 from .. import VIDEO_EXTENSIONS
 from ..properties import (
@@ -128,21 +127,21 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
 
     def _execute(self, filename):
         output_type = 'OLDXML' if self.version >= (17, 10) else 'XML'
-        return MediaInfo(ensure_text(check_output([self.location, '--Output=' + output_type, '--Full', filename])))
+        return MediaInfo(check_output([self.location, '--Output=' + output_type, '--Full', filename]).decode())
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                output = ensure_text(check_output([candidate, '--version']))
+                output = check_output([candidate, '--version']).decode()
                 version = cls._get_version(output)
                 if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)
                     return MediaInfoCliExecutor(candidate, version)
             except CalledProcessError as e:
                 # old mediainfo returns non-zero exit code for mediainfo --version
-                version = cls._get_version(ensure_text(e.output))
+                version = cls._get_version(e.output)
                 if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)
                     return MediaInfoCliExecutor(candidate, version)
@@ -283,8 +282,8 @@ class MediaInfoProvider(Provider):
 
         def debug_data():
             """Debug data."""
-            xml = ensure_text(ElementTree.tostring(media_info.xml_dom)).replace('\r', '').replace('\n', '')
-            return ensure_text(minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8'))
+            xml = ElementTree.tostring(media_info.xml_dom).decode().replace('\r', '').replace('\n', '')
+            return minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8').decode()
 
         context['debug_data'] = debug_data
 

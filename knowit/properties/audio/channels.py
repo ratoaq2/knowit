@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import text_type
-
 from ...property import Property
 
 
@@ -18,7 +16,7 @@ class AudioChannels(Property):
         if isinstance(value, int):
             return value
 
-        v = text_type(value).lower()
+        v = value.lower()
         if v not in self.ignored:
             try:
                 return int(v)

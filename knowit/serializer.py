@@ -5,7 +5,6 @@ import json
 from datetime import timedelta
 
 import babelfish
-from six import text_type
 import yaml
 
 from .units import units
@@ -22,7 +21,7 @@ def format_property(context, o):
     if hasattr(o, 'units'):
         return format_quantity(o, context['profile'])
 
-    return text_type(o)
+    return str(o)
 
 
 def get_json_encoder(context):

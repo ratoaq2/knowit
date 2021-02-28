@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 
 from logging import NullHandler, getLogger
 
-from six import text_type
-
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
@@ -28,7 +26,6 @@ class Reportable:
         if not value or not self.reportable:
             return
 
-        value = text_type(value)
         if 'report' in context:
             report_map = context['report'].setdefault(self.description, {})
             if value not in report_map:

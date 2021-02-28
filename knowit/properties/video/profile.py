@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import text_type
-
 from ...property import Configurable
 
 
@@ -19,7 +17,7 @@ class VideoProfileLevel(Configurable):
 
     @classmethod
     def _extract_key(cls, value):
-        values = text_type(value).upper().split('@')
+        values = str(value).upper().split('@')
         if len(values) > 1:
             value = values[1]
             return value
@@ -33,7 +31,7 @@ class VideoProfileTier(Configurable):
 
     @classmethod
     def _extract_key(cls, value):
-        values = value.upper().split('@')
+        values = str(value).upper().split('@')
         if len(values) > 2:
             return values[2]
 

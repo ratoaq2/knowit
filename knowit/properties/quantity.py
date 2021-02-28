@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from six import text_type
-
 from ..property import Property
 
 
@@ -19,7 +17,7 @@ class Quantity(Property):
         """Handle value with unit."""
         if not isinstance(value, self.data_type):
             try:
-                value = self.data_type(text_type(value))
+                value = self.data_type(value)
             except ValueError:
                 self.report(value, context)
                 return
