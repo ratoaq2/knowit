@@ -13,7 +13,7 @@ class Reportable(object):
     """Reportable abstract class."""
 
     def __init__(self, name, description=None, reportable=True):
-        """Constructor."""
+        """Initialize the object."""
         self.name = name
         self._description = description
         self.reportable = reportable
