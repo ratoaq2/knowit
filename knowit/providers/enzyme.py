@@ -7,7 +7,6 @@ from collections import defaultdict
 from logging import NullHandler, getLogger
 import enzyme
 
-from .. import OrderedDict
 from ..properties import (
     AudioCodec,
     Basic,
@@ -43,60 +42,60 @@ class EnzymeProvider(Provider):
     def __init__(self, config, *args, **kwargs):
         """Init method."""
         super(EnzymeProvider, self).__init__(config, {
-            'general': OrderedDict([
-                ('title', Property('title', description='media title')),
-                ('duration', Duration('duration', description='media duration')),
-            ]),
-            'video': OrderedDict([
-                ('id', Basic('number', int, description='video track number')),
-                ('name', Property('name', description='video track name')),
-                ('language', Language('language', description='video language')),
-                ('width', Quantity('width', units.pixel)),
-                ('height', Quantity('height', units.pixel)),
-                ('scan_type', YesNo('interlaced', yes='Interlaced', no='Progressive', default='Progressive',
-                                    description='video scan type')),
-                ('resolution', None),  # populated with ResolutionRule
-                # ('bit_depth', Property('bit_depth', Integer('video bit depth'))),
-                ('codec', VideoCodec(config, 'codec_id', description='video codec')),
-                ('forced', YesNo('forced', hide_value=False, description='video track forced')),
-                ('default', YesNo('default', hide_value=False, description='video track default')),
-                ('enabled', YesNo('enabled', hide_value=True, description='video track enabled')),
-            ]),
-            'audio': OrderedDict([
-                ('id', Basic('number', int, description='audio track number')),
-                ('name', Property('name', description='audio track name')),
-                ('language', Language('language', description='audio language')),
-                ('codec', AudioCodec(config, 'codec_id', description='audio codec')),
-                ('channels_count', Basic('channels', int, description='audio channels count')),
-                ('channels', None),  # populated with AudioChannelsRule
-                ('forced', YesNo('forced', hide_value=False, description='audio track forced')),
-                ('default', YesNo('default', hide_value=False, description='audio track default')),
-                ('enabled', YesNo('enabled', hide_value=True, description='audio track enabled')),
-            ]),
-            'subtitle': OrderedDict([
-                ('id', Basic('number', int, description='subtitle track number')),
-                ('name', Property('name', description='subtitle track name')),
-                ('language', Language('language', description='subtitle language')),
-                ('hearing_impaired', None),  # populated with HearingImpairedRule
-                ('closed_caption', None),  # populated with ClosedCaptionRule
-                ('forced', YesNo('forced', hide_value=False, description='subtitle track forced')),
-                ('default', YesNo('default', hide_value=False, description='subtitle track default')),
-                ('enabled', YesNo('enabled', hide_value=True, description='subtitle track enabled')),
-            ]),
+            'general': {
+                'title': Property('title', description='media title'),
+                'duration': Duration('duration', description='media duration'),
+            },
+            'video': {
+                'id': Basic('number', int, description='video track number'),
+                'name': Property('name', description='video track name'),
+                'language': Language('language', description='video language'),
+                'width': Quantity('width', units.pixel),
+                'height': Quantity('height', units.pixel),
+                'scan_type': YesNo('interlaced', yes='Interlaced', no='Progressive', default='Progressive',
+                                   description='video scan type'),
+                'resolution': None,  # populated with ResolutionRule
+                # 'bit_depth', Property('bit_depth', Integer('video bit depth')),
+                'codec': VideoCodec(config, 'codec_id', description='video codec'),
+                'forced': YesNo('forced', hide_value=False, description='video track forced'),
+                'default': YesNo('default', hide_value=False, description='video track default'),
+                'enabled': YesNo('enabled', hide_value=True, description='video track enabled'),
+            },
+            'audio': {
+                'id': Basic('number', int, description='audio track number'),
+                'name': Property('name', description='audio track name'),
+                'language': Language('language', description='audio language'),
+                'codec': AudioCodec(config, 'codec_id', description='audio codec'),
+                'channels_count': Basic('channels', int, description='audio channels count'),
+                'channels': None,  # populated with AudioChannelsRule
+                'forced': YesNo('forced', hide_value=False, description='audio track forced'),
+                'default': YesNo('default', hide_value=False, description='audio track default'),
+                'enabled': YesNo('enabled', hide_value=True, description='audio track enabled'),
+            },
+            'subtitle': {
+                'id': Basic('number', int, description='subtitle track number'),
+                'name': Property('name', description='subtitle track name'),
+                'language': Language('language', description='subtitle language'),
+                'hearing_impaired': None,  # populated with HearingImpairedRule
+                'closed_caption': None,  # populated with ClosedCaptionRule
+                'forced': YesNo('forced', hide_value=False, description='subtitle track forced'),
+                'default': YesNo('default', hide_value=False, description='subtitle track default'),
+                'enabled': YesNo('enabled', hide_value=True, description='subtitle track enabled'),
+            },
         }, {
-            'video': OrderedDict([
-                ('language', LanguageRule('video language')),
-                ('resolution', ResolutionRule('video resolution')),
-            ]),
-            'audio': OrderedDict([
-                ('language', LanguageRule('audio language')),
-                ('channels', AudioChannelsRule('audio channels')),
-            ]),
-            'subtitle': OrderedDict([
-                ('language', LanguageRule('subtitle language')),
-                ('hearing_impaired', HearingImpairedRule('subtitle hearing impaired')),
-                ('closed_caption', ClosedCaptionRule('closed caption')),
-            ])
+            'video': {
+                'language': LanguageRule('video language'),
+                'resolution': ResolutionRule('video resolution'),
+            },
+            'audio': {
+                'language': LanguageRule('audio language'),
+                'channels': AudioChannelsRule('audio channels'),
+            },
+            'subtitle': {
+                'language': LanguageRule('subtitle language'),
+                'hearing_impaired': HearingImpairedRule('subtitle hearing impaired'),
+                'closed_caption': ClosedCaptionRule('closed caption'),
+            }
         })
 
     def accepts(self, video_path):
