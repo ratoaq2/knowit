@@ -12,7 +12,7 @@ class Ratio(Property):
     """Ratio property."""
 
     def __init__(self, name, unit=None, **kwargs):
-        """Constructor."""
+        """Initialize the object."""
         super(Ratio, self).__init__(name, **kwargs)
         self.unit = unit
 

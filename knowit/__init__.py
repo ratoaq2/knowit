@@ -23,5 +23,9 @@ try:
     from collections import OrderedDict
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
+else:
+    import sys
+    if sys.version_info >= (3, 6):
+        OrderedDict = dict
 
 from .api import KnowitException, know
