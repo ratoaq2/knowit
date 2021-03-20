@@ -22,8 +22,15 @@ def find_version(*file_paths):
 
 
 setup_requirements = ['pytest-runner'] if {'pytest', 'test', 'ptr'}.intersection(sys.argv) else []
-install_requirements = ['babelfish>=0.5.5', 'enzyme>=0.4.1', 'pint>=0.9', 'pymediainfo>=3.0', 'PyYAML>=3.13',
-                        'six>=1.12.0']
+install_requirements = [
+    'babelfish>=0.5.5;python_version<"3.10"',
+    'babelfish>0.5.5;python_version>="3.10"',
+    'enzyme>=0.4.1',
+    'pint>=0.9',
+    'pymediainfo>=3.0',
+    'PyYAML>=3.13',
+    'six>=1.12.0',
+]
 test_requirements = ['flake8_docstrings', 'flake8-import-order', 'pydocstyle',
                      'pep8-naming', 'pytest>=4.3.0', 'pytest-cov', 'pytest-flake8', 'requests>=2.21.0']
 
