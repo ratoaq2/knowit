@@ -5,7 +5,7 @@ import json
 import os
 import re
 import sys
-from collections import Mapping
+from collections.abc import Mapping
 from datetime import timedelta
 from zipfile import ZipFile
 
