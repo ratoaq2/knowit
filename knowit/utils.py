@@ -18,13 +18,12 @@ OPTION_MAP = typing.Dict[str, typing.Tuple[str]]
 def recurse_paths(
         paths: typing.Union[str, typing.Iterable[str]]
 ) -> typing.List[str]:
-    """Return a file system encoded list of video files."""
+    """Return a list of video files."""
     enc_paths = []
 
     if isinstance(paths, str):
         paths = [p.strip() for p in paths.split(',')] if ',' in paths else paths.split()
 
-    encoding = sys.getfilesystemencoding()
     for path in paths:
         if os.path.isfile(path):
             enc_paths.append(path)
@@ -32,7 +31,7 @@ def recurse_paths(
             for root, directories, filenames in os.walk(path):
                 for filename in filenames:
                     if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
-                        fullpath = os.path.join(root, filename).decode(encoding)
+                        fullpath = os.path.join(root, filename)
                         enc_paths.append(fullpath)
 
     # Lets remove any dupes since mediainfo is rather slow.
