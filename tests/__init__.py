@@ -5,7 +5,6 @@ import json
 import os
 import re
 import sys
-from collections.abc import Mapping
 from datetime import timedelta
 from zipfile import ZipFile
 
@@ -23,6 +22,11 @@ try:
     from mock import Mock
 except ImportError:
     from unittest.mock import Mock
+
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
 
 
 YAML_EXTENSIONS = ('.yml', '.yaml')
