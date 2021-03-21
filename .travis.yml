@@ -33,6 +33,10 @@ before_install:
   - pip install --upgrade pytest
 
 install:
+  - pip install tox-travis
   - pip install -e .
 
-script: python setup.py test --addopts "--verbose $PYTEST_ADDOPTS"
+script:
+  tox
+  tox -e lint
+
