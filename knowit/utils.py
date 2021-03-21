@@ -35,9 +35,8 @@ def recurse_paths(
                         enc_paths.append(fullpath)
 
     # Lets remove any dupes since mediainfo is rather slow.
-    seen = set()
-    seen_add = seen.add
-    return [f for f in enc_paths if not (f in seen or seen_add(f))]
+    unique_paths = dict.fromkeys(enc_paths)
+    return list(unique_paths)
 
 
 def todict(
