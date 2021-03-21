@@ -38,5 +38,3 @@ install:
 
 script:
   tox
-  tox -e lint
-
