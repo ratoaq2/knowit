@@ -1,5 +1,5 @@
 """Provider package."""
 
-from .enzyme import EnzymeProvider
-from .ffmpeg import FFmpegProvider
-from .mediainfo import MediaInfoProvider
+from knowit.providers.enzyme import EnzymeProvider
+from knowit.providers.ffmpeg import FFmpegProvider
+from knowit.providers.mediainfo import MediaInfoProvider

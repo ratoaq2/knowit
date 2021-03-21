@@ -1,5 +1,5 @@
 
-from ..property import Property
+from knowit.property import Property
 
 
 class YesNo(Property):

@@ -1,5 +1,5 @@
 
-from ...property import Configurable
+from knowit.property import Configurable
 
 
 class SubtitleFormat(Configurable):

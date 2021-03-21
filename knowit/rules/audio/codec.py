@@ -1,5 +1,5 @@
 
-from ...rule import Rule
+from knowit.rule import Rule
 
 
 class AudioCodecRule(Rule):

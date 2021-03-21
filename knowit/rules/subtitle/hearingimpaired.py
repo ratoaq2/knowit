@@ -1,7 +1,7 @@
 
 import re
 
-from ...rule import Rule
+from knowit.rule import Rule
 
 
 class HearingImpairedRule(Rule):

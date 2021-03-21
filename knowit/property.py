@@ -1,7 +1,7 @@
 
 from logging import NullHandler, getLogger
 
-from .core import Reportable
+from knowit.core import Reportable
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

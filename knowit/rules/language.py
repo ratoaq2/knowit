@@ -4,7 +4,7 @@ from logging import NullHandler, getLogger
 
 import babelfish
 
-from ..rule import Rule
+from knowit.rule import Rule
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

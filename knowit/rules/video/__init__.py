@@ -1,2 +1,2 @@
 
-from .resolution import ResolutionRule
+from knowit.rules.video.resolution import ResolutionRule

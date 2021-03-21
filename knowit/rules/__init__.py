@@ -1,9 +1,9 @@
 
-from .audio import AtmosRule
-from .audio import AudioChannelsRule
-from .audio import AudioCodecRule
-from .audio import DtsHdRule
-from .language import LanguageRule
-from .subtitle import ClosedCaptionRule
-from .subtitle import HearingImpairedRule
-from .video import ResolutionRule
+from knowit.rules.audio import AtmosRule
+from knowit.rules.audio import AudioChannelsRule
+from knowit.rules.audio import AudioCodecRule
+from knowit.rules.audio import DtsHdRule
+from knowit.rules.language import LanguageRule
+from knowit.rules.subtitle import ClosedCaptionRule
+from knowit.rules.subtitle import HearingImpairedRule
+from knowit.rules.video import ResolutionRule

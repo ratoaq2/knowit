@@ -1,5 +1,5 @@
 
-from .core import Reportable
+from knowit.core import Reportable
 
 
 class Rule(Reportable):

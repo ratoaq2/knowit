@@ -5,7 +5,7 @@ from collections import defaultdict
 from logging import NullHandler, getLogger
 import enzyme
 
-from ..properties import (
+from knowit.properties import (
     AudioCodec,
     Basic,
     Duration,
@@ -14,21 +14,21 @@ from ..properties import (
     VideoCodec,
     YesNo,
 )
-from ..property import Property
-from ..provider import (
+from knowit.property import Property
+from knowit.provider import (
     MalformedFileError,
     Provider,
 )
-from ..rules import (
+from knowit.rules import (
     AudioChannelsRule,
     ClosedCaptionRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
 )
-from ..serializer import get_json_encoder
-from ..units import units
-from ..utils import todict
+from knowit.serializer import get_json_encoder
+from knowit.units import units
+from knowit.utils import todict
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

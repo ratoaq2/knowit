@@ -5,7 +5,7 @@ from datetime import timedelta
 import babelfish
 import yaml
 
-from .units import units
+from knowit.units import units
 
 
 def format_property(context, o):

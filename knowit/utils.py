@@ -2,7 +2,7 @@
 import os
 import sys
 
-from . import VIDEO_EXTENSIONS
+from knowit import VIDEO_EXTENSIONS
 
 
 def recurse_paths(paths):

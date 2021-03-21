@@ -2,7 +2,7 @@
 import re
 from datetime import timedelta
 
-from ..property import Property
+from knowit.property import Property
 
 
 class Duration(Property):

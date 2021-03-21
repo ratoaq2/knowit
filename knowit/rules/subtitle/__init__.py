@@ -1,3 +1,3 @@
 
-from .closedcaption import ClosedCaptionRule
-from .hearingimpaired import HearingImpairedRule
+from knowit.rules.subtitle.closedcaption import ClosedCaptionRule
+from knowit.rules.subtitle.hearingimpaired import HearingImpairedRule

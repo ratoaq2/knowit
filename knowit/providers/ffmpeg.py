@@ -5,8 +5,8 @@ import re
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
-from .. import VIDEO_EXTENSIONS
-from ..properties import (
+from knowit import VIDEO_EXTENSIONS
+from knowit.properties import (
     AudioChannels,
     AudioCodec,
     AudioProfile,
@@ -22,14 +22,14 @@ from ..properties import (
     VideoProfileLevel,
     YesNo,
 )
-from ..property import (
+from knowit.property import (
     Property,
 )
-from ..provider import (
+from knowit.provider import (
     MalformedFileError,
     Provider,
 )
-from ..rules import (
+from knowit.rules import (
     AudioChannelsRule,
     AudioCodecRule,
     ClosedCaptionRule,
@@ -37,9 +37,9 @@ from ..rules import (
     LanguageRule,
     ResolutionRule,
 )
-from ..serializer import get_json_encoder
-from ..units import units
-from ..utils import (
+from knowit.serializer import get_json_encoder
+from knowit.units import units
+from knowit.utils import (
     define_candidate,
     detect_os,
 )

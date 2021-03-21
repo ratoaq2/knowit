@@ -5,7 +5,7 @@ from logging import NullHandler, getLogger
 from pkg_resources import resource_stream
 import yaml
 
-from .serializer import get_yaml_loader
+from knowit.serializer import get_yaml_loader
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

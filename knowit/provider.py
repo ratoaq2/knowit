@@ -2,8 +2,8 @@
 import os
 from logging import NullHandler, getLogger
 
-from .properties import Quantity
-from .units import units
+from knowit.properties import Quantity
+from knowit.units import units
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

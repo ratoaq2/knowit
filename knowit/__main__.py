@@ -6,17 +6,17 @@ from argparse import ArgumentParser
 
 import yaml
 
-from . import (
+from knowit import (
     __url__,
     __version__,
     api,
 )
-from .provider import ProviderError
-from .serializer import (
+from knowit.provider import ProviderError
+from knowit.serializer import (
     get_json_encoder,
     get_yaml_dumper,
 )
-from .utils import recurse_paths
+from knowit.utils import recurse_paths
 
 logging.basicConfig(stream=sys.stdout, format='%(message)s')
 logging.getLogger('CONSOLE').setLevel(logging.INFO)

@@ -1,7 +1,7 @@
 
 import re
 
-from ...property import Property
+from knowit.property import Property
 
 
 class Ratio(Property):

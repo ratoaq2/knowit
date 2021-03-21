@@ -2,9 +2,9 @@
 import traceback
 import typing
 
-from . import __version__
-from .config import Config
-from .provider import Provider
+from knowit import __version__
+from knowit.config import Config
+from knowit.provider import Provider
 from .providers import (
     EnzymeProvider,
     FFmpegProvider,
