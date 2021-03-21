@@ -85,7 +85,11 @@ def define_candidate(locations, names, os_family=None, suggested_path=None):
 
         if location == '__PATH__':
             for name in names[os_family]:
-                yield name
+                if os_family == 'windows':
+                    for path in os.environ['PATH'].split(';'):
+                        yield os.path.join(path, name)
+                else:
+                    yield name
         elif os.path.isfile(location):
             yield location
         elif os.path.isdir(location):
