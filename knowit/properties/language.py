@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import babelfish
 
-from ..property import Property
+from knowit.property import Property
 
 
 class Language(Property):

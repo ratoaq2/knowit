@@ -1,4 +1,2 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
-from .resolution import ResolutionRule
+from knowit.rules.video.resolution import ResolutionRule

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import json
 import logging
@@ -7,10 +5,8 @@ import re
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
-from six import ensure_text
-
-from .. import VIDEO_EXTENSIONS
-from ..properties import (
+from knowit import VIDEO_EXTENSIONS
+from knowit.properties import (
     AudioChannels,
     AudioCodec,
     AudioProfile,
@@ -26,14 +22,14 @@ from ..properties import (
     VideoProfileLevel,
     YesNo,
 )
-from ..property import (
+from knowit.property import (
     Property,
 )
-from ..provider import (
+from knowit.provider import (
     MalformedFileError,
     Provider,
 )
-from ..rules import (
+from knowit.rules import (
     AudioChannelsRule,
     AudioCodecRule,
     ClosedCaptionRule,
@@ -41,9 +37,9 @@ from ..rules import (
     LanguageRule,
     ResolutionRule,
 )
-from ..serializer import get_json_encoder
-from ..units import units
-from ..utils import (
+from knowit.serializer import get_json_encoder
+from knowit.units import units
+from knowit.utils import (
     define_candidate,
     detect_os,
 )
@@ -66,7 +62,7 @@ To load FFmpeg (ffprobe) from a specific location, please define the location as
 '''
 
 
-class FFmpegExecutor(object):
+class FFmpegExecutor:
     """Executor that knows how to execute media info: using ctypes or cli."""
 
     version_re = re.compile(r'\bversion\s+(?P<version>[^\b\s]+)')
@@ -117,15 +113,15 @@ class FFmpegCliExecutor(FFmpegExecutor):
     }
 
     def _execute(self, filename):
-        return ensure_text(check_output([self.location, '-v', 'quiet', '-print_format', 'json',
-                                         '-show_format', '-show_streams', '-sexagesimal', filename]))
+        return check_output([self.location, '-v', 'quiet', '-print_format', 'json',
+                            '-show_format', '-show_streams', '-sexagesimal', filename]).decode()
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                output = ensure_text(check_output([candidate, '-version']))
+                output = check_output([candidate, '-version']).decode()
                 version = cls._get_version(output)
                 if version:
                     logger.debug('FFmpeg cli detected: %s v%s', candidate, version)
@@ -139,7 +135,7 @@ class FFmpegProvider(Provider):
 
     def __init__(self, config, suggested_path=None):
         """Init method."""
-        super(FFmpegProvider, self).__init__(config, {
+        super().__init__(config, {
             'general': {
                 'title': Property('tags.title', description='media title'),
                 'path': Property('filename', description='media path'),
@@ -269,5 +265,6 @@ class FFmpegProvider(Provider):
         """Return ffmpeg version information."""
         if not self.executor:
             return {}
+        version = '.'.join(map(str, self.executor.version))
 
-        return {self.executor.location: 'v{}'.format('.'.join(map(str, self.executor.version)))}
+        return {self.executor.location: f'v{version}'}

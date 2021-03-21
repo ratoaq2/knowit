@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 from logging import NullHandler, getLogger
-from six import text_type
 
-from ...rule import Rule
+from knowit.rule import Rule
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -44,7 +41,7 @@ class AudioChannelsRule(Rule):
 
             c_count = int(c) + int(round((c - int(c)) * 10))
             if c_count == count:
-                return text_type(c)
+                return str(c)
 
             candidate = max(candidate, c)
 
@@ -52,6 +49,6 @@ class AudioChannelsRule(Rule):
             return channels
 
         if candidate:
-            return text_type(candidate)
+            return candidate
 
         self.report(positions, context)

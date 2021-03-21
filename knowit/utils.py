@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import os
 import sys
 
-from six import PY2, string_types, text_type
-
-from . import VIDEO_EXTENSIONS
+from knowit import VIDEO_EXTENSIONS
 
 
 def recurse_paths(paths):
@@ -19,21 +15,18 @@ def recurse_paths(paths):
     """
     enc_paths = []
 
-    if isinstance(paths, (string_types, text_type)):
+    if isinstance(paths, str):
         paths = [p.strip() for p in paths.split(',')] if ',' in paths else paths.split()
 
     encoding = sys.getfilesystemencoding()
     for path in paths:
         if os.path.isfile(path):
-            enc_paths.append(path.decode(encoding) if PY2 else path)
+            enc_paths.append(path)
         if os.path.isdir(path):
             for root, directories, filenames in os.walk(path):
                 for filename in filenames:
                     if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
-                        if PY2 and os.name == 'nt':
-                            fullpath = os.path.join(root, filename.decode(encoding))
-                        else:
-                            fullpath = os.path.join(root, filename).decode(encoding)
+                        fullpath = os.path.join(root, filename).decode(encoding)
                         enc_paths.append(fullpath)
 
     # Lets remove any dupes since mediainfo is rather slow.
@@ -44,7 +37,7 @@ def recurse_paths(paths):
 
 def todict(obj, classkey=None):
     """Transform an object to dict."""
-    if isinstance(obj, string_types):
+    if isinstance(obj, str):
         return obj
     elif isinstance(obj, dict):
         data = {}

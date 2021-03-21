@@ -1,25 +1,22 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import json
 import logging
 import sys
 from argparse import ArgumentParser
 
-from six import PY2
 import yaml
 
-from . import (
+from knowit import (
     __url__,
     __version__,
     api,
 )
-from .provider import ProviderError
-from .serializer import (
+from knowit.provider import ProviderError
+from knowit.serializer import (
     get_json_encoder,
     get_yaml_dumper,
 )
-from .utils import recurse_paths
+from knowit.utils import recurse_paths
 
 logging.basicConfig(stream=sys.stdout, format='%(message)s')
 logging.getLogger('CONSOLE').setLevel(logging.INFO)
@@ -88,9 +85,6 @@ def dump(info, options, context):
         data = {info['path']: info} if 'path' in info else info
         result = yaml.dump(data, Dumper=get_yaml_dumper(context),
                            default_flow_style=False, allow_unicode=True)
-        if PY2:
-            result = result.decode('utf-8')
-
     else:
         result = json.dumps(info, cls=get_json_encoder(context), indent=4, ensure_ascii=False)
 

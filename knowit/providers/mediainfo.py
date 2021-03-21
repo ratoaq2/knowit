@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import re
 from ctypes import c_void_p, c_wchar_p
@@ -10,7 +8,6 @@ from xml.etree import ElementTree
 
 from pymediainfo import MediaInfo
 from pymediainfo import __version__ as pymediainfo_version
-from six import ensure_text
 
 from .. import VIDEO_EXTENSIONS
 from ..properties import (
@@ -76,7 +73,7 @@ To load MediaInfo from a specific location, please define the location as follow
 '''
 
 
-class MediaInfoExecutor(object):
+class MediaInfoExecutor:
     """Media info executable knows how to execute media info: using ctypes or cli."""
 
     version_re = re.compile(r'\bv(?P<version>\d+(?:\.\d+)+)\b')
@@ -128,21 +125,21 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
 
     def _execute(self, filename):
         output_type = 'OLDXML' if self.version >= (17, 10) else 'XML'
-        return MediaInfo(ensure_text(check_output([self.location, '--Output=' + output_type, '--Full', filename])))
+        return MediaInfo(check_output([self.location, '--Output=' + output_type, '--Full', filename]).decode())
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
             try:
-                output = ensure_text(check_output([candidate, '--version']))
+                output = check_output([candidate, '--version']).decode()
                 version = cls._get_version(output)
                 if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)
                     return MediaInfoCliExecutor(candidate, version)
             except CalledProcessError as e:
                 # old mediainfo returns non-zero exit code for mediainfo --version
-                version = cls._get_version(ensure_text(e.output))
+                version = cls._get_version(e.output)
                 if version:
                     logger.debug('MediaInfo cli detected: %s', candidate)
                     return MediaInfoCliExecutor(candidate, version)
@@ -184,7 +181,7 @@ class MediaInfoProvider(Provider):
 
     def __init__(self, config, suggested_path):
         """Init method."""
-        super(MediaInfoProvider, self).__init__(config, {
+        super().__init__(config, {
             'general': {
                 'title': Property('title', description='media title'),
                 'path': Property('complete_name', description='media path'),
@@ -283,8 +280,8 @@ class MediaInfoProvider(Provider):
 
         def debug_data():
             """Debug data."""
-            xml = ensure_text(ElementTree.tostring(media_info.xml_dom)).replace('\r', '').replace('\n', '')
-            return ensure_text(minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8'))
+            xml = ElementTree.tostring(media_info.xml_dom).decode().replace('\r', '').replace('\n', '')
+            return minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8').decode()
 
         context['debug_data'] = debug_data
 
@@ -327,5 +324,6 @@ class MediaInfoProvider(Provider):
         """Return mediainfo version information."""
         versions = {'pymediainfo': pymediainfo_version}
         if self.executor:
-            versions[self.executor.location] = 'v{}'.format('.'.join(map(str, self.executor.version)))
+            executor_version = '.'.join(map(str, self.executor.version))
+            versions[self.executor.location] = f'v{executor_version}'
         return versions

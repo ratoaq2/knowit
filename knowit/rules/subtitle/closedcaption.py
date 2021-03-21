@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import re
 
-from ...rule import Rule
+from knowit.rule import Rule
 
 
 class ClosedCaptionRule(Rule):

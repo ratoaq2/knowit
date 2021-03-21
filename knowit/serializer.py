@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import json
 from datetime import timedelta
 
 import babelfish
-from six import text_type
 import yaml
 
-from .units import units
+from knowit.units import units
 
 
 def format_property(context, o):
@@ -22,7 +19,7 @@ def format_property(context, o):
     if hasattr(o, 'units'):
         return format_quantity(o, context['profile'])
 
-    return text_type(o)
+    return str(o)
 
 
 def get_json_encoder(context):
@@ -98,13 +95,12 @@ def format_duration(duration, profile='default'):
     seconds = int(seconds - (minutes * 60))
     if profile == 'human':
         if hours > 0:
-            return '{0} hours {1:02d} minutes {2:02d} seconds'.format(hours, minutes, seconds)
+            return f'{hours} hours {minutes:02d} minutes { seconds:02d} seconds'
         if minutes > 0:
-            return '{0} minutes {1:02d} seconds'.format(minutes, seconds)
+            return f'{minutes} minutes {seconds:02d} seconds'
+        return f'{seconds} seconds'
 
-        return '{0} seconds'.format(seconds)
-
-    return '{0}:{1:02d}:{2:02d}'.format(hours, minutes, seconds)
+    return f'{hours}:{minutes:02d}:{seconds:02d}'
 
 
 def format_language(language, profile='default'):

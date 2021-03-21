@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 from logging import NullHandler, getLogger
-from six import PY3, binary_type, string_types, text_type
 
-from .core import Reportable
+from knowit.core import Reportable
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -13,7 +10,7 @@ _visible_chars_table = dict.fromkeys(range(32))
 
 
 def _is_unknown(value):
-    return isinstance(value, text_type) and (not value or value.lower() == 'unknown')
+    return isinstance(value, str) and (not value or value.lower() == 'unknown')
 
 
 class Property(Reportable):
@@ -21,7 +18,7 @@ class Property(Reportable):
 
     def __init__(self, name, default=None, private=False, description=None, delimiter=' / ', **kwargs):
         """Init method."""
-        super(Property, self).__init__(name, description, **kwargs)
+        super().__init__(name, description, **kwargs)
         self.default = default
         self.private = private
         # Used to detect duplicated values. e.g.: en / en or High@L4.0 / High@L4.0 or Progressive / Progressive
@@ -37,13 +34,13 @@ class Property(Reportable):
 
             value = self.default
 
-        if isinstance(value, string_types):
-            if isinstance(value, binary_type):
-                value = text_type(value)
-            else:
-                value = value.translate(_visible_chars_table).strip()
-                if _is_unknown(value):
-                    return
+        if isinstance(value, bytes):
+            value = value.decode()
+
+        if isinstance(value, str):
+            value = value.translate(_visible_chars_table).strip()
+            if _is_unknown(value):
+                return
             value = self._deduplicate(value)
 
         result = self.handle(value, context)
@@ -67,12 +64,12 @@ class Configurable(Property):
 
     def __init__(self, config, *args, **kwargs):
         """Init method."""
-        super(Configurable, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.mapping = getattr(config, self.__class__.__name__)
 
     @classmethod
     def _extract_key(cls, value):
-        return text_type(value).upper()
+        return value.upper()
 
     @classmethod
     def _extract_fallback_key(cls, value, key):
@@ -111,7 +108,7 @@ class MultiValue(Property):
 
     def __init__(self, prop=None, delimiter='/', single=False, handler=None, name=None, **kwargs):
         """Init method."""
-        super(MultiValue, self).__init__(prop.name if prop else name, **kwargs)
+        super().__init__(prop.name if prop else name, **kwargs)
         self.prop = prop
         self.delimiter = delimiter
         self.single = single
@@ -132,6 +129,4 @@ class MultiValue(Property):
         if value is None:
             return
 
-        v = text_type(value)
-        result = map(text_type.strip, v.split(delimiter))
-        return list(result) if PY3 else result
+        return [x.strip() for x in str(value).split(delimiter)]

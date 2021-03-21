@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import typing
 from logging import NullHandler, getLogger
 
 from pkg_resources import resource_stream
-from six import text_type
 import yaml
 
-from .serializer import get_yaml_loader
+from knowit.serializer import get_yaml_loader
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -24,7 +21,7 @@ class _Value(typing.NamedTuple):
 _valid_aliases = _Value._fields
 
 
-class Config(object):
+class Config:
     """Application config class."""
 
     @classmethod
@@ -59,7 +56,7 @@ class Config(object):
                 alias_map.setdefault('technical', alias_map['human'])
                 value = _Value(**{k: v for k, v in alias_map.items() if k in _valid_aliases})
                 for detection_value in detection_values:
-                    data[class_name][text_type(detection_value)] = value
+                    data[class_name][str(detection_value)] = value
 
         config = Config()
         config.__dict__ = data

@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import re
 from datetime import timedelta
 
-from six import text_type
-
-from ..property import Property
+from knowit.property import Property
 
 
 class Duration(Property):
@@ -30,7 +26,7 @@ class Duration(Property):
             pass
 
         try:
-            h, m, s, ms, mc = self.duration_re.match(text_type(value)).groups('0')
+            h, m, s, ms, mc = self.duration_re.match(value).groups('0')
             return timedelta(hours=int(h), minutes=int(m), seconds=int(s), milliseconds=int(ms), microseconds=int(mc))
         except ValueError:
             pass

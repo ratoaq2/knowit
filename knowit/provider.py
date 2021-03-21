@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import os
 from logging import NullHandler, getLogger
 
-from .properties import Quantity
-from .units import units
+from knowit.properties import Quantity
+from knowit.units import units
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -14,7 +12,7 @@ logger.addHandler(NullHandler())
 size_property = Quantity('size', units.byte, description='media size')
 
 
-class Provider(object):
+class Provider:
     """Base class for all providers."""
 
     min_fps = 10

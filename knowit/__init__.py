@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 """Know your media files better."""
-from __future__ import unicode_literals
 
 __title__ = 'knowit'
 __version__ = '0.3.0'
@@ -19,4 +17,4 @@ VIDEO_EXTENSIONS = ('.3g2', '.3gp', '.3gp2', '.3gpp', '.60d', '.ajp', '.asf', '.
                     '.omf', '.ps', '.qt', '.ram', '.rm', '.rmvb', '.swf', '.ts', '.vfw', '.vid', '.video', '.viv',
                     '.vivo', '.vob', '.vro', '.webm', '.wm', '.wmv', '.wmx', '.wrap', '.wvx', '.wx', '.x264', '.xvid')
 
-from .api import KnowitException, know
+from knowit.api import KnowitException, know

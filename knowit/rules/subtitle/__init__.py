@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
-from .closedcaption import ClosedCaptionRule
-from .hearingimpaired import HearingImpairedRule
+from knowit.rules.subtitle.closedcaption import ClosedCaptionRule
+from knowit.rules.subtitle.hearingimpaired import HearingImpairedRule

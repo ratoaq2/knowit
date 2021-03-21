@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 import re
 
-from six import text_type
-
-from ...property import Property
+from knowit.property import Property
 
 
 class Ratio(Property):
@@ -13,14 +9,14 @@ class Ratio(Property):
 
     def __init__(self, name, unit=None, **kwargs):
         """Initialize the object."""
-        super(Ratio, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self.unit = unit
 
     ratio_re = re.compile(r'(?P<width>\d+)[:/](?P<height>\d+)')
 
     def handle(self, value, context):
         """Handle ratio."""
-        match = self.ratio_re.match(text_type(value))
+        match = self.ratio_re.match(value)
         if match:
             width, height = match.groups()
             if (width, height) == ('0', '1'):  # identity

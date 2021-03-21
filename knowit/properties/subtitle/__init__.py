@@ -1,4 +1,2 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
-from .format import SubtitleFormat
+from knowit.properties.subtitle.format import SubtitleFormat

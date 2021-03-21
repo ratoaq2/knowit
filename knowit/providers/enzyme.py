@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
 
 import json
 import logging
@@ -7,7 +5,7 @@ from collections import defaultdict
 from logging import NullHandler, getLogger
 import enzyme
 
-from ..properties import (
+from knowit.properties import (
     AudioCodec,
     Basic,
     Duration,
@@ -16,21 +14,21 @@ from ..properties import (
     VideoCodec,
     YesNo,
 )
-from ..property import Property
-from ..provider import (
+from knowit.property import Property
+from knowit.provider import (
     MalformedFileError,
     Provider,
 )
-from ..rules import (
+from knowit.rules import (
     AudioChannelsRule,
     ClosedCaptionRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
 )
-from ..serializer import get_json_encoder
-from ..units import units
-from ..utils import todict
+from knowit.serializer import get_json_encoder
+from knowit.units import units
+from knowit.utils import todict
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -41,7 +39,7 @@ class EnzymeProvider(Provider):
 
     def __init__(self, config, *args, **kwargs):
         """Init method."""
-        super(EnzymeProvider, self).__init__(config, {
+        super().__init__(config, {
             'general': {
                 'title': Property('title', description='media title'),
                 'duration': Duration('duration', description='media duration'),

@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
-from __future__ import print_function, unicode_literals
 
 import json
 import os
 import re
 import sys
 from datetime import timedelta
+from io import BytesIO
 from zipfile import ZipFile
 
 import requests
-from six import BytesIO, string_types
 import yaml
 from yaml.constructor import Constructor
 
@@ -249,7 +247,7 @@ def _parse_value(node):
         return value
 
     def parse_quantity(value):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             for unit in ('pixel', 'bit', 'byte', 'FPS', 'bps', 'Hz'):
                 if value.endswith(' ' + unit):
                     return units(value[:-(len(unit))] + ' * ' + unit)
@@ -258,7 +256,7 @@ def _parse_value(node):
 
     result = node.value
     for method in (parse_quantity, parse_duration):
-        if result and isinstance(result, string_types):
+        if result and isinstance(result, str):
             result = method(node.value)
     return result
 
