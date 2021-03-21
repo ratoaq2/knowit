@@ -1,18 +1,24 @@
+from __future__ import annotations
+
 
 import os
 import sys
+import typing
 
 from knowit import VIDEO_EXTENSIONS
 
+if sys.version_info < (3, 8):
+    OS_FAMILY = str
+else:
+    OS_FAMILY = typing.Literal['windows', 'macos', 'unix']
 
-def recurse_paths(paths):
-    """Return a file system encoded list of videofiles.
+OPTION_MAP = typing.Dict[str, typing.Tuple[str]]
 
-    :param paths:
-    :type paths: string or list
-    :return:
-    :rtype: list
-    """
+
+def recurse_paths(
+        paths: typing.Union[str, typing.Iterable[str]]
+) -> typing.List[str]:
+    """Return a file system encoded list of video files."""
     enc_paths = []
 
     if isinstance(paths, str):
@@ -35,7 +41,10 @@ def recurse_paths(paths):
     return [f for f in enc_paths if not (f in seen or seen_add(f))]
 
 
-def todict(obj, classkey=None):
+def todict(
+        obj: typing.Any,
+        classkey: typing.Optional[typing.Type] = None
+) -> typing.Union[str, dict, list]:
     """Transform an object to dict."""
     if isinstance(obj, str):
         return obj
@@ -58,17 +67,21 @@ def todict(obj, classkey=None):
     return obj
 
 
-def detect_os():
+def detect_os() -> OS_FAMILY:
     """Detect os family: windows, macos or unix."""
     if os.name in ('nt', 'dos', 'os2', 'ce'):
         return 'windows'
     if sys.platform == 'darwin':
         return 'macos'
-
     return 'unix'
 
 
-def define_candidate(locations, names, os_family=None, suggested_path=None):
+def define_candidate(
+        locations: OPTION_MAP,
+        names: OPTION_MAP,
+        os_family: typing.Optional[OS_FAMILY] = None,
+        suggested_path: typing.Optional[str] = None,
+) -> typing.Generator[str, None, None]:
     """Generate candidate list for the given parameters."""
     os_family = os_family or detect_os()
     for location in (suggested_path, ) + locations[os_family]:
