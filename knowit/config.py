@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from collections import namedtuple
+import typing
 from logging import NullHandler, getLogger
 
 from pkg_resources import resource_stream
@@ -13,8 +13,15 @@ from .serializer import get_yaml_loader
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
-_valid_aliases = ('code', 'default', 'human', 'technical')
-_Value = namedtuple('_Value', _valid_aliases)
+
+class _Value(typing.NamedTuple):
+    code: str
+    default: str
+    human: str
+    technical: str
+
+
+_valid_aliases = _Value._fields
 
 
 class Config(object):
