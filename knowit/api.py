@@ -2,9 +2,11 @@
 from __future__ import unicode_literals
 
 import traceback
+import typing
 
 from . import OrderedDict, __version__
 from .config import Config
+from .provider import Provider
 from .providers import (
     EnzymeProvider,
     FFmpegProvider,
@@ -19,7 +21,7 @@ _provider_map = OrderedDict([
 
 provider_names = _provider_map.keys()
 
-available_providers = OrderedDict([])
+available_providers: typing.Dict[str, Provider] = OrderedDict([])
 
 
 class KnowitException(Exception):
