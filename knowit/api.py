@@ -2,24 +2,26 @@
 from __future__ import unicode_literals
 
 import traceback
+import typing
 
-from . import OrderedDict, __version__
+from . import __version__
 from .config import Config
+from .provider import Provider
 from .providers import (
     EnzymeProvider,
     FFmpegProvider,
     MediaInfoProvider,
 )
 
-_provider_map = OrderedDict([
-    ('mediainfo', MediaInfoProvider),
-    ('ffmpeg', FFmpegProvider),
-    ('enzyme', EnzymeProvider)
-])
+_provider_map = {
+    'mediainfo': MediaInfoProvider,
+    'ffmpeg': FFmpegProvider,
+    'enzyme': EnzymeProvider,
+}
 
 provider_names = _provider_map.keys()
 
-available_providers = OrderedDict([])
+available_providers: typing.Dict[str, Provider] = {}
 
 
 class KnowitException(Exception):
@@ -72,7 +74,7 @@ def know(video_path, context=None):
 
 def dependencies(context=None):
     """Return all dependencies detected by knowit."""
-    deps = OrderedDict([])
+    deps = {}
     try:
         initialize(context)
         for name, provider_cls in _provider_map.items():

@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import json
-from collections import OrderedDict
 from datetime import timedelta
 
 import babelfish
@@ -50,10 +49,6 @@ def get_yaml_dumper(context):
                 return self.represent_float(data)
             return self.represent_str(str(data))
 
-        def ordered_dict_representer(self, data):
-            """Representer for OrderedDict."""
-            return self.represent_mapping('tag:yaml.org,2002:map', data.items())
-
         def default_language_representer(self, data):
             """Convert language to string."""
             return self.represent_str(format_language(data, context['profile']))
@@ -66,7 +61,6 @@ def get_yaml_dumper(context):
             """Convert quantity to string."""
             return self.default_representer(format_duration(data, context['profile']))
 
-    CustomDumper.add_representer(OrderedDict, CustomDumper.ordered_dict_representer)
     CustomDumper.add_representer(babelfish.Language, CustomDumper.default_language_representer)
     CustomDumper.add_representer(timedelta, CustomDumper.default_duration_representer)
     CustomDumper.add_representer(units.Quantity, CustomDumper.default_quantity_representer)

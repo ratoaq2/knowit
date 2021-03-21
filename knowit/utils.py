@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 import os
 import sys
-from collections import OrderedDict
 
 from six import PY2, string_types, text_type
 
@@ -59,7 +58,7 @@ def todict(obj, classkey=None):
     elif hasattr(obj, '__dict__'):
         values = [(key, todict(value, classkey))
                   for key, value in obj.__dict__.items() if not callable(value) and not key.startswith('_')]
-        data = OrderedDict([(k, v) for k, v in values if v is not None])
+        data = {k: v for k, v in values if v is not None}
         if classkey is not None and hasattr(obj, '__class__'):
             data[classkey] = obj.__class__.__name__
         return data

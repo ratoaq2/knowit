@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 import os
 from logging import NullHandler, getLogger
 
-from . import OrderedDict
 from .properties import Quantity
 from .units import units
 
@@ -82,7 +81,7 @@ class Provider(object):
         :param track_type:
         :rtype: dict
         """
-        props = OrderedDict()
+        props = {}
         pv_props = {}
         for name, prop in self.mapping[track_type].items():
             if not prop:
