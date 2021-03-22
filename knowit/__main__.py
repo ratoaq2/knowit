@@ -52,31 +52,27 @@ def build_argument_parser() -> ArgumentParser:
         '--debug',
         action='store_true',
         dest='debug',
-        help='Print information for debugging knowit and for reporting bugs.',
-        type=bool,
+        help='Print information for debugging knowit and for reporting bugs.'
     )
     output_opts.add_argument(
         '--report',
         action='store_true',
         dest='report',
-        help='Parse media and report all non-detected values',
-        type=bool,
+        help='Parse media and report all non-detected values'
     )
     output_opts.add_argument(
         '-y',
         '--yaml',
         action='store_true',
         dest='yaml',
-        help='Display output in yaml format',
-        type=bool,
+        help='Display output in yaml format'
     )
     output_opts.add_argument(
         '-N',
         '--no-units',
         action='store_true',
         dest='no_units',
-        help='Display output without units',
-        type=bool,
+        help='Display output without units'
     )
     output_opts.add_argument(
         '-P',
@@ -105,8 +101,7 @@ def build_argument_parser() -> ArgumentParser:
         '--version',
         dest='version',
         action='store_true',
-        help='Display knowit version.',
-        type=bool,
+        help='Display knowit version.'
     )
 
     return opts
