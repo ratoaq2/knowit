@@ -45,7 +45,7 @@ class Property(Reportable[T]):
         value = track.get(names[0], {}).get(names[1]) if len(names) == 2 else track.get(self.name)
         if value is None:
             if self.default is None:
-                return
+                return None
 
             value = self.default
 
@@ -55,7 +55,7 @@ class Property(Reportable[T]):
         if isinstance(value, str):
             value = value.translate(_visible_chars_table).strip()
             if _is_unknown(value):
-                return
+                return None
             value = self._deduplicate(value)
 
         result = self.handle(value, context)
