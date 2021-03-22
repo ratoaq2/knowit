@@ -142,12 +142,18 @@ class MultiValue(Property):
             context: typing.Mapping,
     ) -> typing.Union[T, typing.List[T]]:
         """Handle properties with multiple values."""
-        values = (self._split(value[0], self.delimiter)
-                  if len(value) == 1 else value) if isinstance(value, list) else self._split(value, self.delimiter)
+        if isinstance(value, list):
+            if len(value) == 1:
+                values = self._split(value[0], self.delimiter)
+            else:
+                values = value
+        else:
+            values = self._split(value, self.delimiter)
         call = self.handler or self.prop.handle
+        if values is None:
+            return call(values, context)
         if len(values) > 1 and not self.single:
             return [call(item, context) if not _is_unknown(item) else None for item in values]
-
         return call(values[0], context)
 
     @classmethod
