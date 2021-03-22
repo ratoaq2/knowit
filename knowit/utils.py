@@ -31,8 +31,8 @@ def recurse_paths(
             for root, directories, filenames in os.walk(path):
                 for filename in filenames:
                     if os.path.splitext(filename)[1] in VIDEO_EXTENSIONS:
-                        fullpath = os.path.join(root, filename)
-                        enc_paths.append(fullpath)
+                        full_path = os.path.join(root, filename)
+                        enc_paths.append(full_path)
 
     # Lets remove any dupes since mediainfo is rather slow.
     unique_paths = dict.fromkeys(enc_paths)
