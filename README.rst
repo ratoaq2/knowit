@@ -122,6 +122,60 @@ Extract information from a video file using ffprobe::
     }
 
 
+Using docker::
+
+    docker run -it --rm -v /folder:/folder knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
+    For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
+    Knowit 0.2.4 found:
+    {
+        "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
+        "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
+        "duration": "0:01:37",
+        "size": "40.77 MB",
+        "bit_rate": "3.3 Mbps",
+        "container": "mkv",
+        "video": [
+            {
+                "id": 1,
+                "duration": "0:01:37",
+                "width": "1920 pixel",
+                "height": "1080 pixel",
+                "scan_type": "Progressive",
+                "aspect_ratio": 1.778,
+                "pixel_aspect_ratio": 1.0,
+                "resolution": "1080p",
+                "frame_rate": "23.976 FPS",
+                "bit_depth": "8 bit",
+                "codec": "H.264",
+                "profile": "Main",
+                "profile_level": "4",
+                "media_type": "video/H264",
+                "default": true,
+                "language": "Undetermined"
+            }
+        ],
+        "audio": [
+            {
+                "id": 2,
+                "name": "7.1Ch DTS-HD MA",
+                "language": "English",
+                "duration": "0:01:37",
+                "codec": "DTS-HD",
+                "profile": "Master Audio",
+                "channels_count": 8,
+                "channels": "7.1",
+                "bit_depth": "24 bit",
+                "bit_rate_mode": "Variable",
+                "sampling_rate": "48.0 KHz",
+                "compression": "Lossless",
+                "default": true
+            }
+        ],
+        "provider": "libmediainfo.so.0"
+    }
+
+    
+
 All available CLI options::
 
     $ knowit --help
