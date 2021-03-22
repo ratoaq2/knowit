@@ -30,3 +30,4 @@ class Ratio(Property):
             return result
 
         self.report(value, context)
+        return None

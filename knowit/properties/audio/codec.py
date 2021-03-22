@@ -19,3 +19,5 @@ class AudioCodec(Configurable):
     def _extract_fallback_key(cls, value, key) -> typing.Optional[str]:
         if '/' in key:
             return key.split('/')[0]
+        else:
+            return None
