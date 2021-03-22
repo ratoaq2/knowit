@@ -39,7 +39,7 @@ def recurse_paths(
     return list(unique_paths)
 
 
-def todict(
+def to_dict(
         obj: typing.Any,
         classkey: typing.Optional[typing.Type] = None
 ) -> typing.Union[str, dict, list]:
@@ -49,14 +49,14 @@ def todict(
     elif isinstance(obj, dict):
         data = {}
         for (k, v) in obj.items():
-            data[k] = todict(v, classkey)
+            data[k] = to_dict(v, classkey)
         return data
     elif hasattr(obj, '_ast'):
-        return todict(obj._ast())
+        return to_dict(obj._ast())
     elif hasattr(obj, '__iter__'):
-        return [todict(v, classkey) for v in obj]
+        return [to_dict(v, classkey) for v in obj]
     elif hasattr(obj, '__dict__'):
-        values = [(key, todict(value, classkey))
+        values = [(key, to_dict(value, classkey))
                   for key, value in obj.__dict__.items() if not callable(value) and not key.startswith('_')]
         data = {k: v for k, v in values if v is not None}
         if classkey is not None and hasattr(obj, '__class__'):

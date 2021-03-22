@@ -28,7 +28,7 @@ from knowit.rules import (
 )
 from knowit.serializer import get_json_encoder
 from knowit.units import units
-from knowit.utils import todict
+from knowit.utils import to_dict
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -104,7 +104,7 @@ class EnzymeProvider(Provider):
     def extract_info(cls, video_path):
         """Extract info from the video."""
         with open(video_path, 'rb') as f:
-            return todict(enzyme.MKV(f))
+            return to_dict(enzyme.MKV(f))
 
     def describe(self, video_path, context):
         """Return video metadata."""
