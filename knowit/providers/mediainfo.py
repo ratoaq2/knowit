@@ -1,10 +1,9 @@
 
+import json
 import re
 from ctypes import c_void_p, c_wchar_p
 from logging import DEBUG, NullHandler, getLogger
 from subprocess import CalledProcessError, check_output
-from xml.dom import minidom
-from xml.etree import ElementTree
 
 from pymediainfo import MediaInfo
 from pymediainfo import __version__ as pymediainfo_version
@@ -124,8 +123,7 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
     }
 
     def _execute(self, filename):
-        output_type = 'OLDXML' if self.version >= (17, 10) else 'XML'
-        return MediaInfo(check_output([self.location, '--Output=' + output_type, '--Full', filename]).decode())
+        return MediaInfo(check_output([self.location, '--Output=JSON', '--Full', filename]).decode())
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
@@ -158,7 +156,7 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
 
     def _execute(self, filename):
         # Create a MediaInfo handle
-        return MediaInfo.parse(filename, library_file=self.location)
+        return MediaInfo.parse(filename, library_file=self.location, output='JSON')
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
@@ -183,69 +181,69 @@ class MediaInfoProvider(Provider):
         """Init method."""
         super().__init__(config, {
             'general': {
-                'title': Property('title', description='media title'),
-                'path': Property('complete_name', description='media path'),
-                'duration': Duration('duration', description='media duration'),
-                'size': Quantity('file_size', units.byte, description='media size'),
-                'bit_rate': Quantity('overall_bit_rate', units.bps, description='media bit rate'),
+                'title': Property('Title', description='media title'),
+                'path': Property('CompleteName', description='media path'),
+                'duration': Duration('Duration', description='media duration'),
+                'size': Quantity('FileSize', units.byte, description='media size'),
+                'bit_rate': Quantity('OverallBitRate', units.bps, description='media bit rate'),
             },
             'video': {
-                'id': Basic('track_id', int, allow_fallback=True, description='video track number'),
+                'id': Basic('ID', int, allow_fallback=True, description='video track number'),
                 'name': Property('name', description='video track name'),
-                'language': Language('language', description='video language'),
-                'duration': Duration('duration', description='video duration'),
-                'size': Quantity('stream_size', units.byte, description='video stream size'),
-                'width': Quantity('width', units.pixel),
-                'height': Quantity('height', units.pixel),
-                'scan_type': ScanType(config, 'scan_type', default='Progressive', description='video scan type'),
-                'aspect_ratio': Basic('display_aspect_ratio', float, description='display aspect ratio'),
-                'pixel_aspect_ratio': Basic('pixel_aspect_ratio', float, description='pixel aspect ratio'),
+                'language': Language('Language', description='video language'),
+                'duration': Duration('Duration', description='video duration'),
+                'size': Quantity('StreamSize', units.byte, description='video stream size'),
+                'width': Quantity('Width', units.pixel),
+                'height': Quantity('Height', units.pixel),
+                'scan_type': ScanType(config, 'ScanType', default='Progressive', description='video scan type'),
+                'aspect_ratio': Basic('DisplayAspectRatio', float, description='display aspect ratio'),
+                'pixel_aspect_ratio': Basic('PixelAspectRatio', float, description='pixel aspect ratio'),
                 'resolution': None,  # populated with ResolutionRule
-                'frame_rate': Quantity('frame_rate', units.FPS, float, description='video frame rate'),
+                'frame_rate': Quantity('FrameRate', units.FPS, float, description='video frame rate'),
                 # frame_rate_mode
-                'bit_rate': Quantity('bit_rate', units.bps, description='video bit rate'),
-                'bit_depth': Quantity('bit_depth', units.bit, description='video bit depth'),
-                'codec': VideoCodec(config, 'codec', description='video codec'),
-                'profile': VideoProfile(config, 'codec_profile', description='video codec profile'),
-                'profile_level': VideoProfileLevel(config, 'codec_profile', description='video codec profile level'),
-                'profile_tier': VideoProfileTier(config, 'codec_profile', description='video codec profile tier'),
+                'bit_rate': Quantity('BitRate', units.bps, description='video bit rate'),
+                'bit_depth': Quantity('BitDepth', units.bit, description='video bit depth'),
+                'codec': VideoCodec(config, 'CodecID', description='video codec'),
+                'profile': VideoProfile(config, 'Format_Profile', description='video codec profile'),
+                'profile_level': VideoProfileLevel(config, 'Format_Level', description='video codec profile level'),
+                'profile_tier': VideoProfileTier(config, 'Format_Profile', description='video codec profile tier'),
                 'encoder': VideoEncoder(config, 'encoded_library_name', description='video encoder'),
-                'media_type': Property('internet_media_type', description='video media type'),
-                'forced': YesNo('forced', hide_value=False, description='video track forced'),
-                'default': YesNo('default', hide_value=False, description='video track default'),
+                'media_type': Property('InternetMediaType', description='video media type'),
+                'forced': YesNo('Forced', hide_value=False, description='video track forced'),
+                'default': YesNo('Default', hide_value=False, description='video track default'),
             },
             'audio': {
-                'id': Basic('track_id', int, allow_fallback=True, description='audio track number'),
-                'name': Property('title', description='audio track name'),
-                'language': Language('language', description='audio language'),
-                'duration': Duration('duration', description='audio duration'),
-                'size': Quantity('stream_size', units.byte, description='audio stream size'),
-                'codec': MultiValue(AudioCodec(config, 'codec', description='audio codec')),
-                'profile': MultiValue(AudioProfile(config, 'format_profile', description='audio codec profile'),
+                'id': Basic('ID', int, allow_fallback=True, description='audio track number'),
+                'name': Property('Title', description='audio track name'),
+                'language': Language('Language', description='audio language'),
+                'duration': Duration('Duration', description='audio duration'),
+                'size': Quantity('StreamSize', units.byte, description='audio stream size'),
+                'codec': MultiValue(AudioCodec(config, 'CodecID', description='audio codec')),
+                'profile': MultiValue(AudioProfile(config, 'Format_Profile', description='audio codec profile'),
                                       delimiter=' / '),
-                'channels_count': MultiValue(AudioChannels('channel_s', description='audio channels count')),
+                'channels_count': MultiValue(AudioChannels('Channels', description='audio channels count')),
                 'channel_positions': MultiValue(name='other_channel_positions', handler=(lambda x, *args: x),
                                                 delimiter=' / ', private=True, description='audio channels position'),
                 'channels': None,  # populated with AudioChannelsRule
-                'bit_depth': Quantity('bit_depth', units.bit, description='audio bit depth'),
-                'bit_rate': MultiValue(Quantity('bit_rate', units.bps, description='audio bit rate')),
-                'bit_rate_mode': MultiValue(BitRateMode(config, 'bit_rate_mode', description='audio bit rate mode')),
-                'sampling_rate': MultiValue(Quantity('sampling_rate', units.Hz, description='audio sampling rate')),
-                'compression': MultiValue(AudioCompression(config, 'compression_mode',
+                'bit_depth': Quantity('BitDepth', units.bit, description='audio bit depth'),
+                'bit_rate': MultiValue(Quantity('BitRate', units.bps, description='audio bit rate')),
+                'bit_rate_mode': MultiValue(BitRateMode(config, 'BitRateMode', description='audio bit rate mode')),
+                'sampling_rate': MultiValue(Quantity('SamplingRate', units.Hz, description='audio sampling rate')),
+                'compression': MultiValue(AudioCompression(config, 'Compression_Mode',
                                                            description='audio compression')),
-                'forced': YesNo('forced', hide_value=False, description='audio track forced'),
-                'default': YesNo('default', hide_value=False, description='audio track default'),
+                'forced': YesNo('Forced', hide_value=False, description='audio track forced'),
+                'default': YesNo('Default', hide_value=False, description='audio track default'),
             },
             'subtitle': {
-                'id': Basic('track_id', int, allow_fallback=True, description='subtitle track number'),
-                'name': Property('title', description='subtitle track name'),
-                'language': Language('language', description='subtitle language'),
+                'id': Basic('ID', int, allow_fallback=True, description='subtitle track number'),
+                'name': Property('Title', description='subtitle track name'),
+                'language': Language('Language', description='subtitle language'),
                 'hearing_impaired': None,  # populated with HearingImpairedRule
                 '_closed_caption': Property('captionservicename', private=True),
                 'closed_caption': None,  # populated with ClosedCaptionRule
-                'format': SubtitleFormat(config, 'codec_id', description='subtitle format'),
-                'forced': YesNo('forced', hide_value=False, description='subtitle track forced'),
-                'default': YesNo('default', hide_value=False, description='subtitle track default'),
+                'format': SubtitleFormat(config, 'CodecID', description='subtitle format'),
+                'forced': YesNo('Forced', hide_value=False, description='subtitle track forced'),
+                'default': YesNo('Default', hide_value=False, description='subtitle track default'),
             },
         }, {
             'video': {
@@ -277,11 +275,11 @@ class MediaInfoProvider(Provider):
     def describe(self, video_path, context):
         """Return video metadata."""
         media_info = self.executor.extract_info(video_path)
+        data = json.loads(media_info)
 
         def debug_data():
             """Debug data."""
-            xml = ElementTree.tostring(media_info.xml_dom).decode().replace('\r', '').replace('\n', '')
-            return minidom.parseString(xml).toprettyxml(indent='  ', newl='\n', encoding='utf-8').decode()
+            return json.dumps(data, indent=4)
 
         context['debug_data'] = debug_data
 
@@ -289,15 +287,15 @@ class MediaInfoProvider(Provider):
             logger.debug('Video %r scanned using mediainfo %r has raw data:\n%s',
                          video_path, self.executor.location, debug_data())
 
-        data = media_info.to_data()
         result = {}
-        if data.get('tracks'):
+        tracks = data.get('media', {}).get('track', [])
+        if tracks:
             general_tracks = []
             video_tracks = []
             audio_tracks = []
             subtitle_tracks = []
-            for track in data.get('tracks'):
-                track_type = track.get('track_type')
+            for track in tracks:
+                track_type = track.get('@type')
                 if track_type == 'General':
                     general_tracks.append(track)
                 elif track_type == 'Video':

@@ -282,6 +282,7 @@ knowledge:
       - DTS-HD
     AAC:
       - AAC
+      - AAC-2
     FLAC:
       - FLAC
     PCM:
