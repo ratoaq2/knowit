@@ -32,7 +32,9 @@ def initialize(context: typing.Optional[typing.Mapping] = None) -> None:
         context = context or {}
         config = Config.build(context.get('config'))
         for name, provider_cls in _provider_map.items():
-            available_providers[name] = provider_cls(config, context.get(name) or config.general.get(name))
+            general_config = getattr(config, 'general', {})
+            mapping = context.get(name) or general_config.get(name)
+            available_providers[name] = provider_cls(config, mapping)
 
 
 def know(
