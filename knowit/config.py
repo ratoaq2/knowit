@@ -32,7 +32,7 @@ class Config:
             cfgs = [yaml.load(stream, Loader=loader)]
 
         if path:
-            with open(path, 'r') as stream:
+            with open(path, 'rb') as stream:
                 cfgs.append(yaml.load(stream, Loader=loader))
 
         profiles_data = {}
