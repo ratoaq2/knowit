@@ -1,4 +1,4 @@
-
+import typing
 from logging import NullHandler, getLogger
 
 from knowit.core import Reportable
@@ -9,14 +9,25 @@ logger.addHandler(NullHandler())
 _visible_chars_table = dict.fromkeys(range(32))
 
 
-def _is_unknown(value):
+def _is_unknown(value: typing.Any) -> bool:
     return isinstance(value, str) and (not value or value.lower() == 'unknown')
 
 
-class Property(Reportable):
+T = typing.TypeVar('T')
+
+
+class Property(Reportable[T]):
     """Property class."""
 
-    def __init__(self, name, default=None, private=False, description=None, delimiter=' / ', **kwargs):
+    def __init__(
+            self,
+            name: str,
+            default: typing.Optional[T] = None,
+            private: bool = False,
+            description: typing.Optional[str] = None,
+            delimiter: str = ' / ',
+            **kwargs,
+    ):
         """Init method."""
         super().__init__(name, description, **kwargs)
         self.default = default
@@ -24,7 +35,11 @@ class Property(Reportable):
         # Used to detect duplicated values. e.g.: en / en or High@L4.0 / High@L4.0 or Progressive / Progressive
         self.delimiter = delimiter
 
-    def extract_value(self, track, context):
+    def extract_value(
+            self,
+            track: typing.Mapping,
+            context: typing.MutableMapping,
+    ) -> typing.Optional[T]:
         """Extract the property value from a given track."""
         names = self.name.split('.')
         value = track.get(names[0], {}).get(names[1]) if len(names) == 2 else track.get(self.name)
@@ -44,42 +59,49 @@ class Property(Reportable):
             value = self._deduplicate(value)
 
         result = self.handle(value, context)
-        if result is not None and not _is_unknown(result):
+        if not _is_unknown(result):
             return result
+        else:
+            return None
 
     @classmethod
-    def _deduplicate(cls, value):
+    def _deduplicate(cls, value: str) -> str:
         values = value.split(' / ')
         if len(values) == 2 and values[0] == values[1]:
             return values[0]
         return value
 
-    def handle(self, value, context):
+    def handle(self, value: T, context: typing.MutableMapping) -> T:
         """Return the value without any modification."""
         return value
 
 
-class Configurable(Property):
+class Configurable(Property[T]):
     """Configurable property where values are in a config mapping."""
 
-    def __init__(self, config, *args, **kwargs):
+    def __init__(self, config: typing.Mapping[str, typing.Mapping], *args, **kwargs):
         """Init method."""
         super().__init__(*args, **kwargs)
         self.mapping = getattr(config, self.__class__.__name__)
 
     @classmethod
-    def _extract_key(cls, value):
+    def _extract_key(cls, value: str) -> typing.Union[str, bool]:
         return value.upper()
 
     @classmethod
-    def _extract_fallback_key(cls, value, key):
-        pass
+    def _extract_fallback_key(cls, value: str, key: str) -> typing.Optional[T]:
+        return None
 
-    def _lookup(self, key, context):
+    def _lookup(
+            self,
+            key: str,
+            context: typing.MutableMapping,
+    ) -> typing.Union[T, None, bool]:
         result = self.mapping.get(key)
         if result is not None:
             result = getattr(result, context.get('profile') or 'default')
             return result if result != '__ignored__' else False
+        return None
 
     def handle(self, value, context):
         """Return Variable or Constant."""
@@ -114,7 +136,11 @@ class MultiValue(Property):
         self.single = single
         self.handler = handler
 
-    def handle(self, value, context):
+    def handle(
+            self,
+            value: str,
+            context: typing.Mapping,
+    ) -> typing.Union[T, typing.List[T]]:
         """Handle properties with multiple values."""
         values = (self._split(value[0], self.delimiter)
                   if len(value) == 1 else value) if isinstance(value, list) else self._split(value, self.delimiter)
@@ -125,8 +151,12 @@ class MultiValue(Property):
         return call(values[0], context)
 
     @classmethod
-    def _split(cls, value, delimiter='/'):
+    def _split(
+            cls,
+            value: typing.Optional[T],
+            delimiter: str = '/',
+    ) -> typing.Optional[typing.List[str]]:
         if value is None:
-            return
+            return None
 
         return [x.strip() for x in str(value).split(delimiter)]

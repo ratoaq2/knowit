@@ -1,5 +1,4 @@
 """Know your media files better."""
-
 __title__ = 'knowit'
 __version__ = '0.3.0'
 __short_version__ = '.'.join(__version__.split('.')[:2])

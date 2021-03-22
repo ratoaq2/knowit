@@ -1,4 +1,4 @@
-
+import os
 import traceback
 import typing
 
@@ -26,7 +26,7 @@ class KnowitException(Exception):
     """Exception raised when knowit fails to perform media info extraction because of an internal error."""
 
 
-def initialize(context=None):
+def initialize(context: typing.Optional[typing.Mapping] = None) -> None:
     """Initialize knowit."""
     if not available_providers:
         context = context or {}
@@ -35,21 +35,12 @@ def initialize(context=None):
             available_providers[name] = provider_cls(config, context.get(name) or config.general.get(name))
 
 
-def know(video_path, context=None):
-    """Return a dict containing the video metadata.
-
-    :param video_path:
-    :type video_path: string
-    :param context:
-    :type context: dict
-    :return:
-    :rtype: dict
-    """
-    try:
-        # handle path-like objects
-        video_path = video_path.__fspath__()
-    except AttributeError:
-        pass
+def know(
+        video_path: typing.Union[str, os.PathLike],
+        context: typing.Optional[typing.MutableMapping] = None
+) -> typing.Mapping:
+    """Return a mapping of video metadata."""
+    video_path = os.fspath(video_path)
 
     try:
         context = context or {}
@@ -70,7 +61,7 @@ def know(video_path, context=None):
         raise KnowitException(debug_info(context=context, exc_info=True))
 
 
-def dependencies(context=None):
+def dependencies(context: typing.Mapping = None) -> typing.Mapping:
     """Return all dependencies detected by knowit."""
     deps = {}
     try:
@@ -86,12 +77,15 @@ def dependencies(context=None):
     return deps
 
 
-def _centered(value):
+def _centered(value: str) -> str:
     value = value[-52:]
     return f'| {value:^53} |'
 
 
-def debug_info(context=None, exc_info=False):
+def debug_info(
+        context: typing.Optional[typing.MutableMapping] = None,
+        exc_info: bool = False,
+) -> str:
     lines = [
         '+-------------------------------------------------------+',
         _centered(f'KnowIt {__version__}'),

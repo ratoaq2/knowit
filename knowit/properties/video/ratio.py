@@ -1,5 +1,6 @@
 
 import re
+import typing
 
 from knowit.property import Property
 
@@ -14,7 +15,7 @@ class Ratio(Property):
 
     ratio_re = re.compile(r'(?P<width>\d+)[:/](?P<height>\d+)')
 
-    def handle(self, value, context):
+    def handle(self, value, context) -> typing.Optional[float]:
         """Handle ratio."""
         match = self.ratio_re.match(value)
         if match:

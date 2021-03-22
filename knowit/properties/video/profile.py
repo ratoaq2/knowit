@@ -1,3 +1,4 @@
+import typing
 
 from knowit.property import Configurable
 
@@ -6,7 +7,7 @@ class VideoProfile(Configurable):
     """Video Profile property."""
 
     @classmethod
-    def _extract_key(cls, value):
+    def _extract_key(cls, value) -> str:
         return value.upper().split('@')[0]
 
 
@@ -14,7 +15,7 @@ class VideoProfileLevel(Configurable):
     """Video Profile Level property."""
 
     @classmethod
-    def _extract_key(cls, value):
+    def _extract_key(cls, value) -> typing.Union[str, bool]:
         values = str(value).upper().split('@')
         if len(values) > 1:
             value = values[1]
@@ -28,7 +29,7 @@ class VideoProfileTier(Configurable):
     """Video Profile Tier property."""
 
     @classmethod
-    def _extract_key(cls, value):
+    def _extract_key(cls, value) -> typing.Union[str, bool]:
         values = str(value).upper().split('@')
         if len(values) > 2:
             return values[2]

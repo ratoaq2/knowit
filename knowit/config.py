@@ -1,4 +1,4 @@
-
+import os
 import typing
 from logging import NullHandler, getLogger
 
@@ -25,7 +25,7 @@ class Config:
     """Application config class."""
 
     @classmethod
-    def build(cls, path=None):
+    def build(cls, path: typing.Optional[typing.Union[str, os.PathLike]] = None) -> 'Config':
         """Build config instance."""
         loader = get_yaml_loader()
         with resource_stream('knowit', 'defaults.yml') as stream:
