@@ -45,7 +45,7 @@ class Config:
             if 'knowledge' in cfg:
                 knowledge_data.update(cfg['knowledge'])
 
-        data = {'general': {}}
+        data: typing.Dict[str, typing.MutableMapping] = {'general': {}}
         for class_name, data_map in knowledge_data.items():
             data.setdefault(class_name, {})
             for code, detection_values in data_map.items():

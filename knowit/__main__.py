@@ -169,7 +169,7 @@ def main(args: typing.List[str] = None) -> None:
     paths = recurse_paths(options.videopath)
 
     if paths:
-        report = {}
+        report: typing.MutableMapping[str, str] = {}
         for i, videopath in enumerate(paths):
             try:
                 context = dict(vars(options))
