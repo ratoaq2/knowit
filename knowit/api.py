@@ -23,7 +23,7 @@ available_providers: typing.Dict[str, Provider] = {}
 
 
 class KnowitException(Exception):
-    """Exception raised when knowit fails to perform media info extraction because of an internal error."""
+    """Exception raised when knowit encounters an internal error."""
 
 
 def initialize(context: typing.Optional[typing.Mapping] = None) -> None:
