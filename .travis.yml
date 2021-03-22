@@ -34,3 +34,7 @@ install:
   - pip install -e .
 
 script: tox
+
+after_script:
+  - tox -e lint
+  - tox -e type-check
