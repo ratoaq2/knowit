@@ -24,7 +24,6 @@ from ..properties import (
     VideoCodec,
     VideoEncoder,
     VideoProfile,
-    VideoProfileLevel,
     VideoProfileTier,
     YesNo,
 )
@@ -39,6 +38,7 @@ from ..provider import (
 from ..rules import (
     AtmosRule,
     AudioChannelsRule,
+    AudioProfileRule,
     ClosedCaptionRule,
     DtsHdRule,
     HearingImpairedRule,
@@ -123,7 +123,7 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
     }
 
     def _execute(self, filename):
-        return MediaInfo(check_output([self.location, '--Output=JSON', '--Full', filename]).decode())
+        return json.loads(check_output([self.location, '--Output=JSON', '--Full', filename]).decode())
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
@@ -156,7 +156,7 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
 
     def _execute(self, filename):
         # Create a MediaInfo handle
-        return MediaInfo.parse(filename, library_file=self.location, output='JSON')
+        return json.loads(MediaInfo.parse(filename, library_file=self.location, output='JSON'))
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
@@ -189,7 +189,7 @@ class MediaInfoProvider(Provider):
             },
             'video': {
                 'id': Basic('ID', int, allow_fallback=True, description='video track number'),
-                'name': Property('name', description='video track name'),
+                'name': Property('Title', description='video track name'),
                 'language': Language('Language', description='video language'),
                 'duration': Duration('Duration', description='video duration'),
                 'size': Quantity('StreamSize', units.byte, description='video stream size'),
@@ -205,9 +205,9 @@ class MediaInfoProvider(Provider):
                 'bit_depth': Quantity('BitDepth', units.bit, description='video bit depth'),
                 'codec': VideoCodec(config, 'CodecID', description='video codec'),
                 'profile': VideoProfile(config, 'Format_Profile', description='video codec profile'),
-                'profile_level': VideoProfileLevel(config, 'Format_Level', description='video codec profile level'),
-                'profile_tier': VideoProfileTier(config, 'Format_Profile', description='video codec profile tier'),
-                'encoder': VideoEncoder(config, 'encoded_library_name', description='video encoder'),
+                'profile_level': Property('Format_Level', description='video codec profile level'),
+                'profile_tier': VideoProfileTier(config, 'Format_Tier', description='video codec profile tier'),
+                'encoder': VideoEncoder(config, 'Encoded_Library_Name', description='video encoder'),
                 'media_type': Property('InternetMediaType', description='video media type'),
                 'forced': YesNo('Forced', hide_value=False, description='video track forced'),
                 'default': YesNo('Default', hide_value=False, description='video track default'),
@@ -219,15 +219,19 @@ class MediaInfoProvider(Provider):
                 'duration': Duration('Duration', description='audio duration'),
                 'size': Quantity('StreamSize', units.byte, description='audio stream size'),
                 'codec': MultiValue(AudioCodec(config, 'CodecID', description='audio codec')),
-                'profile': MultiValue(AudioProfile(config, 'Format_Profile', description='audio codec profile'),
+                'profile': MultiValue(AudioProfile(config, 'Format_Profile',
+                                                   description='audio codec profile'),
                                       delimiter=' / '),
+                '_profile': MultiValue(AudioProfile(config, 'Format_AdditionalFeatures',
+                                                    description='audio codec additional features'),
+                                       delimiter=' / ', private=True),
                 'channels_count': MultiValue(AudioChannels('Channels', description='audio channels count')),
-                'channel_positions': MultiValue(name='other_channel_positions', handler=(lambda x, *args: x),
+                'channel_positions': MultiValue(name='ChannelPositions_String2', handler=(lambda x, *args: x),
                                                 delimiter=' / ', private=True, description='audio channels position'),
                 'channels': None,  # populated with AudioChannelsRule
                 'bit_depth': Quantity('BitDepth', units.bit, description='audio bit depth'),
                 'bit_rate': MultiValue(Quantity('BitRate', units.bps, description='audio bit rate')),
-                'bit_rate_mode': MultiValue(BitRateMode(config, 'BitRateMode', description='audio bit rate mode')),
+                'bit_rate_mode': MultiValue(BitRateMode(config, 'BitRate_Mode', description='audio bit rate mode')),
                 'sampling_rate': MultiValue(Quantity('SamplingRate', units.Hz, description='audio sampling rate')),
                 'compression': MultiValue(AudioCompression(config, 'Compression_Mode',
                                                            description='audio compression')),
@@ -239,7 +243,7 @@ class MediaInfoProvider(Provider):
                 'name': Property('Title', description='subtitle track name'),
                 'language': Language('Language', description='subtitle language'),
                 'hearing_impaired': None,  # populated with HearingImpairedRule
-                '_closed_caption': Property('captionservicename', private=True),
+                '_closed_caption': Property('ClosedCaptionsPresent', private=True),
                 'closed_caption': None,  # populated with ClosedCaptionRule
                 'format': SubtitleFormat(config, 'CodecID', description='subtitle format'),
                 'forced': YesNo('Forced', hide_value=False, description='subtitle track forced'),
@@ -253,6 +257,7 @@ class MediaInfoProvider(Provider):
             'audio': {
                 'language': LanguageRule('audio language'),
                 'channels': AudioChannelsRule('audio channels'),
+                'profile': AudioProfileRule('audio codec profile', override=True),
                 '_atmosrule': AtmosRule('atmos rule'),
                 '_dtshdrule': DtsHdRule('dts-hd rule'),
             },
@@ -274,8 +279,7 @@ class MediaInfoProvider(Provider):
 
     def describe(self, video_path, context):
         """Return video metadata."""
-        media_info = self.executor.extract_info(video_path)
-        data = json.loads(media_info)
+        data = self.executor.extract_info(video_path)
 
         def debug_data():
             """Debug data."""

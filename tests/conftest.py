@@ -41,7 +41,7 @@ def setup_mediainfo(executor, monkeypatch, options):
     data = {}
     extract_info = executor.extract_info
     monkeypatch.setattr(executor, 'extract_info',
-                        lambda filename: MediaInfo(data[filename]) if filename in data else extract_info(filename))
+                        lambda filename: data[filename] if filename in data else extract_info(filename))
     return data
 
 

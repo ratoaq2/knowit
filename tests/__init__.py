@@ -235,7 +235,7 @@ class JsonMedia(DataMedia):
     @property
     def input_data(self):
         """Return the video metadata as json."""
-        return read_yaml(self.file_path)
+        return read_json(self.file_path)
 
 
 def _parse_value(node):

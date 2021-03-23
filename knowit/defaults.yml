@@ -232,6 +232,7 @@ knowledge:
     MA:
       - MA
       - DTS-HD MA
+      - XLL
     MAIN:
       - MAIN
     LC:

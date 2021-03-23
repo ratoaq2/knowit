@@ -7,7 +7,7 @@ from knowit import know
 from . import assert_expected, id_func
 
 
-@pytest.mark.parametrize('media', mediafiles.get_xml_media('mediainfo'), ids=id_func)
+@pytest.mark.parametrize('media', mediafiles.get_json_media('mediainfo'), ids=id_func)
 def test_mediainfo_provider(mediainfo, media, options):
     # Given
     mediainfo[media.video_path] = media.input_data
