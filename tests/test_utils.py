@@ -15,7 +15,7 @@ from knowit.utils import detect_os
         (None, None, 'unix'),
     ]
 )
-def test_detect_os_is_windows(os_name, sys_platform, expected):
+def test_detect_os(os_name, sys_platform, expected):
     with patch('knowit.utils.os') as mock_os:
         mock_os.name = os_name
         with patch('knowit.utils.sys') as mock_sys:
