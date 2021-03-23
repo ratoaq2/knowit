@@ -19,9 +19,9 @@ class Duration(Property):
         if isinstance(value, timedelta):
             return value
         elif isinstance(value, int):
-            return timedelta(milliseconds=value)
+            return timedelta(seconds=value)
         try:
-            return timedelta(milliseconds=int(float(value)))
+            return timedelta(seconds=int(float(value)))
         except ValueError:
             pass
 

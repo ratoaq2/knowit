@@ -1,6 +1,6 @@
 {
   "media":{
-    "@ref":"/videos/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
+    "@ref":"tests/data/7.1-dts-hd-ma-speaker-mapping-test-file.mkv",
     "track":[
       {
         "@type":"General",
@@ -20,10 +20,10 @@
         "Audio_Format_WithHint_List":"DTS XLL",
         "Audio_Codec_List":"DTS XLL",
         "Audio_Language_List":"English",
-        "CompleteName":"/videos/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
-        "FolderName":"/videos/Audio Samples",
-        "FileNameExtension":"7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
-        "FileName":"7.1Ch DTS-HD MA - Speaker Mapping Test File",
+        "CompleteName":"tests/data/7.1-dts-hd-ma-speaker-mapping-test-file.mkv",
+        "FolderName":"tests/data",
+        "FileNameExtension":"7.1-dts-hd-ma-speaker-mapping-test-file.mkv",
+        "FileName":"7.1-dts-hd-ma-speaker-mapping-test-file",
         "FileExtension":"mkv",
         "Format":"Matroska",
         "Format_String":"Matroska",

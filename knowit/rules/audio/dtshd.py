@@ -17,14 +17,5 @@ class DtsHdRule(Rule):
 
     def execute(self, props, pv_props, context):
         """Execute the rule against properties."""
-        if props.get('codec') == 'DTS-HD':
-            index = None
-            for i, profile in enumerate(props.get('profile', [])):
-                if profile and profile.upper() != 'CORE':
-                    index = i
-                    break
-
-            if index is not None:
-                for name in ('profile', 'channels_count', 'bit_rate',
-                             'bit_rate_mode', 'sampling_rate', 'compression'):
-                    self._redefine(props, name, index)
+        if props.get('codec') == 'DTS' and props.get('profile') in ('Master Audio', 'High Resolution Audio'):
+            props['codec'] = 'DTS-HD'

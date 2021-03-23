@@ -153,7 +153,10 @@ class MultiValue(Property):
         if values is None:
             return call(values, context)
         if len(values) > 1 and not self.single:
-            return [call(item, context) if not _is_unknown(item) else None for item in values]
+            results = [call(item, context) if not _is_unknown(item) else None for item in values]
+            results = [r for r in results if r is not None]
+            if results:
+                return results
         return call(values[0], context)
 
     @classmethod
