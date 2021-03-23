@@ -291,6 +291,9 @@ def check_mapping_equals(expected, actual, different, options, prefix=''):
         return
 
     for expected_key, expected_value in expected.items():
+        if expected_key == 'media_type':
+            continue
+
         if expected_key not in actual:
             different.append((prefix + expected_key, expected_value, None))
             continue
