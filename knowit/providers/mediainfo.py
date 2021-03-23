@@ -123,7 +123,7 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
     }
 
     def _execute(self, filename):
-        return json.loads(check_output([self.location, '--Output=JSON', '--Full', filename]))
+        return json.loads(check_output([self.location, '--Output=JSON', '--Full', filename]).decode())
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
