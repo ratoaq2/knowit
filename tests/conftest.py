@@ -1,5 +1,5 @@
+from unittest.mock import Mock
 
-from pymediainfo import MediaInfo
 import pytest
 
 from knowit import api
@@ -7,11 +7,6 @@ from knowit.config import Config
 from knowit.providers import EnzymeProvider
 from knowit.providers.ffmpeg import FFmpegCliExecutor, FFmpegExecutor
 from knowit.providers.mediainfo import MediaInfoCTypesExecutor, MediaInfoCliExecutor, MediaInfoExecutor
-
-try:
-    from mock import Mock
-except ImportError:
-    from unittest.mock import Mock
 
 
 @pytest.fixture
