@@ -318,7 +318,9 @@ def check_mapping_equals(expected, actual, different, options, prefix=''):
 
 
 def assert_expected(expected, actual, options=None):
+    version = None
     if 'provider' in actual:
+        version = actual['provider']['version']
         del actual['provider']['version']
 
     different = []
@@ -327,6 +329,7 @@ def assert_expected(expected, actual, options=None):
         print('{0}: Expected {1} got {2}'.format(key, expected, actual), file=sys.stderr)
 
     if different and options and options['debug_data']:
+        print(f'Version: {version}')
         print(options['debug_data']())
 
     assert not different
