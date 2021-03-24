@@ -80,7 +80,8 @@ def define_candidate(
     """Generate candidate list for the given parameters."""
     os_family = os_family or detect_os()
     family_names = names[os_family]
-    for location in (suggested_path, ) + locations[os_family]:
+    all_locations = (suggested_path, ) + locations[os_family]
+    for location in all_locations:
         if not location:
             continue
 
