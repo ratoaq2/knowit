@@ -87,21 +87,13 @@ def define_candidate(
 def build_candidates(
         locations: typing.Iterable[str],
         names: typing.Iterable[str],
-        os_family: typing.Optional[OS_FAMILY] = None,
 ):
-    """Build candidate names """
-    os_family = os_family or detect_os()
+    """Build candidate names."""
     for location in locations:
         if not location:
             continue
-
         if location == '__PATH__':
-            for name in names:
-                if os_family == 'windows':
-                    for path in os.environ['PATH'].split(';'):
-                        yield os.path.join(path, name)
-                else:
-                    yield name
+            yield from build_path_candidates(names)
         elif os.path.isfile(location):
             yield location
         elif os.path.isdir(location):
@@ -109,3 +101,20 @@ def build_candidates(
                 cmd = os.path.join(location, name)
                 if os.path.isfile(cmd):
                     yield cmd
+
+
+def build_path_candidates(
+    names: typing.Iterable[str],
+    os_family: typing.Optional[OS_FAMILY] = None,
+):
+    """Build candidate names on environment PATH."""
+    os_family = os_family or detect_os()
+    if os_family != 'windows':
+        yield from names
+    else:
+        paths = os.environ['PATH'].split(';')
+        yield from (
+            os.path.join(path, name)
+            for path in paths
+            for name in names
+        )
