@@ -1,6 +1,6 @@
-
 import json
 import os
+import pathlib
 import re
 import sys
 from datetime import timedelta
@@ -40,6 +40,10 @@ serializer.YAMLLoader = serializer.get_yaml_loader({
     'tag:yaml.org,2002:str': lambda constructor, value: _parse_value(value),
     'tag:yaml.org,2002:seq': Constructor.construct_sequence,
 })
+
+
+def normalize_path(path: str):
+    return os.fspath(pathlib.Path(path))
 
 
 def parameters_from_yaml(name, input_key=None, expected_key=None):
@@ -300,6 +304,11 @@ def check_mapping_equals(expected, actual, different, options, prefix=''):
 
         actual_value = actual[expected_key]
         key = prefix + expected_key
+
+        if expected_key == 'path':
+            expected_value = normalize_path(expected_value)
+            actual_value = normalize_path(actual_value)
+
         check_equals(expected_value, actual_value, different=different, options=options, prefix=key)
 
     for actual_key, actual_value in actual.items():
