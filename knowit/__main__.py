@@ -43,7 +43,7 @@ def build_argument_parser() -> ArgumentParser:
         '-p',
         '--provider',
         dest='provider',
-        help='The provider to be used: mediainfo, ffmpeg or enzyme.',
+        help='The provider to be used: mediainfo, ffmpeg, mkvmerge or enzyme.',
         type=str,
     )
 
@@ -93,6 +93,12 @@ def build_argument_parser() -> ArgumentParser:
         '--ffmpeg',
         dest='ffmpeg',
         help='The location to search for FFmpeg (ffprobe) binaries',
+        type=str,
+    )
+    conf_opts.add_argument(
+        '--mkvmerge',
+        dest='mkvmerge',
+        help='The location to search for mkvmerge binaries',
         type=str,
     )
 

@@ -127,6 +127,8 @@ class MediaFiles(object):
         for provider in provider_names:
             files = []
             data_path = os.path.join('tests', 'data', provider)
+            if not os.path.isdir(data_path):
+                continue
             for path in os.listdir(data_path):
                 if not path.lower().endswith(YAML_EXTENSIONS):
                     files.append(os.path.join(data_path, path))

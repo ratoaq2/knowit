@@ -9,11 +9,13 @@ from .providers import (
     EnzymeProvider,
     FFmpegProvider,
     MediaInfoProvider,
+    MkvMergeProvider,
 )
 
 _provider_map = {
     'mediainfo': MediaInfoProvider,
     'ffmpeg': FFmpegProvider,
+    'mkvmerge': MkvMergeProvider,
     'enzyme': EnzymeProvider,
 }
 

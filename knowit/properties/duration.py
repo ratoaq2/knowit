@@ -14,14 +14,18 @@ class Duration(Property):
                              r'(?P<millis>\d{3})'
                              r'(?P<micro>\d{3})?\d*)?')
 
+    def __init__(self, name: str, resolution=1, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
+        self.resolution = resolution
+
     def handle(self, value, context):
         """Return duration as timedelta."""
         if isinstance(value, timedelta):
             return value
         elif isinstance(value, int):
-            return timedelta(seconds=value)
+            return timedelta(microseconds=value * self.resolution)
         try:
-            return timedelta(seconds=int(float(value)))
+            return timedelta(microseconds=int(float(value) * self.resolution))
         except ValueError:
             pass
 
