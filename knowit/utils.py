@@ -79,12 +79,13 @@ def define_candidate(
 ) -> typing.Generator[str, None, None]:
     """Generate candidate list for the given parameters."""
     os_family = os_family or detect_os()
+    family_names = names[os_family]
     for location in (suggested_path, ) + locations[os_family]:
         if not location:
             continue
 
         if location == '__PATH__':
-            for name in names[os_family]:
+            for name in family_names:
                 if os_family == 'windows':
                     for path in os.environ['PATH'].split(';'):
                         yield os.path.join(path, name)
@@ -93,7 +94,7 @@ def define_candidate(
         elif os.path.isfile(location):
             yield location
         elif os.path.isdir(location):
-            for name in names[os_family]:
+            for name in family_names:
                 cmd = os.path.join(location, name)
                 if os.path.isfile(cmd):
                     yield cmd
