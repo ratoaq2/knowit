@@ -87,7 +87,7 @@ def define_candidate(
 def build_candidates(
         locations: typing.Iterable[str],
         names: typing.Iterable[str],
-):
+) -> typing.Generator[str, None, None]:
     """Build candidate names."""
     for location in locations:
         if not location:
@@ -106,7 +106,7 @@ def build_candidates(
 def build_path_candidates(
     names: typing.Iterable[str],
     os_family: typing.Optional[OS_FAMILY] = None,
-):
+) -> typing.Generator[str, None, None]:
     """Build candidate names on environment PATH."""
     os_family = os_family or detect_os()
     if os_family != 'windows':

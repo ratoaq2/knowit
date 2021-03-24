@@ -1,5 +1,6 @@
-
+import datetime
 import json
+import typing
 from datetime import timedelta
 
 import babelfish
@@ -81,7 +82,10 @@ def get_yaml_loader(constructors=None):
     return CustomLoader
 
 
-def format_duration(duration, profile='default'):
+def format_duration(
+        duration: datetime.timedelta,
+        profile='default',
+) -> typing.Union[str, float]:
     if profile == 'technical':
         return str(duration)
 
@@ -103,14 +107,20 @@ def format_duration(duration, profile='default'):
     return f'{hours}:{minutes:02d}:{seconds:02d}'
 
 
-def format_language(language, profile='default'):
+def format_language(
+        language: babelfish.language.Language,
+        profile: str = 'default',
+) -> str:
     if profile in ('default', 'human'):
         return str(language.name)
 
     return str(language)
 
 
-def format_quantity(quantity, profile='default'):
+def format_quantity(
+        quantity,
+        profile='default',
+) -> str:
     """Human friendly format."""
     if profile == 'code':
         return quantity.magnitude
@@ -130,7 +140,12 @@ def format_quantity(quantity, profile='default'):
     return str(quantity)
 
 
-def _format_quantity(num, unit='B', binary=False, precision=2):
+def _format_quantity(
+        num,
+        unit: str = 'B',
+        binary: bool = False,
+        precision: int = 2,
+) -> str:
     fmt_pattern = '{value:3.%sf} {prefix}{affix}{unit}' % precision
     factor = 1024. if binary else 1000.
     binary_affix = 'i' if binary else ''
