@@ -1,3 +1,4 @@
+import typing
 from unittest.mock import patch
 
 import pytest
@@ -66,4 +67,9 @@ def test_build_path_candidates_for_specified_os(names, os_family, path, expected
         mock_os.environ = {'PATH': path}
         mock_os.path = os.path  # don't mock os.path functions
         candidates = build_path_candidates(names, os_family)
-        assert list(candidates) == expected
+
+        def normalize_paths(paths: typing.Iterable[str]):
+            """replace all slashes to a forward slash for comparison purposes."""
+            return [p.replace('\\', '/') for p in paths]
+
+        assert normalize_paths(candidates) == normalize_paths(expected)
