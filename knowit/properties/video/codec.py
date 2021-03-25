@@ -2,7 +2,7 @@
 from knowit.property import Configurable
 
 
-class VideoCodec(Configurable):
+class VideoCodec(Configurable[str]):
     """Video Codec handler."""
 
     @classmethod

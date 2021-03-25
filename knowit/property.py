@@ -71,7 +71,7 @@ class Property(Reportable[T]):
             return values[0]
         return value
 
-    def handle(self, value: T, context: typing.MutableMapping) -> T:
+    def handle(self, value: T, context: typing.MutableMapping) -> typing.Optional[T]:
         """Return the value without any modification."""
         return value
 

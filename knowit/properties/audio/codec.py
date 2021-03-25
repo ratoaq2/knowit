@@ -3,7 +3,7 @@ import typing
 from knowit.property import Configurable
 
 
-class AudioCodec(Configurable):
+class AudioCodec(Configurable[str]):
     """Audio codec property."""
 
     @classmethod

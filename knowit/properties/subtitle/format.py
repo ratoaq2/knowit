@@ -2,7 +2,7 @@
 from knowit.property import Configurable
 
 
-class SubtitleFormat(Configurable):
+class SubtitleFormat(Configurable[str]):
     """Subtitle Format property."""
 
     @classmethod
