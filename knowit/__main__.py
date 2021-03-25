@@ -131,28 +131,41 @@ def knowit(
     return info
 
 
+def _as_yaml(
+        info: typing.Mapping[str, typing.Any],
+        context: typing.Mapping,
+) -> str:
+    """Convert info to string using YAML format."""
+    data = {info['path']: info} if 'path' in info else info
+    return yaml.dump(
+        data,
+        Dumper=get_yaml_dumper(context),
+        default_flow_style=False,
+        allow_unicode=True,
+    )
+
+
+def _as_json(
+        info: typing.Mapping[str, typing.Any],
+        context: typing.Mapping,
+) -> str:
+    """Convert info to string using JSON format."""
+    return json.dumps(
+        info,
+        cls=get_json_encoder(context),
+        indent=4,
+        ensure_ascii=False,
+    )
+
+
 def dump(
         info: typing.Mapping[str, typing.Any],
         options: argparse.Namespace,
         context: typing.Mapping,
 ) -> str:
     """Convert info to string using json or yaml format."""
-    if options.yaml:
-        data = {info['path']: info} if 'path' in info else info
-        result = yaml.dump(
-            data,
-            Dumper=get_yaml_dumper(context),
-            default_flow_style=False,
-            allow_unicode=True,
-        )
-    else:
-        result = json.dumps(
-            info,
-            cls=get_json_encoder(context),
-            indent=4,
-            ensure_ascii=False,
-        )
-    return result
+    convert = _as_yaml if options.yaml else _as_json
+    return convert(info, context)
 
 
 def main(args: typing.List[str] = None) -> None:
@@ -169,40 +182,42 @@ def main(args: typing.List[str] = None) -> None:
 
     paths = recurse_paths(options.videopath)
 
-    if paths:
-        report: typing.MutableMapping[str, str] = {}
-        for i, video_path in enumerate(paths):
-            try:
-                context = dict(vars(options))
-                if options.report:
-                    context['report'] = report
-                else:
-                    del context['report']
-                knowit(video_path, options, context)
-            except ProviderError:
-                logger.exception('Error when processing video')
-            except OSError:
-                logger.exception('OS error when processing video')
-            except UnicodeError:
-                logger.exception('Character encoding error when processing video')
-            except api.KnowitException as e:
-                logger.error(e)
-            if options.report and i % 20 == 19 and report:
-                console.info('Unknown values so far:')
-                console.info(dump(report, options, vars(options)))
+    if not paths:
+        if options.version:
+            console.info(api.debug_info())
+        else:
+            argument_parser.print_help()
+        return
 
-        if options.report:
-            if report:
-                console.info('Knowit %s found unknown values:', __version__)
-                console.info(dump(report, options, vars(options)))
-                console.info('Please report them at %s', __url__)
+    report: typing.MutableMapping[str, str] = {}
+    for i, video_path in enumerate(paths):
+        try:
+            context = dict(vars(options))
+            if options.report:
+                context['report'] = report
             else:
-                console.info('Knowit %s knows everything. :-)', __version__)
+                del context['report']
+            knowit(video_path, options, context)
+        except ProviderError:
+            logger.exception('Error when processing video')
+        except OSError:
+            logger.exception('OS error when processing video')
+        except UnicodeError:
+            logger.exception('Character encoding error when processing video')
+        except api.KnowitException as e:
+            logger.error(e)
 
-    elif options.version:
-        console.info(api.debug_info())
-    else:
-        argument_parser.print_help()
+        if options.report and i % 20 == 19 and report:
+            console.info('Unknown values so far:')
+            console.info(dump(report, options, vars(options)))
+
+    if options.report:
+        if report:
+            console.info('Knowit %s found unknown values:', __version__)
+            console.info(dump(report, options, vars(options)))
+            console.info('Please report them at %s', __url__)
+        else:
+            console.info('Knowit %s knows everything. :-)', __version__)
 
 
 if __name__ == '__main__':
