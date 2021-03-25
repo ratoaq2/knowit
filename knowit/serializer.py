@@ -9,16 +9,16 @@ import yaml
 from knowit.units import units
 
 
-def format_property(context, o):
+def format_property(profile: str, o):
     """Convert properties to string."""
     if isinstance(o, timedelta):
-        return format_duration(o, context['profile'])
+        return format_duration(o, profile)
 
     if isinstance(o, babelfish.language.Language):
-        return format_language(o, context['profile'])
+        return format_language(o, profile)
 
     if hasattr(o, 'units'):
-        return format_quantity(o, context['profile'])
+        return format_quantity(o, profile)
 
     return str(o)
 
@@ -29,7 +29,7 @@ def get_json_encoder(context):
         """String json encoder."""
 
         def default(self, o):
-            return format_property(context, o)
+            return format_property(context['profile'], o)
 
     return StringEncoder
 

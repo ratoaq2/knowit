@@ -276,7 +276,7 @@ def check_equals(expected, actual, different, options, prefix=''):
         check_mapping_equals(expected, actual, different=different, options=options, prefix=prefix)
     elif is_iterable(expected):
         check_sequence_equals(expected, actual, different=different, options=options, prefix=prefix)
-    elif format_property(options, expected) != format_property(options, actual):
+    elif format_property(options['profile'], expected) != format_property(options['profile'], actual):
         different.append((prefix, expected, actual))
 
 
