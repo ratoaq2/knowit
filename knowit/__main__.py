@@ -171,14 +171,14 @@ def main(args: typing.List[str] = None) -> None:
 
     if paths:
         report: typing.MutableMapping[str, str] = {}
-        for i, videopath in enumerate(paths):
+        for i, video_path in enumerate(paths):
             try:
                 context = dict(vars(options))
                 if options.report:
                     context['report'] = report
                 else:
                     del context['report']
-                knowit(videopath, options, context)
+                knowit(video_path, options, context)
             except ProviderError:
                 logger.exception('Error when processing video')
             except OSError:
