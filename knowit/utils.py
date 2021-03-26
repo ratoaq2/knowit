@@ -85,7 +85,7 @@ def define_candidate(
 
 
 def build_candidates(
-        locations: typing.Iterable[str],
+        locations: typing.Iterable[typing.Optional[str]],
         names: typing.Iterable[str],
 ) -> typing.Generator[str, None, None]:
     """Build candidate names."""
