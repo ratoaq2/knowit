@@ -146,15 +146,20 @@ def _format_quantity(
         binary: bool = False,
         precision: int = 2,
 ) -> str:
-    fmt_pattern = '{value:3.%sf} {prefix}{affix}{unit}' % precision
-    factor = 1024. if binary else 1000.
-    binary_affix = 'i' if binary else ''
+    if binary:
+        factor = 1024
+        affix = 'i'
+    else:
+        factor = 1000
+        affix = ''
     for prefix in ('', 'K', 'M', 'G', 'T', 'P', 'E', 'Z'):
         if abs(num) < factor:
-            return fmt_pattern.format(value=num, prefix=prefix, affix=binary_affix, unit=unit)
+            break
         num /= factor
+    else:
+        prefix = 'Y'
 
-    return fmt_pattern.format(value=num, prefix='Y', affix=binary_affix, unit=unit)
+    return f'{num:3.{precision}f} {prefix}{affix}{unit}'
 
 
 YAMLLoader = get_yaml_loader()
