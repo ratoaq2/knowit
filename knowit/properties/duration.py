@@ -1,11 +1,10 @@
-
 import re
 from datetime import timedelta
 
 from knowit.property import Property
 
 
-class Duration(Property):
+class Duration(Property[timedelta]):
     """Duration property."""
 
     duration_re = re.compile(r'(?P<hours>\d{1,2}):'
