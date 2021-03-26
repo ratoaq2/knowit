@@ -15,6 +15,7 @@ class Duration(Property):
                              r'(?P<micro>\d{3})?\d*)?')
 
     def __init__(self, name: str, resolution=1, *args, **kwargs):
+        """Initialize a Duration."""
         super().__init__(name, *args, **kwargs)
         self.resolution = resolution
 

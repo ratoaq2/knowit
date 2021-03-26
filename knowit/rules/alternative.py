@@ -6,6 +6,7 @@ class AlternativeRule(Rule):
     """Alternative rule."""
 
     def __init__(self, name, prop_name: str, **kwargs):
+        """Initialize an AlternativeRule."""
         super().__init__(name, **kwargs)
         self.prop_name = prop_name
 
