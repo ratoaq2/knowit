@@ -26,7 +26,7 @@ class Reportable(typing.Generic[T]):
         """Rule description."""
         return self._description or self.name
 
-    def report(self, value: T, context: typing.MutableMapping) -> None:
+    def report(self, value: typing.Union[str, T], context: typing.MutableMapping) -> None:
         """Report unknown value."""
         if not value or not self.reportable:
             return

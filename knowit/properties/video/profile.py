@@ -3,7 +3,7 @@ import typing
 from knowit.property import Configurable
 
 
-class VideoProfile(Configurable):
+class VideoProfile(Configurable[str]):
     """Video Profile property."""
 
     @classmethod
@@ -11,7 +11,7 @@ class VideoProfile(Configurable):
         return value.upper().split('@')[0]
 
 
-class VideoProfileLevel(Configurable):
+class VideoProfileLevel(Configurable[str]):
     """Video Profile Level property."""
 
     @classmethod
@@ -25,7 +25,7 @@ class VideoProfileLevel(Configurable):
         return False
 
 
-class VideoProfileTier(Configurable):
+class VideoProfileTier(Configurable[str]):
     """Video Profile Tier property."""
 
     @classmethod

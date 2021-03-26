@@ -5,7 +5,7 @@ from knowit.rule import Rule
 class AlternativeRule(Rule):
     """Alternative rule."""
 
-    def __init__(self, name, prop_name: str, **kwargs):
+    def __init__(self, name: str, prop_name: str, **kwargs):
         """Initialize an AlternativeRule."""
         super().__init__(name, **kwargs)
         self.prop_name = prop_name

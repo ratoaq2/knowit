@@ -1,13 +1,14 @@
+import typing
 
 import babelfish
 
 from knowit.property import Property
 
 
-class Language(Property):
+class Language(Property[babelfish.Language]):
     """Language property."""
 
-    def handle(self, value, context):
+    def handle(self, value, context: typing.MutableMapping):
         """Handle languages."""
         try:
             if len(value) == 3:

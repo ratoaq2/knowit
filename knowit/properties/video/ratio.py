@@ -5,10 +5,10 @@ import typing
 from knowit.property import Property
 
 
-class Ratio(Property):
+class Ratio(Property[float]):
     """Ratio property."""
 
-    def __init__(self, name, unit=None, **kwargs):
+    def __init__(self, name: str, unit=None, **kwargs):
         """Initialize the object."""
         super().__init__(name, **kwargs)
         self.unit = unit

@@ -10,7 +10,7 @@ class AudioChannels(Property[int]):
         'object based',  # Dolby Atmos
     }
 
-    def handle(self, value, context) -> typing.Optional[int]:
+    def handle(self, value: typing.Union[int, str], context: typing.MutableMapping) -> typing.Optional[int]:
         """Handle audio channels."""
         if isinstance(value, int):
             return value

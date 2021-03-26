@@ -1,4 +1,5 @@
 import re
+import typing
 from datetime import timedelta
 
 from knowit.property import Property
@@ -13,12 +14,12 @@ class Duration(Property[timedelta]):
                              r'(?P<millis>\d{3})'
                              r'(?P<micro>\d{3})?\d*)?')
 
-    def __init__(self, name: str, resolution=1, *args, **kwargs):
+    def __init__(self, name: str, resolution: float = 1, *args, **kwargs):
         """Initialize a Duration."""
         super().__init__(name, *args, **kwargs)
         self.resolution = resolution
 
-    def handle(self, value, context):
+    def handle(self, value, context: typing.MutableMapping):
         """Return duration as timedelta."""
         if isinstance(value, timedelta):
             return value
