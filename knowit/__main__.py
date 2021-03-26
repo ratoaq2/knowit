@@ -127,7 +127,7 @@ def knowit(
     info = api.know(video_path, context)
     if not options.report:
         console.info('Knowit %s found: ', __version__)
-        console.info(dump(info, options, context))
+        console.info(dumps(info, options, context))
     return info
 
 
@@ -158,7 +158,7 @@ def _as_json(
     )
 
 
-def dump(
+def dumps(
         info: typing.Mapping[str, typing.Any],
         options: argparse.Namespace,
         context: typing.Mapping,
@@ -209,12 +209,12 @@ def main(args: typing.List[str] = None) -> None:
 
         if options.report and i % 20 == 19 and report:
             console.info('Unknown values so far:')
-            console.info(dump(report, options, vars(options)))
+            console.info(dumps(report, options, vars(options)))
 
     if options.report:
         if report:
             console.info('Knowit %s found unknown values:', __version__)
-            console.info(dump(report, options, vars(options)))
+            console.info(dumps(report, options, vars(options)))
             console.info('Please report them at %s', __url__)
         else:
             console.info('Knowit %s knows everything. :-)', __version__)
