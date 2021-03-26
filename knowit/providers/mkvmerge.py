@@ -28,7 +28,7 @@ from knowit.rules import (
 )
 from knowit.serializer import get_json_encoder
 from knowit.units import units
-from knowit.utils import detect_os, define_candidate
+from knowit.utils import define_candidate, detect_os
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
