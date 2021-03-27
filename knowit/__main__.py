@@ -142,6 +142,7 @@ def _as_yaml(
         Dumper=get_yaml_dumper(context),
         default_flow_style=False,
         allow_unicode=True,
+        sort_keys=False,
     )
 
 
@@ -192,7 +193,7 @@ def main(args: typing.List[str] = None) -> None:
     report: typing.MutableMapping[str, str] = {}
     for i, video_path in enumerate(paths):
         try:
-            context = dict(vars(options))
+            context = {k: v for k, v in vars(options).items() if v is not None}
             if options.report:
                 context['report'] = report
             else:
