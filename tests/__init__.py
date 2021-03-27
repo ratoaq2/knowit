@@ -42,6 +42,9 @@ serializer.YAMLLoader = serializer.get_yaml_loader({
 })
 
 
+one_ms = timedelta(milliseconds=1)
+
+
 def normalize_path(path: str):
     return os.fspath(pathlib.Path(path))
 
@@ -281,7 +284,14 @@ def check_equals(expected, actual, different, options, prefix=''):
         check_mapping_equals(expected, actual, different=different, options=options, prefix=prefix)
     elif is_iterable(expected):
         check_sequence_equals(expected, actual, different=different, options=options, prefix=prefix)
+    elif isinstance(expected, timedelta):
+        check_timedelta_equals(expected, actual, different=different, prefix=prefix)
     elif to_string(options['profile'], expected) != to_string(options['profile'], actual):
+        different.append((prefix, expected, actual))
+
+
+def check_timedelta_equals(expected, actual, different, prefix=''):
+    if not isinstance(actual, timedelta) or not (expected - one_ms) <= actual <= (expected + one_ms):
         different.append((prefix, expected, actual))
 
 
