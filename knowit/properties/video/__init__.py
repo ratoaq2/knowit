@@ -1,5 +1,6 @@
 
 from knowit.properties.video.codec import VideoCodec
+from knowit.properties.video.dimensions import VideoDimensions
 from knowit.properties.video.encoder import VideoEncoder
 from knowit.properties.video.profile import VideoProfile
 from knowit.properties.video.profile import VideoProfileLevel

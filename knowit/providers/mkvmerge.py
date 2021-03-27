@@ -2,6 +2,7 @@
 import json
 import logging
 import re
+from decimal import Decimal
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
@@ -12,6 +13,7 @@ from knowit.properties import (
     Language,
     Quantity,
     VideoCodec,
+    VideoDimensions,
     YesNo,
 )
 from knowit.property import Property
@@ -122,15 +124,16 @@ class MkvMergeProvider(Provider):
         super().__init__(config, {
             'general': {
                 'title': Property('title', description='media title'),
-                'duration': Duration('duration', description='media duration'),
+                'duration': Duration('duration', resolution=Decimal('0.000001'), description='media duration'),
             },
             'video': {
                 'id': Basic('number', data_type=int, description='video track number'),
                 'name': Property('name', description='video track name'),
                 'language': Language('language_ietf', 'language', description='video language'),
-                'width': Quantity('width', unit=units.pixel),  # TODO: extract resolution
-                'height': Quantity('height', unit=units.pixel),
+                'width': VideoDimensions('display_dimensions', dimension='width'),
+                'height': VideoDimensions('display_dimensions', dimension='height'),
                 'scan_type': YesNo('interlaced', yes='Interlaced', no='Progressive', default='Progressive',
+                                   config=config, config_key='ScanType',
                                    description='video scan type'),
                 'resolution': None,  # populated with ResolutionRule
                 # 'bit_depth', Property('bit_depth', Integer('video bit depth')),
@@ -146,6 +149,7 @@ class MkvMergeProvider(Provider):
                 'codec': AudioCodec(config, 'codec_id', description='audio codec'),
                 'channels_count': Basic('audio_channels', data_type=int, description='audio channels count'),
                 'channels': None,  # populated with AudioChannelsRule
+                'sampling_rate': Quantity('audio_sampling_frequency', unit=units.Hz, description='audio sampling rate'),
                 'forced': YesNo('forced_track', hide_value=False, description='audio track forced'),
                 'default': YesNo('default_track', hide_value=False, description='audio track default'),
                 'enabled': YesNo('enabled_track', hide_value=True, description='audio track enabled'),

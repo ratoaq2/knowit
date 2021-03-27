@@ -15,7 +15,7 @@ class Duration(Property[timedelta]):
                              r'(?P<milliseconds>\d{3})'
                              r'(?P<microseconds>\d{3})?\d*)?')
 
-    def __init__(self, *args: str, resolution: int = 1, **kwargs):
+    def __init__(self, *args: str, resolution: int or Decimal = 1, **kwargs):
         """Initialize a Duration."""
         super().__init__(*args, **kwargs)
         self.resolution = resolution
@@ -25,7 +25,7 @@ class Duration(Property[timedelta]):
         if isinstance(value, timedelta):
             return value
         elif isinstance(value, int):
-            return timedelta(milliseconds=value * self.resolution)
+            return timedelta(milliseconds=int(value * self.resolution))
         try:
             return timedelta(milliseconds=int(Decimal(value) * self.resolution))
         except (ValueError, InvalidOperation):

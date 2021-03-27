@@ -17,6 +17,7 @@ from knowit.properties.video import (
     Ratio,
     ScanType,
     VideoCodec,
+    VideoDimensions,
     VideoEncoder,
     VideoProfile,
     VideoProfileLevel,

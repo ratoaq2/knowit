@@ -1,0 +1,186 @@
+{
+  "attachments": [],
+  "chapters": [
+    {
+      "num_entries": 8
+    }
+  ],
+  "container": {
+    "properties": {
+      "container_type": 17,
+      "date_local": "2020-11-11T07:35:31+01:00",
+      "date_utc": "2020-11-11T06:35:31Z",
+      "duration": 3428352000000,
+      "is_providing_timestamps": true,
+      "muxing_application": "libebml v1.4.0 + libmatroska v1.6.2",
+      "segment_uid": "5c5db0c93c7ebac3c88f7d372288b20e",
+      "title": "Media 001",
+      "writing_application": "mkvmerge v51.0.0 ('I Wish') 64-bit"
+    },
+    "recognized": true,
+    "supported": true,
+    "type": "Matroska"
+  },
+  "errors": [],
+  "file_name": "tests/data/mkvmerge/media_001.mkv",
+  "global_tags": [],
+  "identification_format_version": 14,
+  "track_tags": [],
+  "tracks": [
+    {
+      "codec": "HEVC/H.265/MPEG-H",
+      "id": 0,
+      "properties": {
+        "codec_id": "V_MPEGH/ISO/HEVC",
+        "codec_private_data": "012220000000b0000000000099f000fcfdfafa00000f04600001002240010c01ffff222000000300b0000003000003009914860300000303e900005dc050610001003d420101222000000300b00000030000030099a001e020021c4db1486924294af016a1220136c2000007d20000bb80c5781cdc0004eef80009ddf7cf1e3d62000100074401c172f63b64670002001e4e01891821349baa199608fc8a4839083d13404200989680000003001480000a4e019004000003000080",
+        "codec_private_length": 187,
+        "default_duration": 41708333,
+        "default_track": false,
+        "display_dimensions": "3840x2160",
+        "display_unit": 0,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "eng",
+        "language_ietf": "en",
+        "minimum_timestamp": 0,
+        "number": 1,
+        "packetizer": "mpegh_p2_video",
+        "pixel_dimensions": "3840x2160",
+        "uid": 1
+      },
+      "type": "video"
+    },
+    {
+      "codec": "TrueHD Atmos",
+      "id": 1,
+      "properties": {
+        "audio_channels": 8,
+        "audio_sampling_frequency": 48000,
+        "codec_id": "A_TRUEHD",
+        "codec_private_length": 0,
+        "default_track": true,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "eng",
+        "language_ietf": "en",
+        "minimum_timestamp": 0,
+        "number": 2,
+        "uid": 2
+      },
+      "type": "audio"
+    },
+    {
+      "codec": "AC-3 Dolby Surround EX",
+      "id": 2,
+      "properties": {
+        "audio_channels": 6,
+        "audio_sampling_frequency": 48000,
+        "codec_id": "A_AC3",
+        "codec_private_length": 0,
+        "default_duration": 32000000,
+        "default_track": false,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "eng",
+        "language_ietf": "en",
+        "minimum_timestamp": 0,
+        "number": 3,
+        "uid": 3
+      },
+      "type": "audio"
+    },
+    {
+      "codec": "AC-3",
+      "id": 3,
+      "properties": {
+        "audio_channels": 6,
+        "audio_sampling_frequency": 48000,
+        "codec_id": "A_AC3",
+        "codec_private_length": 0,
+        "default_duration": 32000000,
+        "default_track": false,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "ger",
+        "language_ietf": "de",
+        "minimum_timestamp": 0,
+        "number": 4,
+        "uid": 4
+      },
+      "type": "audio"
+    },
+    {
+      "codec": "DTS",
+      "id": 4,
+      "properties": {
+        "audio_bits_per_sample": 24,
+        "audio_channels": 2,
+        "audio_sampling_frequency": 48000,
+        "codec_id": "A_DTS",
+        "codec_private_length": 0,
+        "default_duration": 10666667,
+        "default_track": false,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "por",
+        "language_ietf": "pt-BR",
+        "minimum_timestamp": 2002000000,
+        "number": 5,
+        "uid": 5
+      },
+      "type": "audio"
+    },
+    {
+      "codec": "HDMV PGS",
+      "id": 5,
+      "properties": {
+        "codec_id": "S_HDMV/PGS",
+        "codec_private_length": 0,
+        "content_encoding_algorithms": "0",
+        "default_track": false,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "eng",
+        "language_ietf": "en",
+        "number": 6,
+        "uid": 6
+      },
+      "type": "subtitles"
+    },
+    {
+      "codec": "HDMV PGS",
+      "id": 6,
+      "properties": {
+        "codec_id": "S_HDMV/PGS",
+        "codec_private_length": 0,
+        "content_encoding_algorithms": "0",
+        "default_track": false,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "ger",
+        "language_ietf": "de",
+        "number": 7,
+        "uid": 11
+      },
+      "type": "subtitles"
+    },
+    {
+      "codec": "HDMV PGS",
+      "id": 7,
+      "properties": {
+        "codec_id": "S_HDMV/PGS",
+        "codec_private_length": 0,
+        "content_encoding_algorithms": "0",
+        "default_track": false,
+        "enabled_track": true,
+        "forced_track": false,
+        "language": "por",
+        "language_ietf": "pt-BR",
+        "number": 8,
+        "uid": 14
+      },
+      "type": "subtitles"
+    }
+  ],
+  "warnings": []
+}

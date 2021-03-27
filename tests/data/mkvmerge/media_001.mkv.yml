@@ -1,0 +1,47 @@
+title: Media 001
+duration: '0:57:08.352000'
+path: tests/data/mkvmerge/media_001.mkv
+container: mkv
+video:
+- id: 1
+  language: en
+  width: 3840
+  height: 2160
+  resolution: 2160p
+  scan_type: PROGRESSIVE
+  codec: H265
+audio:
+- id: 2
+  language: en
+  codec: TRUEHD
+  channels_count: 8
+  channels: 7.1
+  sampling_rate: 48000
+  default: true
+- id: 3
+  language: en
+  codec: AC3
+  channels_count: 6
+  channels: 5.1
+  sampling_rate: 48000
+- id: 4
+  language: de
+  codec: AC3
+  channels_count: 6
+  channels: 5.1
+  sampling_rate: 48000
+- id: 5
+  language: pt-BR
+  codec: DTS
+  channels_count: 2
+  channels: 2.0
+  sampling_rate: 48000
+subtitle:
+- id: 6
+  language: en
+- id: 7
+  language: de
+- id: 8
+  language: pt-BR
+provider:
+  name: mkvmerge
