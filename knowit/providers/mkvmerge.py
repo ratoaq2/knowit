@@ -122,7 +122,7 @@ class MkvMergeProvider(Provider):
         super().__init__(config, {
             'general': {
                 'title': Property('title', description='media title'),
-                'duration': Duration('duration', resolution=0.001, description='media duration'),
+                'duration': Duration('duration', description='media duration'),
             },
             'video': {
                 'id': Basic('number', data_type=int, description='video track number'),
