@@ -17,9 +17,6 @@ class LanguageRule(Rule):
 
     def execute(self, props, pv_props, context):
         """Language detection using name."""
-        if 'language_ietf' in pv_props:
-            return pv_props['language_ietf']
-
         if 'language' in props:
             return
 

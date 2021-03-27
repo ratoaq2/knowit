@@ -12,19 +12,19 @@ class Reportable(typing.Generic[T]):
 
     def __init__(
             self,
-            name: str,
+            *args: str,
             description: typing.Optional[str] = None,
             reportable: bool = True,
     ):
         """Initialize the object."""
-        self.name = name
+        self.names = args
         self._description = description
         self.reportable = reportable
 
     @property
     def description(self) -> str:
         """Rule description."""
-        return self._description or self.name
+        return self._description or '|'.join(self.names)
 
     def report(self, value: typing.Union[str, T], context: typing.MutableMapping) -> None:
         """Report unknown value."""

@@ -8,9 +8,9 @@ T = typing.TypeVar('T')
 class Basic(Property[T]):
     """Basic property to handle int, float and other basic types."""
 
-    def __init__(self, name: str, data_type: typing.Type, allow_fallback: bool = False, **kwargs):
+    def __init__(self, *args: str, data_type: typing.Type, allow_fallback: bool = False, **kwargs):
         """Init method."""
-        super().__init__(name, **kwargs)
+        super().__init__(*args, **kwargs)
         self.data_type = data_type
         self.allow_fallback = allow_fallback
 

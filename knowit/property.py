@@ -21,7 +21,7 @@ class Property(Reportable[T]):
 
     def __init__(
             self,
-            name: str,
+            *args: str,
             default: typing.Optional[T] = None,
             private: bool = False,
             description: typing.Optional[str] = None,
@@ -29,7 +29,7 @@ class Property(Reportable[T]):
             **kwargs,
     ):
         """Init method."""
-        super().__init__(name, description, **kwargs)
+        super().__init__(*args, description=description, **kwargs)
         self.default = default
         self.private = private
         # Used to detect duplicated values. e.g.: en / en or High@L4.0 / High@L4.0 or Progressive / Progressive
@@ -41,28 +41,29 @@ class Property(Reportable[T]):
             context: typing.MutableMapping,
     ) -> typing.Optional[T]:
         """Extract the property value from a given track."""
-        names = self.name.split('.')
-        value = track.get(names[0], {}).get(names[1]) if len(names) == 2 else track.get(self.name)
-        if value is None:
-            if self.default is None:
-                return None
+        for name in self.names:
+            names = name.split('.')
+            value = track.get(names[0], {}).get(names[1]) if len(names) == 2 else track.get(name)
+            if value is None:
+                if self.default is None:
+                    continue
 
-            value = self.default
+                value = self.default
 
-        if isinstance(value, bytes):
-            value = value.decode()
+            if isinstance(value, bytes):
+                value = value.decode()
 
-        if isinstance(value, str):
-            value = value.translate(_visible_chars_table).strip()
-            if _is_unknown(value):
-                return None
-            value = self._deduplicate(value)
+            if isinstance(value, str):
+                value = value.translate(_visible_chars_table).strip()
+                if _is_unknown(value):
+                    continue
+                value = self._deduplicate(value)
 
-        result = self.handle(value, context)
-        if not _is_unknown(result):
-            return result
-        else:
-            return None
+            result = self.handle(value, context)
+            if result is not None and not _is_unknown(result):
+                return result
+
+        return None
 
     @classmethod
     def _deduplicate(cls, value: str) -> str:
@@ -79,7 +80,7 @@ class Property(Reportable[T]):
 class Configurable(Property[T]):
     """Configurable property where values are in a config mapping."""
 
-    def __init__(self, config: typing.Mapping[str, typing.Mapping], *args, **kwargs):
+    def __init__(self, config: typing.Mapping[str, typing.Mapping], *args: str, **kwargs):
         """Init method."""
         super().__init__(*args, **kwargs)
         self.mapping = getattr(config, self.__class__.__name__)
@@ -128,9 +129,10 @@ class Configurable(Property[T]):
 class MultiValue(Property):
     """Property with multiple values."""
 
-    def __init__(self, prop=None, delimiter='/', single=False, handler=None, name=None, **kwargs):
+    def __init__(self, prop: typing.Optional[Property[typing.Any]] = None, delimiter='/', single=False,
+                 handler=None, name=None, **kwargs):
         """Init method."""
-        super().__init__(prop.name if prop else name, **kwargs)
+        super().__init__(*(prop.names if prop else (name,)), **kwargs)
         self.prop = prop
         self.delimiter = delimiter
         self.single = single

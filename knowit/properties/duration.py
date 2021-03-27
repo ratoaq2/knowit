@@ -14,9 +14,9 @@ class Duration(Property[timedelta]):
                              r'(?P<milliseconds>\d{3})'
                              r'(?P<microseconds>\d{3})?\d*)?')
 
-    def __init__(self, name: str, resolution: float = 1, *args, **kwargs):
+    def __init__(self, *args: str, resolution: float = 1, **kwargs):
         """Initialize a Duration."""
-        super().__init__(name, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.resolution = resolution
 
     def handle(self, value, context: typing.MutableMapping):

@@ -8,9 +8,9 @@ from knowit.property import Property
 class Ratio(Property[float]):
     """Ratio property."""
 
-    def __init__(self, name: str, unit=None, **kwargs):
+    def __init__(self, *args: str, unit=None, **kwargs):
         """Initialize the object."""
-        super().__init__(name, **kwargs)
+        super().__init__(*args, **kwargs)
         self.unit = unit
 
     ratio_re = re.compile(r'(?P<width>\d+)[:/](?P<height>\d+)')

@@ -7,9 +7,9 @@ class YesNo(Property):
 
     mapping = ('yes', 'true', '1')
 
-    def __init__(self, name, yes=True, no=False, hide_value=None, **kwargs):
+    def __init__(self, *args: str, yes=True, no=False, hide_value=None, **kwargs):
         """Init method."""
-        super().__init__(name, **kwargs)
+        super().__init__(*args, **kwargs)
         self.yes = yes
         self.no = no
         self.hide_value = hide_value

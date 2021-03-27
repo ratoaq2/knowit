@@ -125,12 +125,11 @@ class MkvMergeProvider(Provider):
                 'duration': Duration('duration', resolution=0.001, description='media duration'),
             },
             'video': {
-                'id': Basic('number', int, description='video track number'),
+                'id': Basic('number', data_type=int, description='video track number'),
                 'name': Property('name', description='video track name'),
-                'language': Language('language', description='video language'),
-                'language_ietf': Language('language_ietf', description='video language', private=True),
-                'width': Quantity('width', units.pixel),  # TODO: extract resolution
-                'height': Quantity('height', units.pixel),
+                'language': Language('language_ietf', 'language', description='video language'),
+                'width': Quantity('width', unit=units.pixel),  # TODO: extract resolution
+                'height': Quantity('height', unit=units.pixel),
                 'scan_type': YesNo('interlaced', yes='Interlaced', no='Progressive', default='Progressive',
                                    description='video scan type'),
                 'resolution': None,  # populated with ResolutionRule
@@ -141,22 +140,20 @@ class MkvMergeProvider(Provider):
                 'enabled': YesNo('enabled_track', hide_value=True, description='video track enabled'),
             },
             'audio': {
-                'id': Basic('number', int, description='audio track number'),
+                'id': Basic('number', data_type=int, description='audio track number'),
                 'name': Property('name', description='audio track name'),
-                'language': Language('language', description='audio language'),
-                'language_ietf': Language('language_ietf', description='audio language', private=True),
+                'language': Language('language_ietf', 'language', description='audio language'),
                 'codec': AudioCodec(config, 'codec_id', description='audio codec'),
-                'channels_count': Basic('audio_channels', int, description='audio channels count'),
+                'channels_count': Basic('audio_channels', data_type=int, description='audio channels count'),
                 'channels': None,  # populated with AudioChannelsRule
                 'forced': YesNo('forced_track', hide_value=False, description='audio track forced'),
                 'default': YesNo('default_track', hide_value=False, description='audio track default'),
                 'enabled': YesNo('enabled_track', hide_value=True, description='audio track enabled'),
             },
             'subtitle': {
-                'id': Basic('number', int, description='subtitle track number'),
+                'id': Basic('number', data_type=int, description='subtitle track number'),
                 'name': Property('name', description='subtitle track name'),
-                'language': Language('language', description='subtitle language'),
-                'language_ietf': Language('language_ietf', description='subtitle language', private=True),
+                'language': Language('language_ietf', 'language', description='subtitle language'),
                 'hearing_impaired': None,  # populated with HearingImpairedRule
                 'closed_caption': None,  # populated with ClosedCaptionRule
                 'forced': YesNo('forced_track', hide_value=False, description='subtitle track forced'),

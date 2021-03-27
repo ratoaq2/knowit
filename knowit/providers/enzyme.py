@@ -45,11 +45,11 @@ class EnzymeProvider(Provider):
                 'duration': Duration('duration', description='media duration'),
             },
             'video': {
-                'id': Basic('number', int, description='video track number'),
+                'id': Basic('number', data_type=int, description='video track number'),
                 'name': Property('name', description='video track name'),
                 'language': Language('language', description='video language'),
-                'width': Quantity('width', units.pixel),
-                'height': Quantity('height', units.pixel),
+                'width': Quantity('width', unit=units.pixel),
+                'height': Quantity('height', unit=units.pixel),
                 'scan_type': YesNo('interlaced', yes='Interlaced', no='Progressive', default='Progressive',
                                    description='video scan type'),
                 'resolution': None,  # populated with ResolutionRule
@@ -60,18 +60,18 @@ class EnzymeProvider(Provider):
                 'enabled': YesNo('enabled', hide_value=True, description='video track enabled'),
             },
             'audio': {
-                'id': Basic('number', int, description='audio track number'),
+                'id': Basic('number', data_type=int, description='audio track number'),
                 'name': Property('name', description='audio track name'),
                 'language': Language('language', description='audio language'),
                 'codec': AudioCodec(config, 'codec_id', description='audio codec'),
-                'channels_count': Basic('channels', int, description='audio channels count'),
+                'channels_count': Basic('channels', data_type=int, description='audio channels count'),
                 'channels': None,  # populated with AudioChannelsRule
                 'forced': YesNo('forced', hide_value=False, description='audio track forced'),
                 'default': YesNo('default', hide_value=False, description='audio track default'),
                 'enabled': YesNo('enabled', hide_value=True, description='audio track enabled'),
             },
             'subtitle': {
-                'id': Basic('number', int, description='subtitle track number'),
+                'id': Basic('number', data_type=int, description='subtitle track number'),
                 'name': Property('name', description='subtitle track name'),
                 'language': Language('language', description='subtitle language'),
                 'hearing_impaired': None,  # populated with HearingImpairedRule

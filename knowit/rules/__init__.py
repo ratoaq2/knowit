@@ -1,5 +1,4 @@
 
-from knowit.rules.alternative import AlternativeRule
 from knowit.rules.audio import AtmosRule
 from knowit.rules.audio import AudioChannelsRule
 from knowit.rules.audio import AudioCodecRule

@@ -5,9 +5,9 @@ from knowit.property import Property
 class Quantity(Property):
     """Quantity is a property with unit."""
 
-    def __init__(self, name, unit, data_type=int, **kwargs):
+    def __init__(self, *args: str, unit, data_type=int, **kwargs):
         """Init method."""
-        super().__init__(name, **kwargs)
+        super().__init__(*args, **kwargs)
         self.unit = unit
         self.data_type = data_type
 

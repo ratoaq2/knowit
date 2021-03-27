@@ -13,7 +13,7 @@ logger = getLogger(__name__)
 logger.addHandler(NullHandler())
 
 
-size_property = Quantity('size', units.byte, description='media size')
+size_property = Quantity('size', unit=units.byte, description='media size')
 
 PropertyMap = typing.Mapping[str, Property]
 PropertyConfig = typing.Mapping[str, PropertyMap]
