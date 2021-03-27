@@ -18,6 +18,7 @@ addons:
     packages:
     - mediainfo
     - ffmpeg
+    - mkvtoolnix
 
 cache:
   directories:
