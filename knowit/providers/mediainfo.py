@@ -218,6 +218,7 @@ class MediaInfoProvider(Provider):
                 'duration': Duration('Duration', resolution=1000000, description='audio duration'),
                 'size': Quantity('StreamSize', unit=units.byte, description='audio stream size'),
                 'codec': MultiValue(AudioCodec(config, 'CodecID', description='audio codec')),
+                'format_commercial': Property('Format_Commercial', private=True),
                 'profile': MultiValue(AudioProfile(config, 'Format_Profile', 'Format_AdditionalFeatures',
                                                    description='audio codec profile'),
                                       delimiter=' / '),
@@ -254,7 +255,7 @@ class MediaInfoProvider(Provider):
             'audio': {
                 'language': LanguageRule('audio language'),
                 'channels': AudioChannelsRule('audio channels'),
-                '_atmosrule': AtmosRule('atmos rule'),
+                '_atmosrule': AtmosRule(config, 'atmos rule'),
                 '_dtshdrule': DtsHdRule(config, 'dts-hd rule'),
             },
             'subtitle': {

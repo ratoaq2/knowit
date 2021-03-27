@@ -1,3 +1,4 @@
+import typing
 
 from knowit.rule import Rule
 
@@ -5,27 +6,13 @@ from knowit.rule import Rule
 class AtmosRule(Rule):
     """Atmos rule."""
 
-    @classmethod
-    def _redefine(cls, props, name, index):
-        actual = props.get(name)
-        if isinstance(actual, list):
-            value = actual[index]
-            if value is None:
-                del props[name]
-            else:
-                props[name] = value
+    def __init__(self, config: typing.Mapping[str, typing.Mapping], name: str, **kwargs):
+        super().__init__(name, **kwargs)
+        self.audio_codecs = getattr(config, 'AudioCodec')
 
     def execute(self, props, pv_props, context):
         """Execute the rule against properties."""
-        codecs = props.get('codec') or []
-        # TODO: handle this properly
-        if 'atmos' in {codec.lower() for codec in codecs if codec}:
-            index = None
-            for i, codec in enumerate(codecs):
-                if codec and 'atmos' in codec.lower():
-                    index = i
-                    break
-
-            if index is not None:
-                for name in ('channels_count', 'sampling_rate'):
-                    self._redefine(props, name, index)
+        profile = context.get('profile') or 'default'
+        format_commercial = pv_props.get('format_commercial')
+        if 'codec' in props and format_commercial and 'atmos' in format_commercial.lower():
+            props['codec'] = [props['codec'], getattr(self.audio_codecs['ATMOS'], profile)]
