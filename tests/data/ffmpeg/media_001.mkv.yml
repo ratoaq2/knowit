@@ -1,0 +1,131 @@
+title: Super Title
+path: videofile.mkv
+container: mkv
+duration: '1:23:45.670000'
+size: 12345678901 byte
+bit_rate: 1231233 bps
+video:
+- id: 0
+  name: Super Title
+  width: 1920 pixel
+  height: 1080 pixel
+  scan_type: PROGRESSIVE
+  aspect_ratio: 1.778
+  pixel_aspect_ratio: 1.0
+  resolution: 1080p
+  frame_rate: 23.976 FPS
+  bit_depth: 8 bit
+  codec: H264
+  profile: HIGH
+  default: true
+audio:
+- id: 1
+  name: Super Title
+  language: en
+  codec: DTSHD
+  profile: MA
+  channels_count: 8
+  channels: '7.1'
+  bit_depth: 24 bit
+  sampling_rate: 48000 Hz
+  default: true
+- id: 2
+  name: Super Title
+  language: en
+  codec: DTS
+  channels_count: 6
+  channels: '5.1'
+  bit_rate: 1536000 bps
+  sampling_rate: 48000 Hz
+- id: 3
+  name: Super Title
+  language: en
+  codec: AC3
+  channels_count: 2
+  channels: '2.0'
+  bit_rate: 320000 bps
+  sampling_rate: 48000 Hz
+- id: 4
+  name: Super Title
+  language: fr
+  codec: DTSHD
+  profile: HRA
+  channels_count: 6
+  channels: '5.1'
+  sampling_rate: 48000 Hz
+- id: 5
+  name: Super Title
+  language: fr
+  codec: DTS
+  channels_count: 6
+  channels: '5.1'
+  bit_rate: 1536000 bps
+  sampling_rate: 48000 Hz
+- id: 6
+  name: Super Title
+  language: cs
+  codec: AC3
+  channels_count: 6
+  channels: '5.1'
+  bit_rate: 640000 bps
+  sampling_rate: 48000 Hz
+- id: 7
+  name: Super Title
+  language: hi
+  codec: AC3
+  channels_count: 6
+  channels: '5.1'
+  bit_rate: 640000 bps
+  sampling_rate: 48000 Hz
+subtitle:
+- id: 8
+  name: English-PGS
+  language: en
+  format: PGS
+- id: 9
+  name: French-PGS
+  language: fr
+  format: PGS
+- id: 10
+  name: Czech-PGS
+  language: cs
+  format: PGS
+- id: 11
+  name: Dutch-PGS
+  language: nl
+  format: PGS
+- id: 12
+  name: Arabic-PGS
+  language: ar
+  format: PGS
+- id: 13
+  name: Danish-PGS
+  language: da
+  format: PGS
+- id: 14
+  name: Finnish-PGS
+  language: fi
+  format: PGS
+- id: 15
+  name: Norwegian-PGS
+  language: "no"
+  format: PGS
+- id: 16
+  name: Swedish-PGS
+  language: sv
+  format: PGS
+- id: 17
+  name: French-FORCED-PGS
+  language: fr
+  format: PGS
+- id: 18
+  name: Czech-FORCED-PGS
+  language: cs
+  format: PGS
+- id: 19
+  name: Hindi-FORCED-PGS
+  language: hi
+  format: PGS
+provider:
+  name: ffmpeg
+

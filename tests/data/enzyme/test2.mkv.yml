@@ -1,19 +1,19 @@
-duration: 0:00:47
+duration: '0:00:47.509000'
 path: tests/data/videos/test2.mkv
 container: mkv
-size: 21.14 MB
+size: 21142764 byte
 video:
 - id: 1
-  language: Undetermined
+  language: und
   width: 1024 pixel
   height: 576 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   resolution: 576p
-  codec: H.264
+  codec: H264
   default: true
 audio:
 - id: 2
-  language: Undetermined
+  language: und
   codec: AAC
   channels_count: 2
   channels: '2.0'

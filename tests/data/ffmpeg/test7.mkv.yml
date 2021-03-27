@@ -1,27 +1,27 @@
 title: Big Buck Bunny - test 7
 path: tests/data/videos/test7.mkv
-duration: 0:00:37
-size: 21.85 MB
-bit_rate: 4.7 Mbps
+duration: '0:00:37.043000'
+size: 21848518 byte
+bit_rate: 4718520
 container: mkv
 video:
 - id: 0
   width: 1024 pixel
   height: 576 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   aspect_ratio: 1.778
   pixel_aspect_ratio: 1.0
   resolution: 576p
   frame_rate: 24.0 FPS
   bit_depth: 8 bit
-  codec: H.264
-  profile: Main
+  codec: H264
+  profile: MAIN
 audio:
 - id: 1
   codec: AAC
-  profile: Low Complexity
+  profile: LC
   channels_count: 2
   channels: '2.0'
-  sampling_rate: 48.0 KHz
+  sampling_rate: 48000
 provider:
   name: ffmpeg

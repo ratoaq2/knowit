@@ -1,69 +1,69 @@
 title: Big Buck Bunny - test 8
 path: tests/data/videos/test5.mkv
-duration: 0:00:46
-size: 31.76 MB
-bit_rate: 5.4 Mbps
+duration: '0:00:46.665000'
+size: 31762747 byte
+bit_rate: 5445237
 container: mkv
 video:
 - id: 1
-  duration: 0:00:46
+  duration: '0:00:46.667000'
   width: 1024 pixel
   height: 576 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   aspect_ratio: 1.778
   pixel_aspect_ratio: 1.0
   resolution: 576p
   frame_rate: 24.0 FPS
   bit_depth: 8 bit
-  codec: H.264
-  profile: Main
+  codec: H264
+  profile: MAIN
   profile_level: '3.1'
   media_type: video/H264
   default: true
 audio:
 - id: 2
-  duration: 0:00:46
+  duration: '0:00:46.665000'
   codec: AAC
-  profile: Low Complexity
+  profile: LC
   channels_count: 2
   channels: '2.0'
-  sampling_rate: 48.0 KHz
-  compression: Lossy
+  sampling_rate: 48000
+  compression: LOSSY
   default: true
 - id: 10
   name: Commentary
-  language: English
-  duration: 0:00:46
+  language: en
+  duration: '0:00:46.665000'
   codec: AAC
-  profile: Low Complexity
+  profile: LC
   channels_count: 1
   channels: '1.0'
-  sampling_rate: 22.1 KHz
-  compression: Lossy
+  sampling_rate: 22050
+  compression: LOSSY
 subtitle:
 - id: 3
-  language: English
-  format: SubRip
+  language: en
+  format: SUBRIP
   default: true
 - id: 4
-  language: Hungarian
-  format: SubRip
+  language: hu
+  format: SUBRIP
 - id: 5
-  language: German
-  format: SubRip
+  language: de
+  format: SUBRIP
 - id: 6
-  language: French
-  format: SubRip
+  language: fr
+  format: SUBRIP
 - id: 8
-  language: Spanish
-  format: SubRip
+  language: es
+  format: SUBRIP
 - id: 9
-  language: Italian
-  format: SubRip
+  language: it
+  format: SUBRIP
 - id: 11
-  language: Japanese
-  format: SubRip
+  language: ja
+  format: SUBRIP
 - id: 7
-  format: SubRip
+  format: SUBRIP
 provider:
   name: mediainfo

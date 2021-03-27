@@ -7,6 +7,7 @@ from datetime import timedelta
 from io import BytesIO
 from zipfile import ZipFile
 
+import babelfish
 import requests
 import yaml
 from yaml.constructor import Constructor
@@ -271,12 +272,17 @@ def is_iterable(obj):
     return isinstance(obj, (tuple, list))
 
 
+def to_string(profile: str, value):
+    formatted_value = format_property(profile, value)
+    return str(formatted_value) if formatted_value is not None else None
+
+
 def check_equals(expected, actual, different, options, prefix=''):
     if isinstance(expected, Mapping):
         check_mapping_equals(expected, actual, different=different, options=options, prefix=prefix)
     elif is_iterable(expected):
         check_sequence_equals(expected, actual, different=different, options=options, prefix=prefix)
-    elif format_property(options['profile'], expected) != format_property(options['profile'], actual):
+    elif to_string(options['profile'], expected) != to_string(options['profile'], actual):
         different.append((prefix, expected, actual))
 
 

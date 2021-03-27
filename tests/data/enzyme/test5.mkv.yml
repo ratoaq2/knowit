@@ -1,19 +1,19 @@
-duration: 0:00:46
+duration: '0:00:46.665000'
 path: tests/data/videos/test5.mkv
 container: mkv
-size: 31.76 MB
+size: 31762747 byte
 video:
 - id: 1
-  language: Undetermined
+  language: und
   width: 1024 pixel
   height: 576 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   resolution: 576p
-  codec: H.264
+  codec: H264
   default: true
 audio:
 - id: 2
-  language: Undetermined
+  language: und
   codec: AAC
   channels_count: 2
   channels: '2.0'
@@ -27,18 +27,18 @@ subtitle:
 - id: 3
   default: true
 - id: 4
-  language: Hungarian
+  language: hu
 - id: 5
-  language: German
+  language: de
 - id: 6
-  language: French
+  language: fr
 - id: 8
-  language: Spanish
+  language: es
 - id: 9
-  language: Italian
+  language: it
 - id: 11
-  language: Japanese
+  language: ja
 - id: 7
-  language: Undetermined
+  language: und
 provider:
   name: enzyme

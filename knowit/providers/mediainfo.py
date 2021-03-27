@@ -255,7 +255,7 @@ class MediaInfoProvider(Provider):
                 'language': LanguageRule('audio language'),
                 'channels': AudioChannelsRule('audio channels'),
                 '_atmosrule': AtmosRule('atmos rule'),
-                '_dtshdrule': DtsHdRule('dts-hd rule'),
+                '_dtshdrule': DtsHdRule(config, 'dts-hd rule'),
             },
             'subtitle': {
                 'language': LanguageRule('subtitle language'),

@@ -1,17 +1,17 @@
-duration: 0:01:27
+duration: '0:01:27.336000'
 path: tests/data/videos/test6.mkv
 container: mkv
-size: 23.34 MB
+size: 23343928 byte
 video:
 - id: 1
-  language: Undetermined
+  language: und
   width: 854 pixel
   height: 480 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   resolution: 480p
 audio:
 - id: 2
-  language: Undetermined
+  language: und
   codec: MP3
   channels_count: 2
   channels: '2.0'

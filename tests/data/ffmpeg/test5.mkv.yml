@@ -1,62 +1,62 @@
 title: Big Buck Bunny - test 8
 path: tests/data/videos/test5.mkv
-duration: 0:00:46
-size: 31.76 MB
-bit_rate: 5.4 Mbps
+duration: '0:00:46.665000'
+size: 31762747 byte
+bit_rate: 5445236
 container: mkv
 video:
 - id: 0
   width: 1024 pixel
   height: 576 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   aspect_ratio: 1.778
   pixel_aspect_ratio: 1.0
   resolution: 576p
   frame_rate: 24.0 FPS
   bit_depth: 8 bit
-  codec: H.264
-  profile: Main
+  codec: H264
+  profile: MAIN
   default: true
 audio:
 - id: 1
   codec: AAC
-  profile: Low Complexity
+  profile: LC
   channels_count: 2
   channels: '2.0'
-  sampling_rate: 48.0 KHz
+  sampling_rate: 48000
   default: true
 - id: 8
   name: Commentary
-  language: English
+  language: en
   codec: AAC
-  profile: Low Complexity
+  profile: LC
   channels_count: 1
   channels: '1.0'
-  sampling_rate: 22.1 KHz
+  sampling_rate: 22050
 subtitle:
 - id: 2
-  language: English
-  format: SubRip
+  language: en
+  format: SUBRIP
   default: true
 - id: 3
-  language: Hungarian
-  format: SubRip
+  language: hu
+  format: SUBRIP
 - id: 4
-  language: German
-  format: SubRip
+  language: de
+  format: SUBRIP
 - id: 5
-  language: French
-  format: SubRip
+  language: fr
+  format: SUBRIP
 - id: 6
-  language: Spanish
-  format: SubRip
+  language: es
+  format: SUBRIP
 - id: 7
-  language: Italian
-  format: SubRip
+  language: it
+  format: SUBRIP
 - id: 9
-  language: Japanese
-  format: SubRip
+  language: ja
+  format: SUBRIP
 - id: 10
-  format: SubRip
+  format: SUBRIP
 provider:
   name: ffmpeg

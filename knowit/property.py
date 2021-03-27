@@ -80,10 +80,11 @@ class Property(Reportable[T]):
 class Configurable(Property[T]):
     """Configurable property where values are in a config mapping."""
 
-    def __init__(self, config: typing.Mapping[str, typing.Mapping], *args: str, **kwargs):
+    def __init__(self, config: typing.Mapping[str, typing.Mapping], *args: str,
+                 config_key: typing.Optional[str] = None, **kwargs):
         """Init method."""
         super().__init__(*args, **kwargs)
-        self.mapping = getattr(config, self.__class__.__name__)
+        self.mapping = getattr(config, config_key or self.__class__.__name__) if config else {}
 
     @classmethod
     def _extract_key(cls, value: str) -> typing.Union[str, bool]:

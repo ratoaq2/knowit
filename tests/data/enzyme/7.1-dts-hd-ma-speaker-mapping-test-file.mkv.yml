@@ -4,12 +4,12 @@ duration: 0:01:37
 container: mkv
 video:
 - id: 1
-  language: Undetermined
+  language: und
   width: 1920 pixel
   height: 1080 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   resolution: 1080p
-  codec: H.264
+  codec: H264
   default: true
 audio:
 - id: 2

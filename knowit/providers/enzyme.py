@@ -51,6 +51,7 @@ class EnzymeProvider(Provider):
                 'width': Quantity('width', unit=units.pixel),
                 'height': Quantity('height', unit=units.pixel),
                 'scan_type': YesNo('interlaced', yes='Interlaced', no='Progressive', default='Progressive',
+                                   config=config, config_key='ScanType',
                                    description='video scan type'),
                 'resolution': None,  # populated with ResolutionRule
                 # 'bit_depth', Property('bit_depth', Integer('video bit depth')),

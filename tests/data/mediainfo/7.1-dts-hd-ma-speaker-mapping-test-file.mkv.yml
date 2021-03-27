@@ -1,38 +1,38 @@
 title: 7.1Ch DTS-HD MA - Speaker Mapping Test File
 path: tests/data/7.1-dts-hd-ma-speaker-mapping-test-file.mkv
-duration: 0:01:37
-size: 40.77 MB
-bit_rate: 3.3 Mbps
+duration: '0:01:37.931000'
+size: 40772443 byte
+bit_rate: 3330708
 container: mkv
 video:
 - id: 1
-  duration: 0:01:37
+  duration: '0:01:37.931000'
   width: 1920 pixel
   height: 1080 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   aspect_ratio: 1.778
   pixel_aspect_ratio: 1.0
   resolution: 1080p
   frame_rate: 23.976 FPS
   bit_depth: 8 bit
-  codec: H.264
-  profile: Main
+  codec: H264
+  profile: MAIN
   profile_level: '4'
   media_type: video/H264
   default: true
 audio:
 - id: 2
   name: 7.1Ch DTS-HD MA
-  language: English
-  duration: 0:01:37
-  codec: DTS-HD
-  profile: Master Audio
+  language: en
+  duration: '0:01:37.931000'
+  codec: DTSHD
+  profile: MA
   channels_count: 8
   channels: '7.1'
   bit_depth: 24 bit
-  bit_rate_mode: Variable
-  sampling_rate: 48.0 KHz
-  compression: Lossless
+  bit_rate_mode: VBR
+  sampling_rate: 48000
+  compression: LOSSLESS
   default: true
 provider:
   name: mediainfo
