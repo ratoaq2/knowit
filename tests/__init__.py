@@ -7,7 +7,6 @@ from datetime import timedelta
 from io import BytesIO
 from zipfile import ZipFile
 
-import babelfish
 import requests
 import yaml
 from yaml.constructor import Constructor

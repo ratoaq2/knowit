@@ -1,11 +1,18 @@
 import datetime
 import json
+import re
 import typing
 from datetime import timedelta
 from decimal import Decimal
 
 import babelfish
 import yaml
+from yaml.composer import Composer
+from yaml.constructor import SafeConstructor
+from yaml.parser import Parser
+from yaml.reader import Reader
+from yaml.resolver import Resolver as DefaultResolver
+from yaml.scanner import Scanner
 
 from knowit.units import units
 from knowit.utils import round_decimal
@@ -45,8 +52,6 @@ def get_yaml_dumper(context):
             """Convert data to string."""
             if isinstance(data, int):
                 return self.represent_int(data)
-            if isinstance(data, Decimal):
-                return self.represent_scalar('tag:yaml.org,2002:float', str(data).lower())
             return self.represent_str(str(data))
 
         def default_language_representer(self, data):
@@ -72,15 +77,49 @@ def get_yaml_dumper(context):
 def get_yaml_loader(constructors=None):
     """Return a yaml loader that handles sequences as python lists."""
     constructors = constructors or {}
+    yaml_implicit_resolvers = dict(DefaultResolver.yaml_implicit_resolvers)
 
-    class CustomLoader(yaml.Loader):
+    class Resolver(DefaultResolver):
+        """Custom YAML Resolver."""
+
+    Resolver.yaml_implicit_resolvers.clear()
+    for ch, vs in yaml_implicit_resolvers.items():
+        Resolver.yaml_implicit_resolvers.setdefault(ch, []).extend(
+            (tag, regexp) for tag, regexp in vs
+            if not tag.endswith('float')
+        )
+    Resolver.add_implicit_resolver(  # regex copied from yaml source
+        '!decimal',
+        re.compile(r'''^(?:
+            [-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+][0-9]+)?
+            |\.[0-9_]+(?:[eE][-+][0-9]+)?
+            |[-+]?[0-9][0-9_]*(?::[0-9]?[0-9])+\.[0-9_]*
+            |[-+]?\.(?:inf|Inf|INF)
+            |\.(?:nan|NaN|NAN)
+        )$''', re.VERBOSE),
+        list('-+0123456789.')
+    )
+
+    class CustomLoader(Reader, Scanner, Parser, Composer, SafeConstructor, Resolver):
         """Custom YAML Loader."""
 
-        pass
+        def __init__(self, stream):
+            Reader.__init__(self, stream)
+            Scanner.__init__(self)
+            Parser.__init__(self)
+            Composer.__init__(self)
+            SafeConstructor.__init__(self)
+            Resolver.__init__(self)
 
-    CustomLoader.add_constructor('tag:yaml.org,2002:seq', CustomLoader.construct_python_tuple)
+    CustomLoader.add_constructor('tag:yaml.org,2002:seq', yaml.Loader.construct_python_tuple)
     for tag, constructor in constructors.items():
         CustomLoader.add_constructor(tag, constructor)
+
+    def decimal_constructor(loader, node):
+        value = loader.construct_scalar(node)
+        return Decimal(value)
+
+    CustomLoader.add_constructor('!decimal', decimal_constructor)
 
     return CustomLoader
 
