@@ -1,5 +1,7 @@
+from decimal import Decimal
 
 from knowit.property import Property
+from knowit.utils import round_decimal
 
 
 class Quantity(Property):
@@ -19,5 +21,7 @@ class Quantity(Property):
             except ValueError:
                 self.report(value, context)
                 return
+        if isinstance(value, Decimal):
+            value = round_decimal(value, min_digits=1, max_digits=3)
 
         return value if context.get('no_units') else value * self.unit

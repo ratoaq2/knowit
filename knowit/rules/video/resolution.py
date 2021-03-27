@@ -1,3 +1,4 @@
+from decimal import Decimal
 
 from knowit.rule import Rule
 
@@ -45,7 +46,7 @@ class ResolutionRule(Rule):
         except AttributeError:
             pass
 
-        dar = props.get('aspect_ratio', float(width) / height)
+        dar = props.get('aspect_ratio', Decimal(width) / height)
         par = props.get('pixel_aspect_ratio', 1)
         scan_type = props.get('scan_type', 'p')[0].lower()
 

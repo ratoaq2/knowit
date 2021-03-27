@@ -1,6 +1,7 @@
 import re
 import typing
 from datetime import timedelta
+from decimal import Decimal, InvalidOperation
 
 from knowit.property import Property
 
@@ -26,8 +27,8 @@ class Duration(Property[timedelta]):
         elif isinstance(value, int):
             return timedelta(milliseconds=value * self.resolution)
         try:
-            return timedelta(milliseconds=int(float(value) * self.resolution))
-        except ValueError:
+            return timedelta(milliseconds=int(Decimal(value) * self.resolution))
+        except (ValueError, InvalidOperation):
             pass
 
         match = self.duration_re.match(value)

@@ -2,6 +2,7 @@
 import json
 import re
 from ctypes import c_void_p, c_wchar_p
+from decimal import Decimal
 from logging import DEBUG, NullHandler, getLogger
 from subprocess import CalledProcessError, check_output
 
@@ -47,7 +48,7 @@ from ..rules import (
 from ..units import units
 from ..utils import (
     define_candidate,
-    detect_os,
+    detect_os, round_decimal,
 )
 
 logger = getLogger(__name__)
@@ -195,10 +196,14 @@ class MediaInfoProvider(Provider):
                 'width': Quantity('Width', unit=units.pixel),
                 'height': Quantity('Height', unit=units.pixel),
                 'scan_type': ScanType(config, 'ScanType', default='Progressive', description='video scan type'),
-                'aspect_ratio': Basic('DisplayAspectRatio', data_type=float, description='display aspect ratio'),
-                'pixel_aspect_ratio': Basic('PixelAspectRatio', data_type=float, description='pixel aspect ratio'),
+                'aspect_ratio': Basic('DisplayAspectRatio', data_type=Decimal,
+                                      processor=lambda x: round_decimal(x, min_digits=1, max_digits=3),
+                                      description='display aspect ratio'),
+                'pixel_aspect_ratio': Basic('PixelAspectRatio', data_type=Decimal,
+                                            processor=lambda x: round_decimal(x, min_digits=1, max_digits=3),
+                                            description='pixel aspect ratio'),
                 'resolution': None,  # populated with ResolutionRule
-                'frame_rate': Quantity('FrameRate', unit=units.FPS, data_type=float, description='video frame rate'),
+                'frame_rate': Quantity('FrameRate', unit=units.FPS, data_type=Decimal, description='video frame rate'),
                 # frame_rate_mode
                 'bit_rate': Quantity('BitRate', unit=units.bps, description='video bit rate'),
                 'bit_depth': Quantity('BitDepth', unit=units.bit, description='video bit depth'),

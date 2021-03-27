@@ -1,11 +1,13 @@
 
 import re
 import typing
+from decimal import Decimal
 
 from knowit.property import Property
+from knowit.utils import round_decimal
 
 
-class Ratio(Property[float]):
+class Ratio(Property[Decimal]):
     """Ratio property."""
 
     def __init__(self, *args: str, unit=None, **kwargs):
@@ -15,15 +17,15 @@ class Ratio(Property[float]):
 
     ratio_re = re.compile(r'(?P<width>\d+)[:/](?P<height>\d+)')
 
-    def handle(self, value, context) -> typing.Optional[float]:
+    def handle(self, value, context) -> typing.Optional[Decimal]:
         """Handle ratio."""
         match = self.ratio_re.match(value)
         if match:
             width, height = match.groups()
             if (width, height) == ('0', '1'):  # identity
-                return 1.
+                return Decimal('1.0')
 
-            result = round(float(width) / float(height), 3)
+            result = round_decimal(Decimal(width) / Decimal(height), min_digits=1, max_digits=3)
             if self.unit:
                 result *= self.unit
 

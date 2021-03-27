@@ -1,6 +1,7 @@
 import os
 import sys
 import typing
+from decimal import Decimal
 
 from knowit import VIDEO_EXTENSIONS
 
@@ -118,3 +119,13 @@ def build_path_candidates(
             for path in paths
             for name in names
         )
+
+
+def round_decimal(value: Decimal, min_digits=0, max_digits: typing.Optional[int] = None):
+    decimal_places = abs(value.normalize().as_tuple().exponent)
+    if decimal_places <= min_digits:
+        return round(value, min_digits)
+    if max_digits:
+        return round(value, min(max_digits, decimal_places))
+    return value
+

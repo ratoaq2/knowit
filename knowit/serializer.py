@@ -2,6 +2,7 @@ import datetime
 import json
 import typing
 from datetime import timedelta
+from decimal import Decimal
 
 import babelfish
 import yaml
@@ -43,8 +44,8 @@ def get_yaml_dumper(context):
             """Convert data to string."""
             if isinstance(data, int):
                 return self.represent_int(data)
-            if isinstance(data, float):
-                return self.represent_float(data)
+            if isinstance(data, Decimal):
+                return self.represent_scalar('tag:yaml.org,2002:float', str(data).lower())
             return self.represent_str(str(data))
 
         def default_language_representer(self, data):
@@ -62,6 +63,7 @@ def get_yaml_dumper(context):
     CustomDumper.add_representer(babelfish.Language, CustomDumper.default_language_representer)
     CustomDumper.add_representer(timedelta, CustomDumper.default_duration_representer)
     CustomDumper.add_representer(units.Quantity, CustomDumper.default_quantity_representer)
+    CustomDumper.add_representer(Decimal, CustomDumper.default_representer)
 
     return CustomDumper
 
@@ -85,13 +87,14 @@ def get_yaml_loader(constructors=None):
 def format_duration(
         duration: datetime.timedelta,
         profile='default',
-) -> typing.Union[str, float]:
+) -> typing.Union[str, Decimal]:
     if profile == 'technical':
         return str(duration)
 
     seconds = duration.total_seconds()
     if profile == 'code':
-        return duration.total_seconds()
+        value = Decimal((duration.days * 86400 + duration.seconds) * 10 ** 6 + duration.microseconds) / 10**6
+        return value
 
     hours = int(seconds // 3600)
     seconds = seconds - (hours * 3600)

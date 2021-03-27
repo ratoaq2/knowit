@@ -1,4 +1,4 @@
-
+from decimal import Decimal
 from logging import NullHandler, getLogger
 
 from knowit.rule import Rule
@@ -31,10 +31,10 @@ class AudioChannelsRule(Rule):
             if not position:
                 continue
 
-            c = 0
+            c = Decimal('0.0')
             for i in position.split('/'):
                 try:
-                    c += float(i)
+                    c += Decimal(i)
                 except ValueError:
                     logger.debug('Invalid %s: %s', self.description, i)
                     pass
