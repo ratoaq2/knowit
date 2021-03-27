@@ -31,7 +31,6 @@ from knowit.provider import (
 )
 from knowit.rules import (
     AudioChannelsRule,
-    AudioCodecRule,
     ClosedCaptionRule,
     HearingImpairedRule,
     LanguageRule,
@@ -170,8 +169,7 @@ class FFmpegProvider(Provider):
                 'name': Property('tags.title', description='audio track name'),
                 'language': Language('tags.language', description='audio language'),
                 'duration': Duration('duration', description='audio duration'),
-                'codec': AudioCodec(config, 'codec_name', description='audio codec'),
-                '_codec': AudioCodec(config, 'profile', description='audio codec', private=True, reportable=False),
+                'codec': AudioCodec(config, 'profile', 'codec_name', description='audio codec'),
                 'profile': AudioProfile(config, 'profile', description='audio codec profile'),
                 'channels_count': AudioChannels('channels', description='audio channels count'),
                 'channels': None,  # populated with AudioChannelsRule
@@ -200,7 +198,6 @@ class FFmpegProvider(Provider):
             'audio': {
                 'language': LanguageRule('audio language'),
                 'channels': AudioChannelsRule('audio channels'),
-                'codec': AudioCodecRule('audio codec', override=True),
             },
             'subtitle': {
                 'language': LanguageRule('subtitle language'),
