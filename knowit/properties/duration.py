@@ -11,8 +11,8 @@ class Duration(Property[timedelta]):
     duration_re = re.compile(r'(?P<hours>\d{1,2}):'
                              r'(?P<minutes>\d{1,2}):'
                              r'(?P<seconds>\d{1,2})(?:\.'
-                             r'(?P<millis>\d{3})'
-                             r'(?P<micro>\d{3})?\d*)?')
+                             r'(?P<milliseconds>\d{3})'
+                             r'(?P<microseconds>\d{3})?\d*)?')
 
     def __init__(self, name: str, resolution: float = 1, *args, **kwargs):
         """Initialize a Duration."""
@@ -30,10 +30,14 @@ class Duration(Property[timedelta]):
         except ValueError:
             pass
 
-        try:
-            h, m, s, ms, mc = self.duration_re.match(value).groups('0')
-            return timedelta(hours=int(h), minutes=int(m), seconds=int(s), milliseconds=int(ms), microseconds=int(mc))
-        except ValueError:
-            pass
+        match = self.duration_re.match(value)
+        if not match:
+            self.report(value, context)
+            return None
 
-        self.report(value, context)
+        params = {
+            key: int(value)
+            for key, value in match.groupdict().items()
+            if value
+        }
+        return timedelta(**params)
