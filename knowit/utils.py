@@ -122,7 +122,11 @@ def build_path_candidates(
 
 
 def round_decimal(value: Decimal, min_digits=0, max_digits: typing.Optional[int] = None):
-    decimal_places = abs(value.normalize().as_tuple().exponent)
+    exponent = value.normalize().as_tuple().exponent
+    if exponent >= 0:
+        return round(value, min_digits)
+
+    decimal_places = abs(exponent)
     if decimal_places <= min_digits:
         return round(value, min_digits)
     if max_digits:

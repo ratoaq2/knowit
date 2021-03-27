@@ -8,6 +8,7 @@ import babelfish
 import yaml
 
 from knowit.units import units
+from knowit.utils import round_decimal
 
 
 def format_property(profile: str, o):
@@ -93,8 +94,9 @@ def format_duration(
 
     seconds = duration.total_seconds()
     if profile == 'code':
-        value = Decimal((duration.days * 86400 + duration.seconds) * 10 ** 6 + duration.microseconds) / 10**6
-        return value
+        return round_decimal(
+            Decimal((duration.days * 86400 + duration.seconds) * 10 ** 6 + duration.microseconds) / 10**6, min_digits=1
+        )
 
     hours = int(seconds // 3600)
     seconds = seconds - (hours * 3600)
