@@ -1,8 +1,12 @@
 
 import os
+import typing
 from logging import NullHandler, getLogger
 
+import knowit.config
 from knowit.properties import Quantity
+from knowit.property import Property
+from knowit.rule import Rule
 from knowit.units import units
 
 logger = getLogger(__name__)
@@ -11,6 +15,12 @@ logger.addHandler(NullHandler())
 
 size_property = Quantity('size', units.byte, description='media size')
 
+PropertyMap = typing.Mapping[str, Property]
+PropertyConfig = typing.Mapping[str, PropertyMap]
+
+RuleMap = typing.Mapping[str, Rule]
+RuleConfig = typing.Mapping[str, RuleMap]
+
 
 class Provider:
     """Base class for all providers."""
@@ -18,7 +28,12 @@ class Provider:
     min_fps = 10
     max_fps = 200
 
-    def __init__(self, config, mapping, rules=None):
+    def __init__(
+            self,
+            config: knowit.config.Config,
+            mapping: PropertyConfig,
+            rules: typing.Optional[RuleConfig] = None,
+    ):
         """Init method."""
         self.config = config
         self.mapping = mapping
