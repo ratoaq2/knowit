@@ -21,6 +21,9 @@ video:
   codec: H265
   profile: MAIN10
   profile_level: 5.1
+  hdr_format:
+    - DV
+    - HDR10
   media_type: video/H265
 audio:
 - id: 2

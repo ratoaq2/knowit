@@ -19,6 +19,7 @@ from knowit.properties.video import (
     VideoCodec,
     VideoDimensions,
     VideoEncoder,
+    VideoHdrFormat,
     VideoProfile,
     VideoProfileLevel,
     VideoProfileTier,
