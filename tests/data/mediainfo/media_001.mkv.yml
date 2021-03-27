@@ -1,0 +1,85 @@
+title: Media 001
+path: tests/data/mediainfo/media_001.mkv
+duration: 3261.384
+size: 28071815971
+bit_rate: 68858659
+container: mkv
+video:
+- id: 1
+  language: en
+  duration: 3259.381
+  size: 25355039372
+  width: 3840
+  height: 2160
+  scan_type: PROGRESSIVE
+  aspect_ratio: 1.778
+  pixel_aspect_ratio: 1.0
+  resolution: 2160p
+  frame_rate: 23.976
+  bit_rate: 62232772
+  bit_depth: 10
+  codec: H265
+  profile: MAIN10
+  profile_level: 5.1
+  media_type: video/H265
+audio:
+- id: 2
+  language: en
+  duration: 3259.381
+  size: 1912453744
+  codec:
+  - TRUEHD
+  - ATMOS
+  channels_count: 8
+  channels: 7.1
+  bit_rate: 4694029
+  bit_rate_mode: VBR
+  sampling_rate: 48000
+  compression: LOSSLESS
+  default: true
+- id: 3
+  language: en
+  duration: 3259.392
+  size: 260751360
+  codec: AC3
+  channels_count: 6
+  channels: 5.1
+  bit_rate: 640000
+  bit_rate_mode: CBR
+  sampling_rate: 48000
+  compression: LOSSY
+- id: 4
+  language: de
+  duration: 3258.272
+  size: 182463232
+  codec: AC3
+  channels_count: 6
+  channels: 5.1
+  bit_rate: 448000
+  bit_rate_mode: CBR
+  sampling_rate: 48000
+  compression: LOSSY
+- id: 5
+  language: pt
+  duration: 3259.382
+  size: 312900608
+  codec: DTS
+  channels_count: 2
+  channels: 2.0
+  bit_depth: 24
+  bit_rate: 768000
+  bit_rate_mode: CBR
+  sampling_rate: 48000
+  compression: LOSSY
+subtitle:
+- id: 6
+  language: en
+  format: PGS
+- id: 7
+  language: de
+  format: PGS
+- id: 8
+  language: pt
+  format: PGS
+provider:
+  name: mediainfo
