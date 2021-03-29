@@ -1,4 +1,3 @@
-
 from knowit.properties.audio import (
     AudioChannels,
     AudioCodec,
@@ -6,10 +5,13 @@ from knowit.properties.audio import (
     AudioProfile,
     BitRateMode,
 )
-from knowit.properties.basic import Basic
-from knowit.properties.duration import Duration
-from knowit.properties.language import Language
-from knowit.properties.quantity import Quantity
+from knowit.properties.general import (
+    Basic,
+    Duration,
+    Language,
+    Quantity,
+    YesNo,
+)
 from knowit.properties.subtitle import (
     SubtitleFormat,
 )
@@ -24,4 +26,3 @@ from knowit.properties.video import (
     VideoProfileLevel,
     VideoProfileTier,
 )
-from knowit.properties.yesno import YesNo
