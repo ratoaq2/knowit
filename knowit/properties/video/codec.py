@@ -1,5 +1,5 @@
 
-from knowit.property import Configurable
+from knowit.core import Configurable
 
 
 class VideoCodec(Configurable[str]):

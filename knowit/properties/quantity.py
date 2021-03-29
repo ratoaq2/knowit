@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from knowit.property import Property
+from knowit.core import Property
 from knowit.utils import round_decimal
 
 

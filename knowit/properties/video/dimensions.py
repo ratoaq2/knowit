@@ -2,7 +2,7 @@
 import re
 import typing
 
-from knowit.property import Property
+from knowit.core import Property
 
 
 class VideoDimensions(Property[int]):

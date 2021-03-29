@@ -1,6 +1,6 @@
 import typing
 
-from knowit.rule import Rule
+from knowit.core import Rule
 
 
 class DtsHdRule(Rule):

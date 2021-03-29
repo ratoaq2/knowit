@@ -1,7 +1,7 @@
 from decimal import Decimal
 from logging import NullHandler, getLogger
 
-from knowit.rule import Rule
+from knowit.core import Rule
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())

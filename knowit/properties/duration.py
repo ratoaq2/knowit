@@ -3,7 +3,7 @@ import typing
 from datetime import timedelta
 from decimal import Decimal, InvalidOperation
 
-from knowit.property import Property
+from knowit.core import Property
 
 
 class Duration(Property[timedelta]):

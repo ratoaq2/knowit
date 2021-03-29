@@ -16,7 +16,7 @@ from knowit.properties import (
     VideoDimensions,
     YesNo,
 )
-from knowit.property import Property
+from knowit.core import Property
 from knowit.provider import (
     MalformedFileError,
     Provider,

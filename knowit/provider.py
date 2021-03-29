@@ -5,8 +5,7 @@ from logging import NullHandler, getLogger
 
 import knowit.config
 from knowit.properties import Quantity
-from knowit.property import Property
-from knowit.rule import Rule
+from knowit.core import Property, Rule
 from knowit.units import units
 
 logger = getLogger(__name__)

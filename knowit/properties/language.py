@@ -2,7 +2,7 @@ import typing
 
 import babelfish
 
-from knowit.property import Property
+from knowit.core import Property
 
 
 class Language(Property[babelfish.Language]):

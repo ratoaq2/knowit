@@ -1,7 +1,7 @@
 
 import re
 
-from knowit.rule import Rule
+from knowit.core import Rule
 
 
 class ClosedCaptionRule(Rule):

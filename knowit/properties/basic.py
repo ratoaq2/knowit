@@ -1,6 +1,6 @@
 import typing
 
-from knowit.property import Property
+from knowit.core import Property
 
 T = typing.TypeVar('T')
 

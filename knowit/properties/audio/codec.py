@@ -1,6 +1,6 @@
 import typing
 
-from knowit.property import Configurable
+from knowit.core import Configurable
 
 
 class AudioCodec(Configurable[str]):

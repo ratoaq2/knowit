@@ -22,9 +22,7 @@ from knowit.properties import (
     VideoProfileLevel,
     YesNo,
 )
-from knowit.property import (
-    Property,
-)
+from knowit.core import Property
 from knowit.provider import (
     MalformedFileError,
     Provider,

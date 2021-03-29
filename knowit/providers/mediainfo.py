@@ -29,15 +29,15 @@ from ..properties import (
     VideoProfileTier,
     YesNo,
 )
-from ..property import (
+from knowit.core import (
     MultiValue,
     Property,
 )
-from ..provider import (
+from knowit.provider import (
     MalformedFileError,
     Provider,
 )
-from ..rules import (
+from knowit.rules import (
     AtmosRule,
     AudioChannelsRule,
     ClosedCaptionRule,
@@ -46,8 +46,8 @@ from ..rules import (
     LanguageRule,
     ResolutionRule,
 )
-from ..units import units
-from ..utils import (
+from knowit.units import units
+from knowit.utils import (
     define_candidate,
     detect_os, round_decimal,
 )
