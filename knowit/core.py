@@ -173,7 +173,13 @@ class MultiValue(Property):
             context: typing.MutableMapping,
     ) -> typing.Union[T, typing.List[T]]:
         """Handle properties with multiple values."""
-        call = self.handler or self.prop.handle
+        if self.handler:
+            call = self.handler
+        elif self.prop:
+            call = self.prop.handle
+        else:
+            raise NotImplementedError('No handler available')
+
         result = call(value, context)
         if result is not None:
             return result
