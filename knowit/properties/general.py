@@ -44,7 +44,7 @@ class Duration(Property[timedelta]):
                              r'(?P<milliseconds>\d{3})'
                              r'(?P<microseconds>\d{3})?\d*)?')
 
-    def __init__(self, *args: str, resolution: int or Decimal = 1, **kwargs):
+    def __init__(self, *args: str, resolution: typing.Union[int, Decimal] = 1, **kwargs):
         """Initialize a Duration."""
         super().__init__(*args, **kwargs)
         self.resolution = resolution

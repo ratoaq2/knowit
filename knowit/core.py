@@ -158,7 +158,7 @@ class Configurable(Property[T]):
 class MultiValue(Property):
     """Property with multiple values."""
 
-    def __init__(self, prop: typing.Optional[Property[typing.Any]] = None, delimiter='/', single=False,
+    def __init__(self, prop: typing.Optional[Property] = None, delimiter='/', single=False,
                  handler=None, name=None, **kwargs):
         """Init method."""
         super().__init__(*(prop.names if prop else (name,)), **kwargs)
@@ -170,7 +170,7 @@ class MultiValue(Property):
     def handle(
             self,
             value: str,
-            context: typing.Mapping,
+            context: typing.MutableMapping,
     ) -> typing.Union[T, typing.List[T]]:
         """Handle properties with multiple values."""
         call = self.handler or self.prop.handle
