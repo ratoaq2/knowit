@@ -33,7 +33,13 @@ class VideoDimensions(Property[int]):
         """Handle ratio."""
         match = self.dimensions_re.match(value)
         if match:
-            return int(match.groupdict().get(self.dimension))
+            match_dict = match.groupdict()
+            try:
+                value = match_dict[self.dimension]
+            except KeyError:
+                pass
+            else:
+                return int(value)
 
         self.report(value, context)
         return None
