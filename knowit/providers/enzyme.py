@@ -5,6 +5,7 @@ from collections import defaultdict
 from logging import NullHandler, getLogger
 import enzyme
 
+from knowit.core import Property
 from knowit.properties import (
     AudioCodec,
     Basic,
@@ -14,7 +15,6 @@ from knowit.properties import (
     VideoCodec,
     YesNo,
 )
-from knowit.core import Property
 from knowit.provider import (
     MalformedFileError,
     Provider,

@@ -9,8 +9,9 @@ from subprocess import CalledProcessError, check_output
 from pymediainfo import MediaInfo
 from pymediainfo import __version__ as pymediainfo_version
 
-from .. import VIDEO_EXTENSIONS
-from ..properties import (
+from knowit import VIDEO_EXTENSIONS
+from knowit.core import MultiValue, Property
+from knowit.properties import (
     AudioChannels,
     AudioCodec,
     AudioCompression,
@@ -28,10 +29,6 @@ from ..properties import (
     VideoProfile,
     VideoProfileTier,
     YesNo,
-)
-from knowit.core import (
-    MultiValue,
-    Property,
 )
 from knowit.provider import (
     MalformedFileError,

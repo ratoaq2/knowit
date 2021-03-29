@@ -4,8 +4,8 @@ import typing
 from logging import NullHandler, getLogger
 
 import knowit.config
-from knowit.properties import Quantity
 from knowit.core import Property, Rule
+from knowit.properties import Quantity
 from knowit.units import units
 
 logger = getLogger(__name__)

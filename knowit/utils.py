@@ -132,4 +132,3 @@ def round_decimal(value: Decimal, min_digits=0, max_digits: typing.Optional[int]
     if max_digits:
         return round(value, min(max_digits, decimal_places))
     return value
-

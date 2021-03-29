@@ -13,6 +13,7 @@ class AtmosRule(Rule):
 
     def __init__(self, config: typing.Mapping[str, typing.Mapping], name: str,
                  **kwargs):
+        """Initialize an Atmos rule."""
         super().__init__(name, **kwargs)
         self.audio_codecs = getattr(config, 'AudioCodec')
 
@@ -77,6 +78,7 @@ class DtsHdRule(Rule):
 
     def __init__(self, config: typing.Mapping[str, typing.Mapping], name: str,
                  **kwargs):
+        """Initialize a DTS-HD Rule."""
         super().__init__(name, **kwargs)
         self.audio_codecs = getattr(config, 'AudioCodec')
         self.audio_profiles = getattr(config, 'AudioProfile')

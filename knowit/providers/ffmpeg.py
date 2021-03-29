@@ -6,6 +6,7 @@ from logging import NullHandler, getLogger
 from subprocess import check_output
 
 from knowit import VIDEO_EXTENSIONS
+from knowit.core import Property
 from knowit.properties import (
     AudioChannels,
     AudioCodec,
@@ -22,7 +23,6 @@ from knowit.properties import (
     VideoProfileLevel,
     YesNo,
 )
-from knowit.core import Property
 from knowit.provider import (
     MalformedFileError,
     Provider,

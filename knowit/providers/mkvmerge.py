@@ -6,6 +6,7 @@ from decimal import Decimal
 from logging import NullHandler, getLogger
 from subprocess import check_output
 
+from knowit.core import Property
 from knowit.properties import (
     AudioCodec,
     Basic,
@@ -16,7 +17,6 @@ from knowit.properties import (
     VideoDimensions,
     YesNo,
 )
-from knowit.core import Property
 from knowit.provider import (
     MalformedFileError,
     Provider,

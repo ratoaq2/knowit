@@ -1,6 +1,6 @@
 import typing
-from knowit.core import Property
-from knowit.core import Configurable
+
+from knowit.core import Configurable, Property
 
 
 class BitRateMode(Configurable[str]):
