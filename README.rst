@@ -246,4 +246,4 @@ MediaInfo is the default provider. Visit their `website <http://mediaarea.net/Me
 
 ffprobe (FFmpeg) can be downloaded `here <https://ffmpeg.org/download.html>`_
 
-mkvmerge (MKVToolNix) can be downloaded `here <https://mkvtoolnix.download/downloads.html>`_
+mkvmerge (MKVToolNix) can be downloaded `here <https://mkvtoolnix.download/downloads.html>`__
