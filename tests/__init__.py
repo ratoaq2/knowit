@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
-from __future__ import print_function, unicode_literals
-
 import json
 import os
+import pathlib
 import re
 import sys
 from datetime import timedelta
+from io import BytesIO
 from zipfile import ZipFile
 
 import requests
-from six import BytesIO, string_types
 import yaml
 from yaml.constructor import Constructor
 
@@ -42,6 +40,13 @@ serializer.YAMLLoader = serializer.get_yaml_loader({
     'tag:yaml.org,2002:str': lambda constructor, value: _parse_value(value),
     'tag:yaml.org,2002:seq': Constructor.construct_sequence,
 })
+
+
+one_ms = timedelta(milliseconds=1)
+
+
+def normalize_path(path: str):
+    return os.fspath(pathlib.Path(path))
 
 
 def parameters_from_yaml(name, input_key=None, expected_key=None):
@@ -125,6 +130,8 @@ class MediaFiles(object):
         for provider in provider_names:
             files = []
             data_path = os.path.join('tests', 'data', provider)
+            if not os.path.isdir(data_path):
+                continue
             for path in os.listdir(data_path):
                 if not path.lower().endswith(YAML_EXTENSIONS):
                     files.append(os.path.join(data_path, path))
@@ -237,7 +244,7 @@ class JsonMedia(DataMedia):
     @property
     def input_data(self):
         """Return the video metadata as json."""
-        return read_yaml(self.file_path)
+        return read_json(self.file_path)
 
 
 def _parse_value(node):
@@ -249,7 +256,7 @@ def _parse_value(node):
         return value
 
     def parse_quantity(value):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             for unit in ('pixel', 'bit', 'byte', 'FPS', 'bps', 'Hz'):
                 if value.endswith(' ' + unit):
                     return units(value[:-(len(unit))] + ' * ' + unit)
@@ -258,7 +265,7 @@ def _parse_value(node):
 
     result = node.value
     for method in (parse_quantity, parse_duration):
-        if result and isinstance(result, string_types):
+        if result and isinstance(result, str):
             result = method(node.value)
     return result
 
@@ -267,12 +274,24 @@ def is_iterable(obj):
     return isinstance(obj, (tuple, list))
 
 
+def to_string(profile: str, value):
+    formatted_value = format_property(profile, value)
+    return str(formatted_value) if formatted_value is not None else None
+
+
 def check_equals(expected, actual, different, options, prefix=''):
     if isinstance(expected, Mapping):
         check_mapping_equals(expected, actual, different=different, options=options, prefix=prefix)
     elif is_iterable(expected):
         check_sequence_equals(expected, actual, different=different, options=options, prefix=prefix)
-    elif format_property(expected, options) != format_property(actual, options):
+    elif isinstance(expected, timedelta):
+        check_timedelta_equals(expected, actual, different=different, prefix=prefix)
+    elif to_string(options['profile'], expected) != to_string(options['profile'], actual):
+        different.append((prefix, expected, actual))
+
+
+def check_timedelta_equals(expected, actual, different, prefix=''):
+    if not isinstance(actual, timedelta) or not (expected - one_ms) <= actual <= (expected + one_ms):
         different.append((prefix, expected, actual))
 
 
@@ -293,12 +312,20 @@ def check_mapping_equals(expected, actual, different, options, prefix=''):
         return
 
     for expected_key, expected_value in expected.items():
+        if expected_key == 'media_type':
+            continue
+
         if expected_key not in actual:
             different.append((prefix + expected_key, expected_value, None))
             continue
 
         actual_value = actual[expected_key]
         key = prefix + expected_key
+
+        if expected_key == 'path':
+            expected_value = normalize_path(expected_value)
+            actual_value = normalize_path(actual_value)
+
         check_equals(expected_value, actual_value, different=different, options=options, prefix=key)
 
     for actual_key, actual_value in actual.items():
@@ -308,12 +335,18 @@ def check_mapping_equals(expected, actual, different, options, prefix=''):
 
 
 def assert_expected(expected, actual, options=None):
+    version = None
     if 'provider' in actual:
+        version = actual['provider']['version']
         del actual['provider']['version']
 
     different = []
     check_equals(expected, actual, different=different, options=options or {'profile': 'default'})
     for (key, expected, actual) in different:
         print('{0}: Expected {1} got {2}'.format(key, expected, actual), file=sys.stderr)
+
+    if different and options and options['debug_data']:
+        print(f'Version: {version}')
+        print(options['debug_data']())
 
     assert not different

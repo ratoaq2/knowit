@@ -153,6 +153,12 @@ VideoProfileTier:
   High:
     - Main 10@L4@High
 
+VideoHdrFormat:
+  Dolby Vision:
+    - Dolby Vision
+  HDR10:
+    - SMPTE ST 2086
+
 ScanType:
   Progressive:
     - Progressive

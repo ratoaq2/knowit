@@ -1,29 +1,29 @@
 title: Elephant Dream - test 2
 path: tests/data/videos/test2.mkv
-duration: 0:00:47
-size: 21.14 MB
-bit_rate: 3.6 Mbps
+duration: '0:00:47.509000'
+size: 21142764 byte
+bit_rate: 3560212
 container: mkv
 video:
 - id: 0
   width: 1024 pixel
   height: 576 pixel
-  scan_type: Progressive
+  scan_type: PROGRESSIVE
   aspect_ratio: 2.351
   pixel_aspect_ratio: 1.322
   resolution: 1080p
   frame_rate: 24.0 FPS
   bit_depth: 8 bit
-  codec: H.264
-  profile: Main
+  codec: H264
+  profile: MAIN
   default: true
 audio:
 - id: 1
   codec: AAC
-  profile: Low Complexity
+  profile: LC
   channels_count: 2
   channels: '2.0'
-  sampling_rate: 48.0 KHz
+  sampling_rate: 48000
   default: true
 provider:
   name: ffmpeg

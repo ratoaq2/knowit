@@ -2,12 +2,9 @@ sudo: false
 
 language: python
 
-dist: xenial
+dist: focal
 
 python:
-  - 2.7
-  - 3.4
-  - 3.5
   - 3.6
   - 3.7
   - 3.8
@@ -21,6 +18,7 @@ addons:
     packages:
     - mediainfo
     - ffmpeg
+    - mkvtoolnix
 
 cache:
   directories:
@@ -33,6 +31,11 @@ before_install:
   - pip install --upgrade pytest
 
 install:
+  - pip install tox-travis
   - pip install -e .
 
-script: python setup.py test --addopts "--verbose $PYTEST_ADDOPTS"
+script: tox
+
+after_script:
+  - tox -e lint
+  - tox -e type-check

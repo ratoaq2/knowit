@@ -1,0 +1,20 @@
+duration: 87.336
+path: tests/data/videos/test6.mkv
+container: mkv
+size: 23343928
+video:
+- id: 1
+  language: und
+  width: 854
+  height: 480
+  scan_type: PROGRESSIVE
+  resolution: 480p
+audio:
+- id: 2
+  language: und
+  codec: MP3
+  channels_count: 2
+  channels: 2.0
+  sampling_rate: 48000
+provider:
+  name: mkvmerge

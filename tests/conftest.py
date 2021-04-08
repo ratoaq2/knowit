@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from unittest.mock import Mock
 
-from pymediainfo import MediaInfo
 import pytest
 
 from knowit import api
@@ -9,11 +7,7 @@ from knowit.config import Config
 from knowit.providers import EnzymeProvider
 from knowit.providers.ffmpeg import FFmpegCliExecutor, FFmpegExecutor
 from knowit.providers.mediainfo import MediaInfoCTypesExecutor, MediaInfoCliExecutor, MediaInfoExecutor
-
-try:
-    from mock import Mock
-except ImportError:
-    from unittest.mock import Mock
+from knowit.providers.mkvmerge import MkvMergeCliExecutor, MkvMergeExecutor
 
 
 @pytest.fixture
@@ -30,7 +24,7 @@ def config():
 
 @pytest.fixture
 def options():
-    return {}
+    return {'profile': 'code'}
 
 
 def setup_mediainfo(executor, monkeypatch, options):
@@ -43,7 +37,7 @@ def setup_mediainfo(executor, monkeypatch, options):
     data = {}
     extract_info = executor.extract_info
     monkeypatch.setattr(executor, 'extract_info',
-                        lambda filename: MediaInfo(data[filename]) if filename in data else extract_info(filename))
+                        lambda filename: data[filename] if filename in data else extract_info(filename))
     return data
 
 
@@ -65,6 +59,22 @@ def ffmpeg(monkeypatch, options):
     get_executor = Mock()
     get_executor.return_value = executor
     monkeypatch.setattr(FFmpegExecutor, 'get_executor_instance', get_executor)
+
+    data = {}
+    extract_info = executor.extract_info
+    monkeypatch.setattr(executor, 'extract_info',
+                        lambda filename: data[filename] if filename in data else extract_info(filename))
+    return data
+
+
+@pytest.fixture
+def mkvmerge(monkeypatch, options):
+    options['provider'] = 'mkvmerge'
+    api.available_providers.clear()
+    executor = MkvMergeCliExecutor.create()
+    get_executor = Mock()
+    get_executor.return_value = executor
+    monkeypatch.setattr(MkvMergeExecutor, 'get_executor_instance', get_executor)
 
     data = {}
     extract_info = executor.extract_info
