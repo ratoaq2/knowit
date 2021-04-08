@@ -92,13 +92,13 @@ def build_argument_parser() -> ArgumentParser:
     conf_opts.add_argument(
         '--ffmpeg',
         dest='ffmpeg',
-        help='The location to search for FFmpeg (ffprobe) binaries',
+        help='The location to search for ffprobe (FFmpeg) binaries',
         type=str,
     )
     conf_opts.add_argument(
         '--mkvmerge',
         dest='mkvmerge',
-        help='The location to search for mkvmerge binaries',
+        help='The location to search for mkvmerge (MKVToolNix) binaries',
         type=str,
     )
 

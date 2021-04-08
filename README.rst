@@ -25,11 +25,11 @@ CLI
 Extract information from a video file::
 
     $ knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
-    For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
-    Knowit 0.2.4 found:
+    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
+    Knowit 0.4.0 found:
     {
         "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
-        "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
+        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
         "duration": "0:01:37",
         "size": "40.77 MB",
         "bit_rate": "3.3 Mbps",
@@ -41,8 +41,8 @@ Extract information from a video file::
                 "width": "1920 pixel",
                 "height": "1080 pixel",
                 "scan_type": "Progressive",
-                "aspect_ratio": 1.778,
-                "pixel_aspect_ratio": 1.0,
+                "aspect_ratio": "1.778",
+                "pixel_aspect_ratio": "1.0",
                 "resolution": "1080p",
                 "frame_rate": "23.976 FPS",
                 "bit_depth": "8 bit",
@@ -50,8 +50,7 @@ Extract information from a video file::
                 "profile": "Main",
                 "profile_level": "4",
                 "media_type": "video/H264",
-                "default": true,
-                "language": "Undetermined"
+                "default": true
             }
         ],
         "audio": [
@@ -71,18 +70,24 @@ Extract information from a video file::
                 "default": true
             }
         ],
-        "provider": "libmediainfo.so.0"
+        "provider": {
+            "name": "mediainfo",
+            "version": {
+                "pymediainfo": "5.0.3",
+                "libmediainfo.so.0": "v20.9"
+            }
+        }
     }
 
 
-Extract information from a video file using ffprobe::
+Extract information from a video file using ffmpeg::
 
     $ knowit --provider ffmpeg /folder/Audio Samples/hd_dtsma_7.1.mkv
-    For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
-    Knowit 0.2.4 found:
+    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
+    Knowit 0.4.0 found:
     {
         "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
-        "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
+        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
         "duration": "0:01:37",
         "size": "40.77 MB",
         "bit_rate": "3.3 Mbps",
@@ -93,15 +98,14 @@ Extract information from a video file using ffprobe::
                 "width": "1920 pixel",
                 "height": "1080 pixel",
                 "scan_type": "Progressive",
-                "aspect_ratio": 1.778,
-                "pixel_aspect_ratio": 1.0,
+                "aspect_ratio": "1.778",
+                "pixel_aspect_ratio": "1.0",
                 "resolution": "1080p",
                 "frame_rate": "23.976 FPS",
                 "bit_depth": "8 bit",
                 "codec": "H.264",
                 "profile": "Main",
-                "default": true,
-                "language": "Undetermined"
+                "default": true
             }
         ],
         "audio": [
@@ -118,18 +122,24 @@ Extract information from a video file using ffprobe::
                 "default": true
             }
         ],
-        "provider": "ffprobe"
+        "provider": {
+            "name": "ffmpeg",
+            "version": {
+                "ffprobe": "v4.2.4-1ubuntu0.1"
+            }
+        }
     }
+
 
 
 Using docker::
 
     docker run -it --rm -v /folder:/folder knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
-    For: /folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv
-    Knowit 0.2.4 found:
+    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
+    Knowit 0.4.0 found:
     {
         "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
-        "path": "/folder/Audio Samples/7.1Ch DTS-HD MA - Speaker Mapping Test File.mkv",
+        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
         "duration": "0:01:37",
         "size": "40.77 MB",
         "bit_rate": "3.3 Mbps",
@@ -141,8 +151,8 @@ Using docker::
                 "width": "1920 pixel",
                 "height": "1080 pixel",
                 "scan_type": "Progressive",
-                "aspect_ratio": 1.778,
-                "pixel_aspect_ratio": 1.0,
+                "aspect_ratio": "1.778",
+                "pixel_aspect_ratio": "1.0",
                 "resolution": "1080p",
                 "frame_rate": "23.976 FPS",
                 "bit_depth": "8 bit",
@@ -150,8 +160,7 @@ Using docker::
                 "profile": "Main",
                 "profile_level": "4",
                 "media_type": "video/H264",
-                "default": true,
-                "language": "Undetermined"
+                "default": true
             }
         ],
         "audio": [
@@ -171,18 +180,20 @@ Using docker::
                 "default": true
             }
         ],
-        "provider": "libmediainfo.so.0"
+        "provider": {
+            "name": "mediainfo",
+            "version": {
+                "pymediainfo": "5.0.3",
+                "libmediainfo.so.0": "v20.9"
+            }
+        }
     }
-
     
 
 All available CLI options::
 
     $ knowit --help
-    usage: knowit [-h] [-p PROVIDER] [-E] [-v] [-r] [--report] [-y] [-N]
-                       [-P PROFILE] [--mediainfo MEDIAINFO] [--ffmpeg FFMPEG]
-                       [--version]
-                       [videopath [videopath ...]]
+    usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO] [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--version] [videopath [videopath ...]]
 
     positional arguments:
       videopath             Path to the video to introspect
@@ -192,25 +203,21 @@ All available CLI options::
 
     Providers:
       -p PROVIDER, --provider PROVIDER
-                            The provider to be used: mediainfo, ffmpeg or enzyme.
-
-    Input:
-      -E, --fail-on-error   Fail when errors are found on the media file.
+                            The provider to be used: mediainfo, ffmpeg, mkvmerge or enzyme.
 
     Output:
-      -v, --verbose         Display debug output
-      -r, --raw             Display raw properties
+      --debug               Print information for debugging knowit and for reporting bugs.
       --report              Parse media and report all non-detected values
       -y, --yaml            Display output in yaml format
       -N, --no-units        Display output without units
       -P PROFILE, --profile PROFILE
-                            Display values according to specified profile: code,
-                            default, human, technical
+                            Display values according to specified profile: code, default, human, technical
 
     Configuration:
       --mediainfo MEDIAINFO
                             The location to search for MediaInfo binaries
-      --ffmpeg FFMPEG       The location to search for FFmpeg (ffprobe) binaries
+      --ffmpeg FFMPEG       The location to search for ffprobe (FFmpeg) binaries
+      --mkvmerge MKVMERGE   The location to search for mkvmerge (MKVToolNix) binaries
 
     Information:
       --version             Display knowit version.
@@ -229,12 +236,14 @@ the ``--user`` flag.
 
 External dependencies
 -------------------------
-KnowIt can use MediaInfo or FFmpeg (ffprobe)
+KnowIt can use MediaInfo, ffprobe (FFmpeg) or mkvmerge (MKVToolNix)
 
-KnowIt supports MKV regardless if MediaInfo or FFmpeg are installed.
+KnowIt supports MKV regardless if MediaInfo, FFmpeg or MKVToolNix are installed.
 
-MediaInfo or FFmpeg increases the number of supported formats and the number of extracted information.
+MediaInfo, FFmpeg or MKVToolNix increases the number of supported formats and the number of extracted information.
 
 MediaInfo is the default provider. Visit their `website <http://mediaarea.net/MediaInfo>`_ and install the proper package for your system.
 
-FFmpeg (ffprobe) can be downloaded `here <https://ffmpeg.org/download.html>`_
+ffprobe (FFmpeg) can be downloaded `here <https://ffmpeg.org/download.html>`_
+
+mkvmerge (MKVToolNix) can be downloaded `here <https://mkvtoolnix.download/downloads.html>`_
