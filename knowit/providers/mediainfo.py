@@ -130,7 +130,7 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
             return False
 
         try:
-            shell32 = ctypes.WinDLL('shell32', use_last_error=True)
+            shell32 = ctypes.WinDLL('shell32', use_last_error=True)  # type: ignore
             return bool(shell32.ExtractIconExW(candidate, 0, None, None, 1))
         except Exception:
             return False
