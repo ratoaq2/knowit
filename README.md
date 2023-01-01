@@ -1,28 +1,22 @@
-KnowIt
-==========
+# KnowIt
+
 Know better your media files.
 
-.. image:: https://img.shields.io/pypi/v/knowit.svg
-    :target: https://pypi.python.org/pypi/knowit
-    :alt: Latest Version
+[![Latest
+Version](https://img.shields.io/pypi/v/knowit.svg)](https://pypi.python.org/pypi/knowit)
 
-.. image:: https://travis-ci.org/ratoaq2/knowit.svg?branch=master
-    :target: https://travis-ci.org/ratoaq2/knowit
-    :alt: Travis CI build status
+[![tests](https://github.com/ratoaq2/knowit/actions/workflows/test.yml/badge.svg)](https://github.com/ratoaq2/knowit/actions/workflows/test.yml)
 
-.. image:: https://img.shields.io/github/license/ratoaq2/knowit.svg
-    :target: https://github.com/ratoaq2/knowit/blob/master/LICENSE
-    :alt: License
+[![License](https://img.shields.io/github/license/ratoaq2/knowit.svg)](https://github.com/ratoaq2/knowit/blob/master/LICENSE)
 
+  - Project page  
+    <https://github.com/ratoaq2/knowit>
 
-:Project page: https://github.com/ratoaq2/knowit
+## Usage
 
+### CLI
 
-Usage
------
-CLI
-^^^
-Extract information from a video file::
+Extract information from a video file:
 
     $ knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
     For: /folder/Audio Samples/hd_dtsma_7.1.mkv
@@ -79,8 +73,7 @@ Extract information from a video file::
         }
     }
 
-
-Extract information from a video file using ffmpeg::
+Extract information from a video file using ffmpeg:
 
     $ knowit --provider ffmpeg /folder/Audio Samples/hd_dtsma_7.1.mkv
     For: /folder/Audio Samples/hd_dtsma_7.1.mkv
@@ -130,9 +123,7 @@ Extract information from a video file using ffmpeg::
         }
     }
 
-
-
-Using docker::
+Using docker:
 
     docker run -it --rm -v /folder:/folder knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
     For: /folder/Audio Samples/hd_dtsma_7.1.mkv
@@ -188,23 +179,22 @@ Using docker::
             }
         }
     }
-    
 
-All available CLI options::
+All available CLI options:
 
     $ knowit --help
     usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO] [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--version] [videopath [videopath ...]]
-
+    
     positional arguments:
       videopath             Path to the video to introspect
-
+    
     optional arguments:
       -h, --help            show this help message and exit
-
+    
     Providers:
       -p PROVIDER, --provider PROVIDER
                             The provider to be used: mediainfo, ffmpeg, mkvmerge or enzyme.
-
+    
     Output:
       --debug               Print information for debugging knowit and for reporting bugs.
       --report              Parse media and report all non-detected values
@@ -212,38 +202,41 @@ All available CLI options::
       -N, --no-units        Display output without units
       -P PROFILE, --profile PROFILE
                             Display values according to specified profile: code, default, human, technical
-
+    
     Configuration:
       --mediainfo MEDIAINFO
                             The location to search for MediaInfo binaries
       --ffmpeg FFMPEG       The location to search for ffprobe (FFmpeg) binaries
       --mkvmerge MKVMERGE   The location to search for mkvmerge (MKVToolNix) binaries
-
+    
     Information:
       --version             Display knowit version.
 
+## Installation
 
-
-Installation
-------------
-KnowIt can be installed as a regular python module by running::
+KnowIt can be installed as a regular python module by running:
 
     $ [sudo] pip install knowit
 
-For a better isolation with your system you should use a dedicated virtualenv or install for your user only using
-the ``--user`` flag.
+For a better isolation with your system you should use a dedicated
+virtualenv or install for your user only using the `--user` flag.
 
+## External dependencies
 
-External dependencies
--------------------------
 KnowIt can use MediaInfo, ffprobe (FFmpeg) or mkvmerge (MKVToolNix)
 
-KnowIt supports MKV regardless if MediaInfo, FFmpeg or MKVToolNix are installed.
+KnowIt supports MKV regardless if MediaInfo, FFmpeg or MKVToolNix are
+installed.
 
-MediaInfo, FFmpeg or MKVToolNix increases the number of supported formats and the number of extracted information.
+MediaInfo, FFmpeg or MKVToolNix increases the number of supported
+formats and the number of extracted information.
 
-MediaInfo is the default provider. Visit their `website <http://mediaarea.net/MediaInfo>`_ and install the proper package for your system.
+MediaInfo is the default provider. Visit their
+[website](http://mediaarea.net/MediaInfo) and install the proper package
+for your system.
 
-ffprobe (FFmpeg) can be downloaded `here <https://ffmpeg.org/download.html>`_
+ffprobe (FFmpeg) can be downloaded
+[here](https://ffmpeg.org/download.html)
 
-mkvmerge (MKVToolNix) can be downloaded `here <https://mkvtoolnix.download/downloads.html>`_
+mkvmerge (MKVToolNix) can be downloaded
+[here](https://mkvtoolnix.download/downloads.html)

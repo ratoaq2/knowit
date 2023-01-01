@@ -1,10 +1,5 @@
 import typing
 
-try:
-    import pint
-except ImportError:
-    pint = False
-
 
 class NullRegistry:
     """A NullRegistry that masquerades as a pint.UnitRegistry."""
@@ -25,9 +20,16 @@ class NullRegistry:
 
 
 def _build_unit_registry():
-    registry = pint.UnitRegistry() if pint else NullRegistry()
-    registry.define('FPS = 1 * hertz')
-    return registry
+    try:
+        import pint
+
+        registry = pint.UnitRegistry()
+        registry.define('FPS = 1 * hertz')
+        return registry
+    except ModuleNotFoundError:
+        pass
+
+    return NullRegistry()
 
 
 units = _build_unit_registry()

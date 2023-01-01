@@ -77,7 +77,7 @@ class MediaInfoExecutor:
 
     locations = {
         'unix': ('/usr/local/mediainfo/lib', '/usr/local/mediainfo/bin', '__PATH__'),
-        'windows': ('__PATH__', ),
+        'windows': ('__PATH__', 'C:\\Program Files\\MediaInfo', 'C:\\Program Files (x86)\\MediaInfo'),
         'macos': ('__PATH__', ),
     }
 

@@ -1,10 +1,9 @@
+import os
 import typing
 from unittest.mock import patch
-
 import pytest
-import os
 
-from knowit.utils import detect_os, build_path_candidates
+from knowit.utils import build_path_candidates, detect_os
 
 
 @pytest.mark.parametrize(
@@ -41,24 +40,24 @@ def test_detect_os(os_name, sys_platform, expected):
             ],
         ),
         (
-                'macos',
-                '/usr/sbin:/usr/bin:/sbin:/bin',
-                ('some.dll', 'binary', 'another_binary'),
-                [
-                    'some.dll',
-                    'binary',
-                    'another_binary',
-                ],
+            'macos',
+            '/usr/sbin:/usr/bin:/sbin:/bin',
+            ('some.dll', 'binary', 'another_binary'),
+            [
+                'some.dll',
+                'binary',
+                'another_binary',
+            ],
         ),
         (
-                'linux',
-                '/usr/sbin:/usr/bin:/sbin:/bin',
-                ('some.dll', 'binary', 'another_binary'),
-                [
-                    'some.dll',
-                    'binary',
-                    'another_binary',
-                ],
+            'linux',
+            '/usr/sbin:/usr/bin:/sbin:/bin',
+            ('some.dll', 'binary', 'another_binary'),
+            [
+                'some.dll',
+                'binary',
+                'another_binary',
+            ],
         ),
     ],
 )
@@ -69,7 +68,7 @@ def test_build_path_candidates_for_specified_os(names, os_family, path, expected
         candidates = build_path_candidates(names, os_family)
 
         def normalize_paths(paths: typing.Iterable[str]):
-            """replace all slashes to a forward slash for comparison purposes."""
+            """Replace all slashes to a forward slash for comparison purposes."""
             return [p.replace('\\', '/') for p in paths]
 
         assert normalize_paths(candidates) == normalize_paths(expected)

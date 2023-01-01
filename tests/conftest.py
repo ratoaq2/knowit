@@ -28,6 +28,7 @@ def options():
 
 
 def setup_mediainfo(executor, monkeypatch, options):
+    assert executor
     options['provider'] = 'mediainfo'
     api.available_providers.clear()
     get_executor = Mock()
