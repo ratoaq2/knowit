@@ -1,5 +1,6 @@
-
+import ctypes
 import json
+import os
 import re
 from ctypes import c_void_p, c_wchar_p
 from decimal import Decimal
@@ -77,7 +78,7 @@ class MediaInfoExecutor:
 
     locations = {
         'unix': ('/usr/local/mediainfo/lib', '/usr/local/mediainfo/bin', '__PATH__'),
-        'windows': ('__PATH__', 'C:\\Program Files\\MediaInfo', 'C:\\Program Files (x86)\\MediaInfo'),
+        'windows': ('C:\\Program Files\\MediaInfo', 'C:\\Program Files (x86)\\MediaInfo', '__PATH__'),
         'macos': ('__PATH__', ),
     }
 
@@ -124,9 +125,23 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
         return json.loads(check_output([self.location, '--Output=JSON', '--Full', filename]).decode())
 
     @classmethod
+    def _is_gui_exe(cls, candidate: str):
+        if not candidate.endswith('MediaInfo.exe') or not os.path.isfile(candidate):
+            return False
+
+        try:
+            shell32 = ctypes.WinDLL('shell32', use_last_error=True)
+            return bool(shell32.ExtractIconExW(candidate, 0, None, None, 1))
+        except Exception:
+            return False
+
+    @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
+            if cls._is_gui_exe(candidate):
+                continue
+
             try:
                 output = check_output([candidate, '--version']).decode()
                 version = cls._get_version(output)
