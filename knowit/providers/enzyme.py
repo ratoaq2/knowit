@@ -130,7 +130,8 @@ class EnzymeProvider(Provider):
 
         if logger.level == logging.DEBUG:
             logger.debug('Video {video_path} scanned using Enzyme {version} has raw data:\n{data}',
-                         video_path=video_path, version=enzyme.__version__, data=json.dumps(data))
+                         video_path=video_path, version=enzyme.__version__,
+                         data=json.dumps(data, cls=get_json_encoder(context), indent=4, ensure_ascii=False))
 
         result = self._describe_tracks(video_path, data.get('info', {}), data.get('video_tracks'),
                                        data.get('audio_tracks'), data.get('subtitle_tracks'), context)

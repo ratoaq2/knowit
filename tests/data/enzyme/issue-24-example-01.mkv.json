@@ -1,0 +1,309 @@
+{
+    "info": {
+        "title": "The 100 06x09 (What You Take With You) - release by messafan for CasStudio",
+        "duration": "0:42:05",
+        "date_utc": "2019-07-26 11:08:51",
+        "muxing_app": "libebml v1.3.7 + libmatroska v1.5.0",
+        "writing_app": "mkvmerge v34.0.0 ('Sight and Seen') 64-bit"
+    },
+    "video_tracks": [
+        {
+            "type": 1,
+            "number": 1,
+            "language": "und",
+            "enabled": true,
+            "default": true,
+            "forced": false,
+            "lacing": false,
+            "codec_id": "V_MPEG4/ISO/AVC",
+            "width": 1280,
+            "height": 720,
+            "interlaced": false,
+            "stereo_mode": 0,
+            "crop": {},
+            "display_width": 1280,
+            "display_height": 720,
+            "aspect_ratio_type": 0
+        }
+    ],
+    "audio_tracks": [
+        {
+            "type": 2,
+            "number": 2,
+            "language": "por",
+            "enabled": true,
+            "default": true,
+            "forced": true,
+            "lacing": true,
+            "codec_id": "A_AC3",
+            "sampling_frequency": 48000.0,
+            "channels": 2,
+            "output_sampling_frequency": 48000.0
+        },
+        {
+            "type": 2,
+            "number": 3,
+            "name": "Stereo",
+            "language": "eng",
+            "enabled": true,
+            "default": false,
+            "forced": false,
+            "lacing": true,
+            "codec_id": "A_AC3",
+            "sampling_frequency": 48000.0,
+            "channels": 2,
+            "output_sampling_frequency": 48000.0
+        }
+    ],
+    "subtitle_tracks": [],
+    "chapters": [],
+    "tags": [
+        {
+            "targets": [
+                {
+                    "id": 26826,
+                    "type": 1,
+                    "name": "TargetTypeValue",
+                    "level": 4,
+                    "position": 652854402,
+                    "size": 1,
+                    "data": 50
+                }
+            ],
+            "simpletags": [
+                {
+                    "name": "ENCODER",
+                    "language": "und",
+                    "default": true,
+                    "string": "Lavf58.20.100"
+                }
+            ]
+        },
+        {
+            "targets": [
+                {
+                    "id": 26826,
+                    "type": 1,
+                    "name": "TargetTypeValue",
+                    "level": 4,
+                    "position": 652854449,
+                    "size": 1,
+                    "data": 50
+                },
+                {
+                    "id": 25541,
+                    "type": 1,
+                    "name": "TagTrackUID",
+                    "level": 4,
+                    "position": 652854453,
+                    "size": 8,
+                    "data": 12656891187800456645
+                },
+                {
+                    "id": 25546,
+                    "type": 3,
+                    "name": "TargetType",
+                    "level": 4,
+                    "position": 652854464,
+                    "size": 5,
+                    "data": "MOVIE"
+                }
+            ],
+            "simpletags": [
+                {
+                    "name": "BPS",
+                    "language": "eng",
+                    "default": true,
+                    "string": "192000"
+                },
+                {
+                    "name": "DURATION",
+                    "language": "eng",
+                    "default": true,
+                    "string": "00:42:05.056000000"
+                },
+                {
+                    "name": "NUMBER_OF_FRAMES",
+                    "language": "eng",
+                    "default": true,
+                    "string": "78908"
+                },
+                {
+                    "name": "NUMBER_OF_BYTES",
+                    "language": "eng",
+                    "default": true,
+                    "string": "60601344"
+                },
+                {
+                    "name": "_STATISTICS_WRITING_APP",
+                    "language": "eng",
+                    "default": true,
+                    "string": "mkvmerge v34.0.0 ('Sight and Seen') 64-bit"
+                },
+                {
+                    "name": "_STATISTICS_WRITING_DATE_UTC",
+                    "language": "eng",
+                    "default": true,
+                    "string": "2019-07-26 11:08:51"
+                },
+                {
+                    "name": "_STATISTICS_TAGS",
+                    "language": "eng",
+                    "default": true,
+                    "string": "BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES"
+                }
+            ]
+        },
+        {
+            "targets": [
+                {
+                    "id": 26826,
+                    "type": 1,
+                    "name": "TargetTypeValue",
+                    "level": 4,
+                    "position": 652854836,
+                    "size": 1,
+                    "data": 50
+                },
+                {
+                    "id": 25541,
+                    "type": 1,
+                    "name": "TagTrackUID",
+                    "level": 4,
+                    "position": 652854840,
+                    "size": 1,
+                    "data": 1
+                },
+                {
+                    "id": 25546,
+                    "type": 3,
+                    "name": "TargetType",
+                    "level": 4,
+                    "position": 652854844,
+                    "size": 5,
+                    "data": "MOVIE"
+                }
+            ],
+            "simpletags": [
+                {
+                    "name": "BPS",
+                    "language": "eng",
+                    "default": true,
+                    "string": "1749265"
+                },
+                {
+                    "name": "DURATION",
+                    "language": "eng",
+                    "default": true,
+                    "string": "00:42:01.186000000"
+                },
+                {
+                    "name": "NUMBER_OF_FRAMES",
+                    "language": "eng",
+                    "default": true,
+                    "string": "60448"
+                },
+                {
+                    "name": "NUMBER_OF_BYTES",
+                    "language": "eng",
+                    "default": true,
+                    "string": "551278026"
+                },
+                {
+                    "name": "_STATISTICS_WRITING_APP",
+                    "language": "eng",
+                    "default": true,
+                    "string": "mkvmerge v34.0.0 ('Sight and Seen') 64-bit"
+                },
+                {
+                    "name": "_STATISTICS_WRITING_DATE_UTC",
+                    "language": "eng",
+                    "default": true,
+                    "string": "2019-07-26 11:08:51"
+                },
+                {
+                    "name": "_STATISTICS_TAGS",
+                    "language": "eng",
+                    "default": true,
+                    "string": "BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES"
+                }
+            ]
+        },
+        {
+            "targets": [
+                {
+                    "id": 26826,
+                    "type": 1,
+                    "name": "TargetTypeValue",
+                    "level": 4,
+                    "position": 652855218,
+                    "size": 1,
+                    "data": 50
+                },
+                {
+                    "id": 25541,
+                    "type": 1,
+                    "name": "TagTrackUID",
+                    "level": 4,
+                    "position": 652855222,
+                    "size": 1,
+                    "data": 2
+                },
+                {
+                    "id": 25546,
+                    "type": 3,
+                    "name": "TargetType",
+                    "level": 4,
+                    "position": 652855226,
+                    "size": 5,
+                    "data": "MOVIE"
+                }
+            ],
+            "simpletags": [
+                {
+                    "name": "BPS",
+                    "language": "eng",
+                    "default": true,
+                    "string": "128000"
+                },
+                {
+                    "name": "DURATION",
+                    "language": "eng",
+                    "default": true,
+                    "string": "00:42:01.216000000"
+                },
+                {
+                    "name": "NUMBER_OF_FRAMES",
+                    "language": "eng",
+                    "default": true,
+                    "string": "78788"
+                },
+                {
+                    "name": "NUMBER_OF_BYTES",
+                    "language": "eng",
+                    "default": true,
+                    "string": "40339456"
+                },
+                {
+                    "name": "_STATISTICS_WRITING_APP",
+                    "language": "eng",
+                    "default": true,
+                    "string": "mkvmerge v34.0.0 ('Sight and Seen') 64-bit"
+                },
+                {
+                    "name": "_STATISTICS_WRITING_DATE_UTC",
+                    "language": "eng",
+                    "default": true,
+                    "string": "2019-07-26 11:08:51"
+                },
+                {
+                    "name": "_STATISTICS_TAGS",
+                    "language": "eng",
+                    "default": true,
+                    "string": "BPS DURATION NUMBER_OF_FRAMES NUMBER_OF_BYTES"
+                }
+            ]
+        }
+    ],
+    "recurse_seek_head": false
+}

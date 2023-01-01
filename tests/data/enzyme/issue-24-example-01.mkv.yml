@@ -1,0 +1,29 @@
+title: The 100 06x09 (What You Take With You) - release by messafan for CasStudio
+path: tests/data/enzyme/issue-24-example-01.mkv
+duration: 0:42:05
+container: mkv
+video:
+- id: 1
+  language: und
+  width: 1280 pixel
+  height: 720 pixel
+  scan_type: PROGRESSIVE
+  resolution: 720p
+  codec: H264
+  default: true
+audio:
+- id: 2
+  codec: AC3
+  channels_count: 2
+  channels: '2.0'
+  language: pt
+  forced: true
+  default: true
+- id: 3
+  name: Stereo
+  codec: AC3
+  channels_count: 2
+  channels: '2.0'
+  language: en
+provider:
+  name: enzyme
