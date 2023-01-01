@@ -1,0 +1,37 @@
+path: 'Z:\Videos\Shows (Prospective)\Band of Brothers (2001)\01x01 - Currahee.mkv'
+duration: '1:13:14.162000'
+size: 983004345 byte
+bit_rate: 1789655
+container: mkv
+video:
+  - id: 0
+    duration: '1:13:14.056708'
+    width: 1920 pixel
+    height: 1080 pixel
+    scan_type: PROGRESSIVE
+    aspect_ratio: '1.778'
+    pixel_aspect_ratio: '1.0'
+    resolution: 1080p
+    frame_rate: 23.976 FPS
+    bit_rate: 1500697
+    codec: H265
+    profile: MAIN
+    default: true
+audio:
+  - id: 1
+    name: Surround
+    language: en
+    duration: '1:13:12.106000'
+    codec: AAC
+    profile: HEAAC
+    channels_count: 6
+    channels: '5.1'
+    bit_rate: 256002
+    sampling_rate: 48000
+    default: true
+subtitle:
+  - id: 2
+    language: en
+    format: PGS
+provider:
+  name: ffmpeg

@@ -144,7 +144,7 @@ class FFmpegProvider(Provider):
                 'id': Basic('index', data_type=int, allow_fallback=True, description='video track number'),
                 'name': Property('tags.title', description='video track name'),
                 'language': Language('tags.language', description='video language'),
-                'duration': Duration('duration', description='video duration'),
+                'duration': Duration('duration', 'tags.duration', description='video duration'),
                 'width': Quantity('width', unit=units.pixel),
                 'height': Quantity('height', unit=units.pixel),
                 'scan_type': ScanType(config, 'field_order', default='Progressive', description='video scan type'),
@@ -153,7 +153,7 @@ class FFmpegProvider(Provider):
                 'resolution': None,  # populated with ResolutionRule
                 'frame_rate': Ratio('r_frame_rate', unit=units.FPS, description='video frame rate'),
                 # frame_rate_mode
-                'bit_rate': Quantity('bit_rate', unit=units.bps, description='video bit rate'),
+                'bit_rate': Quantity('bit_rate', 'tags.bps', unit=units.bps, description='video bit rate'),
                 'bit_depth': Quantity('bits_per_raw_sample', unit=units.bit, description='video bit depth'),
                 'codec': VideoCodec(config, 'codec_name', description='video codec'),
                 'profile': VideoProfile(config, 'profile', description='video codec profile'),
@@ -166,13 +166,13 @@ class FFmpegProvider(Provider):
                 'id': Basic('index', data_type=int, allow_fallback=True, description='audio track number'),
                 'name': Property('tags.title', description='audio track name'),
                 'language': Language('tags.language', description='audio language'),
-                'duration': Duration('duration', description='audio duration'),
+                'duration': Duration('duration', 'tags.duration', description='audio duration'),
                 'codec': AudioCodec(config, 'profile', 'codec_name', description='audio codec'),
                 'profile': AudioProfile(config, 'profile', description='audio codec profile'),
                 'channels_count': AudioChannels('channels', description='audio channels count'),
                 'channels': None,  # populated with AudioChannelsRule
                 'bit_depth': Quantity('bits_per_raw_sample', unit=units.bit, description='audio bit depth'),
-                'bit_rate': Quantity('bit_rate', unit=units.bps, description='audio bit rate'),
+                'bit_rate': Quantity('bit_rate', 'tags.bps', unit=units.bps, description='audio bit rate'),
                 'sampling_rate': Quantity('sample_rate', unit=units.Hz, description='audio sampling rate'),
                 'forced': YesNo('disposition.forced', hide_value=False, description='audio track forced'),
                 'default': YesNo('disposition.default', hide_value=False, description='audio track default'),

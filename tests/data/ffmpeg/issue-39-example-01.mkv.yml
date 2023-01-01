@@ -1,0 +1,61 @@
+path: 'Z:\Videos\Shows\Heroes (2006)\01x23 - How to Stop an Exploding Man.mkv'
+duration: '0:44:56.704000'
+size: 369338385 byte
+bit_rate: 1095673
+container: mkv
+video:
+  - id: 0
+    duration: '0:44:56.485708'
+    width: 1920 pixel
+    height: 1080 pixel
+    scan_type: PROGRESSIVE
+    aspect_ratio: '1.778'
+    pixel_aspect_ratio: '1.0'
+    resolution: 1080p
+    frame_rate: 23.976 FPS
+    bit_rate: 900213
+    codec: H265
+    profile: MAIN
+    default: true
+audio:
+  - id: 1
+    name: Surround
+    language: und
+    duration: '0:44:56.661000'
+    codec: AAC
+    profile: HEAAC
+    channels_count: 6
+    channels: '5.1'
+    bit_rate: 192003
+    sampling_rate: 48000
+    default: true
+subtitle:
+  - id: 2
+    language: ar
+    format: ASS
+  - id: 3
+    language: da
+    format: ASS
+  - id: 4
+    language: nl
+    format: ASS
+  - id: 5
+    language: en
+    format: ASS
+  - id: 6
+    language: fr
+    format: ASS
+  - id: 7
+    language: de
+    format: ASS
+  - id: 8
+    language: fa
+    format: ASS
+  - id: 9
+    language: es
+    format: ASS
+  - id: 10
+    language: vi
+    format: ASS
+provider:
+  name: ffmpeg
