@@ -122,7 +122,9 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
     }
 
     def _execute(self, filename):
-        return json.loads(check_output([self.location, '--Output=JSON', '--Full', filename]).decode())
+        data = check_output([self.location, '--Output=JSON', '--Full', filename]).decode()
+
+        return json.loads(data) if data else {}
 
     @classmethod
     def _is_gui_exe(cls, candidate: str):
@@ -169,7 +171,9 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
 
     def _execute(self, filename):
         # Create a MediaInfo handle
-        return json.loads(MediaInfo.parse(filename, library_file=self.location, output='JSON'))
+        data = MediaInfo.parse(filename, library_file=self.location, output='JSON')
+
+        return json.loads(data) if data else {}
 
     @classmethod
     def create(cls, os_family=None, suggested_path=None):

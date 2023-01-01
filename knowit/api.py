@@ -1,6 +1,7 @@
 import os
 import traceback
 import typing
+from subprocess import CalledProcessError
 
 from knowit import __version__
 from knowit.config import Config

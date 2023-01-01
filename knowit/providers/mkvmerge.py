@@ -67,7 +67,7 @@ class MkvMergeExecutor:
     def extract_info(self, filename):
         """Extract media info."""
         json_dump = self._execute(filename)
-        return json.loads(json_dump)
+        return json.loads(json_dump) if json_dump else {}
 
     def _execute(self, filename):
         raise NotImplementedError
