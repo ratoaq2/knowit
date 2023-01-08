@@ -34,6 +34,7 @@ from knowit.rules import (
     LanguageRule,
     ResolutionRule,
 )
+from knowit.rules.general import GuessTitleRule
 from knowit.serializer import get_json_encoder
 from knowit.units import units
 from knowit.utils import (
@@ -190,17 +191,20 @@ class FFmpegProvider(Provider):
             },
         }, {
             'video': {
-                'language': LanguageRule('video language'),
+                'guessed': GuessTitleRule('guessed properties', private=True),
+                'language': LanguageRule('video language', override=True),
                 'resolution': ResolutionRule('video resolution'),
             },
             'audio': {
-                'language': LanguageRule('audio language'),
+                'guessed': GuessTitleRule('guessed properties', private=True),
+                'language': LanguageRule('audio language', override=True),
                 'channels': AudioChannelsRule('audio channels'),
             },
             'subtitle': {
-                'language': LanguageRule('subtitle language'),
-                'hearing_impaired': HearingImpairedRule('subtitle hearing impaired'),
-                'closed_caption': ClosedCaptionRule('closed caption'),
+                'guessed': GuessTitleRule('guessed properties', private=True),
+                'language': LanguageRule('subtitle language', override=True),
+                'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
+                'closed_caption': ClosedCaptionRule('closed caption', override=True),
             },
         })
         self.executor = FFmpegExecutor.get_executor_instance(suggested_path)

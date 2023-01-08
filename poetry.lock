@@ -525,6 +525,23 @@ files = [
 ]
 
 [[package]]
+name = "rebulk"
+version = "3.1.0"
+description = "Rebulk - Define simple search patterns in bulk to perform advanced matching on any string."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "rebulk-3.1.0-py3-none-any.whl", hash = "sha256:e56550ae25a822111bff8c8f5eeea14cb44f406e9a9ce67ad4e350253b2fff6c"},
+    {file = "rebulk-3.1.0.tar.gz", hash = "sha256:809de3a97c68afa831f7101b10d316fe62e061dc9f7f67a44b7738128721173a"},
+]
+
+[package.extras]
+dev = ["pylint", "pytest", "tox"]
+native = ["regex"]
+test = ["pylint", "pytest"]
+
+[[package]]
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
@@ -588,6 +605,22 @@ files = [
 ]
 
 [[package]]
+name = "trakit"
+version = "0.1.1"
+description = "Guess additional information from track titles"
+category = "main"
+optional = false
+python-versions = ">=3.8.1,<4.0.0"
+files = [
+    {file = "trakit-0.1.1-py3-none-any.whl", hash = "sha256:bffff2921d387f7d5ba7dac9389ad178a4af76af5a7e3c0d5b5abe8635b5f59b"},
+    {file = "trakit-0.1.1.tar.gz", hash = "sha256:2fc1597c388343a3a6ccd2df355f204d086a2d8b19c5885e41fa479a7f150a80"},
+]
+
+[package.dependencies]
+babelfish = ">=0.6.0,<0.7.0"
+rebulk = ">=3.1.0,<4.0.0"
+
+[[package]]
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -619,4 +652,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "2226a8f3317b5adf6b01097c60656d17f3e2440e673173d6c1bbdade4ab3f8a4"
+content-hash = "7fa7a80cb6fd71c25d914957e40c0218ec2ef7d9f675707b8ffc40123364c6e3"

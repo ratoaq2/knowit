@@ -227,9 +227,10 @@ class MultiValue(Property):
 class Rule(Reportable[T]):
     """Rule abstract class."""
 
-    def __init__(self, name: str, override=False, **kwargs):
+    def __init__(self, name: str, private=False, override=False, **kwargs):
         """Initialize the object."""
         super().__init__(name, **kwargs)
+        self.private = private
         self.override = override
 
     def execute(self, props, pv_props, context: typing.Mapping):

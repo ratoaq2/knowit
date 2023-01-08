@@ -44,6 +44,7 @@ from knowit.rules import (
     LanguageRule,
     ResolutionRule,
 )
+from knowit.rules.general import GuessTitleRule
 from knowit.units import units
 from knowit.utils import (
     define_candidate,
@@ -273,19 +274,22 @@ class MediaInfoProvider(Provider):
             },
         }, {
             'video': {
-                'language': LanguageRule('video language'),
+                'guessed': GuessTitleRule('guessed properties', private=True),
+                'language': LanguageRule('video language', override=True),
                 'resolution': ResolutionRule('video resolution'),
             },
             'audio': {
-                'language': LanguageRule('audio language'),
+                'guessed': GuessTitleRule('guessed properties', private=True),
+                'language': LanguageRule('audio language', override=True),
                 'channels': AudioChannelsRule('audio channels'),
-                '_atmosrule': AtmosRule(config, 'atmos rule'),
-                '_dtshdrule': DtsHdRule(config, 'dts-hd rule'),
+                'atmos': AtmosRule(config, 'atmos rule', private=True),
+                'dtshd': DtsHdRule(config, 'dts-hd rule', private=True),
             },
             'subtitle': {
-                'language': LanguageRule('subtitle language'),
-                'hearing_impaired': HearingImpairedRule('subtitle hearing impaired'),
-                'closed_caption': ClosedCaptionRule('closed caption'),
+                'guessed': GuessTitleRule('guessed properties', private=True),
+                'language': LanguageRule('subtitle language', override=True),
+                'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
+                'closed_caption': ClosedCaptionRule('closed caption', override=True),
             }
         })
         self.executor = MediaInfoExecutor.get_executor_instance(suggested_path)

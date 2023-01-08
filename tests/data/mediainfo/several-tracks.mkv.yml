@@ -1,0 +1,164 @@
+path: tests/data/several-tracks.mkv
+duration: 2353.6
+size: 5796819279
+bit_rate: 19703669
+container: mkv
+video:
+- id: 1
+  language: en
+  duration: 2353.584
+  size: 5569279175
+  width: 3840
+  height: 2160
+  scan_type: PROGRESSIVE
+  aspect_ratio: 1.778
+  pixel_aspect_ratio: 1.0
+  resolution: 2160p
+  frame_rate: 24.0
+  bit_rate: 18930377
+  bit_depth: 8
+  codec: H265
+  profile: MAIN
+  profile_level: '5'
+  encoder: X265
+  media_type: video/H265
+  default: true
+audio:
+- id: 2
+  language: en
+  duration: 2353.6
+  size: 225945600
+  codec:
+  - EAC3
+  - ATMOS
+  channels_count: 6
+  channels: 5.1
+  bit_rate: 768000
+  bit_rate_mode: CBR
+  sampling_rate: 48000
+  compression: LOSSY
+  default: true
+subtitle:
+- id: 3
+  name: English (SDH)
+  language: en
+  hearing_impaired: true
+  format: SUBRIP
+- id: 4
+  name: Čeština
+  language: cs
+  format: SUBRIP
+- id: 5
+  name: Dansk
+  language: da
+  format: SUBRIP
+- id: 6
+  name: Deutsch
+  language: de
+  format: SUBRIP
+- id: 7
+  name: Greek
+  language: el
+  format: SUBRIP
+- id: 8
+  name: Español
+  language: es
+  format: SUBRIP
+- id: 9
+  name: Español (Latinoamericano)
+  language: es-419
+  format: SUBRIP
+- id: 10
+  name: Suomi
+  language: fi
+  format: SUBRIP
+- id: 11
+  name: Français (Canadien)
+  language: fr-CA
+  format: SUBRIP
+- id: 12
+  name: Français
+  language: fr
+  format: SUBRIP
+- id: 13
+  name: Magyar
+  language: hu
+  format: SUBRIP
+- id: 14
+  name: Italiano
+  language: it
+  format: SUBRIP
+- id: 15
+  name: Japanese
+  language: ja
+  format: SUBRIP
+- id: 16
+  name: Korean
+  language: ko
+  format: SUBRIP
+- id: 17
+  name: Nederlands
+  language: nl
+  format: SUBRIP
+- id: 18
+  name: Norsk
+  language: 'no'
+  format: SUBRIP
+- id: 19
+  name: Polski
+  language: pl
+  format: SUBRIP
+- id: 20
+  name: Português
+  language: pt
+  format: SUBRIP
+- id: 21
+  name: Português (Brasil)
+  language: pt-BR
+  format: SUBRIP
+- id: 22
+  name: Română
+  language: ro
+  format: SUBRIP
+- id: 23
+  name: Slovenčina
+  language: sk
+  format: SUBRIP
+- id: 24
+  name: Svenska
+  language: sv
+  format: SUBRIP
+- id: 25
+  name: Türkçe
+  language: tr
+  format: SUBRIP
+- id: 26
+  name: Chinese (Hong Kong)
+  language: zh-HK
+  format: SUBRIP
+- id: 27
+  name: Chinese (Traditional)
+  language: zh-Hant
+  format: SUBRIP
+- id: 28
+  name: Chinese (Simplified)
+  language: zh-Hans
+  format: SUBRIP
+- id: 29
+  name: Indonesian
+  language: id
+  format: SUBRIP
+- id: 30
+  name: Malay
+  language: ms
+  format: SUBRIP
+- id: 31
+  name: Thai
+  language: th
+  format: SUBRIP
+- id: 32
+  name: Chinese
+  language: zh
+  format: SUBRIP
+provider:
+  name: mediainfo
