@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "knowit"
-version = "0.5.0"
+version = "0.5.1"
 description = "Know better your media files"
 authors = [
     "Rato",
@@ -46,7 +46,7 @@ enzyme = "^0.4.1"
 pint = "^0.20.1"
 pymediainfo = "^6.0.1"
 pyyaml = "^6.0"
-trakit = "^0.1.2"
+trakit = "^0.2.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"

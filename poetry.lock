@@ -606,18 +606,19 @@ files = [
 
 [[package]]
 name = "trakit"
-version = "0.1.2"
+version = "0.2.1"
 description = "Guess additional information from track titles"
 category = "main"
 optional = false
 python-versions = ">=3.8.1,<4.0.0"
 files = [
-    {file = "trakit-0.1.2-py3-none-any.whl", hash = "sha256:d7c6a3ac4ab85090aacb4556c4d32fe2713ccdf4d2bf15650eb31c4c619e6fce"},
-    {file = "trakit-0.1.2.tar.gz", hash = "sha256:b949a259e4ebdd94e47835891535cde104829c64d3a9b5a91b9256b089295d0a"},
+    {file = "trakit-0.2.1-py3-none-any.whl", hash = "sha256:205f5e5d6b116fb7a8cee43ab1d6ab2527cdc50d21d2e0afb3fadc8d2d480a3a"},
+    {file = "trakit-0.2.1.tar.gz", hash = "sha256:125c67501a022f646aceb42e458d1bdfda3b9d3e5e91bc40af23c2f4d4436e9b"},
 ]
 
 [package.dependencies]
 babelfish = ">=0.6.0,<0.7.0"
+pyyaml = ">=6.0,<7.0"
 rebulk = ">=3.1.0,<4.0.0"
 
 [[package]]
@@ -652,4 +653,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "8112ecaa1cb46022d8c9baabdd0e173fbdf33564af4abd0ca437ef8104edb469"
+content-hash = "bceece80fe8fdbc9031a1fc7f366fafb40ec7519a09af7a33f579361e4e725fe"
