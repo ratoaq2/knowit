@@ -1,3 +1,4 @@
+import pickle
 
 import pytest
 from knowit import KnowitException, know
@@ -19,6 +20,7 @@ def test_enzyme_provider(enzyme, media, options):
 
     # Then
     assert_expected(media.expected_data, actual, options)
+    assert pickle.loads(pickle.dumps(actual)) == actual
 
 
 @pytest.mark.parametrize('media', mediafiles.get_real_media('enzyme'), ids=id_func)
@@ -36,3 +38,4 @@ def test_enzyme_provider_real_media(media, options):
 
         # Then
         assert_expected(media.expected_data, actual, options)
+        assert pickle.loads(pickle.dumps(actual)) == actual

@@ -1,3 +1,4 @@
+import pickle
 
 import pytest
 
@@ -17,6 +18,7 @@ def test_mediainfo_provider(mediainfo, media, options):
 
     # Then
     assert_expected(media.expected_data, actual, options)
+    assert pickle.loads(pickle.dumps(actual)) == actual
 
 
 @pytest.mark.parametrize('media', mediafiles.get_real_media('mediainfo'), ids=id_func)
@@ -29,6 +31,7 @@ def test_mediainfo_provider_real_media(media, options):
 
     # Then
     assert_expected(media.expected_data, actual, options)
+    assert pickle.loads(pickle.dumps(actual)) == actual
 
 
 @pytest.mark.parametrize('media', mediafiles.get_real_media('mediainfo'), ids=id_func)
@@ -41,3 +44,4 @@ def test_mediainfo_provider_real_media_cli(mediainfo_cli, media, options):
 
     # Then
     assert_expected(media.expected_data, actual, options)
+    assert pickle.loads(pickle.dumps(actual)) == actual

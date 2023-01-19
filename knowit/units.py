@@ -25,6 +25,8 @@ def _build_unit_registry():
 
         registry = pint.UnitRegistry()
         registry.define('FPS = 1 * hertz')
+
+        pint.set_application_registry(registry)
         return registry
     except ModuleNotFoundError:
         pass
