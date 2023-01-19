@@ -58,6 +58,8 @@ flake8-import-order = "^0.18.2"
 pep8-naming = "^0.13.3"
 pydocstyle = "^6.1.1"
 mypy = "^0.991"
+types-requests = "^2.28.11.8"
+types-mock = "^5.0.0.2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -3,6 +3,7 @@ import os
 import pathlib
 import re
 import sys
+from collections.abc import Mapping
 from datetime import timedelta
 from io import BytesIO
 from zipfile import ZipFile
@@ -15,16 +16,6 @@ from knowit import serializer
 from knowit.api import provider_names
 from knowit.serializer import format_property
 from knowit.units import units
-
-try:
-    from mock import Mock
-except ImportError:
-    from unittest.mock import Mock
-
-try:
-    from collections.abc import Mapping
-except ImportError:
-    from collections import Mapping
 
 
 YAML_EXTENSIONS = ('.yml', '.yaml')
