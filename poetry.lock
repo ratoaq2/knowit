@@ -387,19 +387,20 @@ flake8 = ">=5.0.0"
 
 [[package]]
 name = "pint"
-version = "0.20.1"
+version = "0.21"
 description = "Physical quantities module"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Pint-0.20.1-py3-none-any.whl", hash = "sha256:68afe65665542ee3ec99f69f043b1d39bfe7c6d61b786940157138fd08b838fb"},
-    {file = "Pint-0.20.1.tar.gz", hash = "sha256:387cf04078dc7dfe4a708033baad54ab61d82ab06c4ee3d4922b1e45d5626067"},
+    {file = "Pint-0.21-py3-none-any.whl", hash = "sha256:998b695e84a34d11702da4a8b9457a39bb5c7ab5ec68db90e948e30878e421f1"},
+    {file = "Pint-0.21.tar.gz", hash = "sha256:3e98bdf01f4dcf840cc0207c0b6f7510d4e0c6288efc1bf470626e875c831172"},
 ]
 
 [package.extras]
 babel = ["babel (<=2.8)"]
 dask = ["dask"]
+mip = ["mip (>=1.13)"]
 numpy = ["numpy (>=1.19.5)"]
 pandas = ["pint-pandas (>=0.3)"]
 test = ["pytest", "pytest-cov", "pytest-mpl", "pytest-subtests"]
@@ -738,4 +739,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "742503ea7dc33e746761b0a5f8b1dbe4efc64481c1c6598af2feb2248d842867"
+content-hash = "586ecbaa2d4619b430f6d4247e25e437380483ce35a159498ce4db6e489c6f0f"
