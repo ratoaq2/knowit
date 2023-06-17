@@ -370,13 +370,13 @@ flake8 = ">=5.0.0"
 
 [[package]]
 name = "pint"
-version = "0.21"
+version = "0.21.1"
 description = "Physical quantities module"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Pint-0.21-py3-none-any.whl", hash = "sha256:998b695e84a34d11702da4a8b9457a39bb5c7ab5ec68db90e948e30878e421f1"},
-    {file = "Pint-0.21.tar.gz", hash = "sha256:3e98bdf01f4dcf840cc0207c0b6f7510d4e0c6288efc1bf470626e875c831172"},
+    {file = "Pint-0.21.1-py3-none-any.whl", hash = "sha256:230ebccc312693117ee925c6492b3631c772ae9f7851a4e86080a15e7be692d8"},
+    {file = "Pint-0.21.1.tar.gz", hash = "sha256:5d5b6b518d0c5a7ab03a776175db500f1ed1523ee75fb7fafe38af8149431c8d"},
 ]
 
 [package.extras]
