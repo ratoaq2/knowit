@@ -336,7 +336,7 @@ def assert_expected(expected, actual, options=None):
     for (key, expected, actual) in different:
         print('{0}: Expected {1} got {2}'.format(key, expected, actual), file=sys.stderr)
 
-    if different and options and options['debug_data']:
+    if different and options and options.get('debug_data'):
         print(f'Version: {version}')
         print(options['debug_data']())
 
