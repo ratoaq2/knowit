@@ -8,6 +8,7 @@ authors = [
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/ratoaq2/knowit"
+homepage = "https://github.com/ratoaq2/knowit"
 keywords = [
     "video",
     "mkv",
