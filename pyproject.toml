@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "knowit"
-version = "0.5.3"
+version = "0.5.4-dev"
 description = "Know better your media files"
 authors = [
     "Rato",
