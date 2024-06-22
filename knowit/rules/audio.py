@@ -53,7 +53,7 @@ class AudioChannelsRule(Rule):
             c = Decimal('0.0')
             for i in position.split('/'):
                 try:
-                    c += Decimal(i)
+                    c += Decimal(i.replace('.?', ''))
                 except (ValueError, InvalidOperation):
                     logger.debug('Invalid %s: %s', self.description, i)
                     pass
