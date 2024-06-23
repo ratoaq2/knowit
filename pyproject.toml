@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "knowit"
-version = "0.5.4-dev"
+version = "0.5.4"
 description = "Know better your media files"
 authors = [
     "Rato",
@@ -42,21 +42,21 @@ knowit = "knowit.__main__:main"
 
 [tool.poetry.dependencies]
 python = "^3.9.0"
-babelfish = "^0.6.0"
+babelfish = "^0.6.1"
 enzyme = "^0.4.1"
-pint = ">=0.20.1,<0.22.0"
+pint = ">=0.20.1,<0.24.0"
 pymediainfo = "^6.0.1"
 pyyaml = "^6.0"
-trakit = "^0.2.1"
+trakit = "^0.2.2"
 
 [tool.poetry.group.dev.dependencies]
-pytest = ">=7.2,<9.0"
-pytest-cov = ">=4,<6"
-flake8 = ">=6,<8"
+pytest = "^8.2.2"
+pytest-cov = "^5.0.0"
+flake8 = "^7.1.0"
 requests = "^2.28.1"
 flake8-docstrings = "^1.6.0"
 flake8-import-order = "^0.18.2"
-pep8-naming = ">=0.13.3,<0.15.0"
+pep8-naming = "^0.14.1"
 pydocstyle = "^6.1.1"
 mypy = "^1.1.1"
 types-requests = "^2.28.11.8"
