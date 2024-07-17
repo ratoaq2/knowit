@@ -176,10 +176,21 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
 
         return json.loads(data) if data else {}
 
+    @staticmethod
+    def _get_bundled_paths(os_family=None):
+        """Return a tuple with the paths of the library bundled with the pymediainfo package."""
+        os_is_nt = (os_family or detect_os()) == 'windows'
+        # Only return the absolute paths
+        return tuple(f for f in MediaInfo._get_library_paths(os_is_nt) if os.path.isfile(f))
+
     @classmethod
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
-        for candidate in define_candidate(cls.locations, cls.names, os_family, suggested_path):
+        candidates = (
+            *cls._get_bundled_paths(os_family),
+            *define_candidate(cls.locations, cls.names, os_family, suggested_path),
+        )
+        for candidate in candidates:
             if MediaInfo.can_parse(candidate):
                 lib, handle, lib_version_str, lib_version = MediaInfo._get_library(candidate)
                 lib.MediaInfo_Option.argtypes = [c_void_p, c_wchar_p, c_wchar_p]
