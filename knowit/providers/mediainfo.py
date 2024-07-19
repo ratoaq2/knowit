@@ -187,8 +187,8 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
     def create(cls, os_family=None, suggested_path=None):
         """Create the executor instance."""
         candidates = (
-            *cls._get_bundled_paths(os_family),
             *define_candidate(cls.locations, cls.names, os_family, suggested_path),
+            *cls._get_bundled_paths(os_family),
         )
         for candidate in candidates:
             if MediaInfo.can_parse(candidate):
