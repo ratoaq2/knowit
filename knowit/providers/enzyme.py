@@ -102,7 +102,7 @@ class EnzymeProvider(Provider):
         })
 
     def loaded(self) -> bool:
-        """Loaded when enzyme is imported."""
+        """Return always True as enzyme is always imported."""
         return True
 
     def accepts(self, video_path):

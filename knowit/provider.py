@@ -167,10 +167,12 @@ class NotFoundExecutor(Executor):
     """Executor with a library or executable that was not found."""
 
     def __init__(self, location, version=None) -> None:
+        """Initialize the object."""
         self.location = location
         self.warned = False
 
     def __bool__(self) -> bool:
+        """Executor not found is always False."""
         return False
 
     def extract_info(self, filename):
