@@ -320,7 +320,7 @@ class MediaInfoProvider(Provider):
 
     def describe(self, video_path, context) -> dict[str, Any]:
         """Return video metadata."""
-        if not self.loaded():
+        if not self.loaded() or self.executor is None:
             return {}
         data = self.executor.extract_info(video_path)
 
