@@ -14,6 +14,17 @@ class NullRegistry:
         """Return a Scalar 1 to simulate a unit."""
         return 1
 
+    def __call__(self, value: str) -> float:
+        """Try converting to int, to float and fallback to a scalar 1.0."""
+        try:
+            return int(value)
+        except ValueError:
+            try:
+                return float(value)
+            except ValueError:
+                pass
+        return 1
+
     def __bool__(self):
         """Return False since a NullRegistry is not a pint.UnitRegistry."""
         return False
