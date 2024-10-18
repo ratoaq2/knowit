@@ -1,4 +1,7 @@
+import logging
 import typing
+
+logger = logging.getLogger(__name__)
 
 
 class NullRegistry:
@@ -30,6 +33,8 @@ def _build_unit_registry():
         return registry
     except ModuleNotFoundError:
         pass
+    except Exception:
+        logger.exception("Cannot import the pint package")
 
     return NullRegistry()
 
