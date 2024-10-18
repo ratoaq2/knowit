@@ -47,7 +47,7 @@ knowit = "knowit.__main__:main"
 python = ">=3.11,<4.0"
 babelfish = "^0.6.1"
 enzyme = "^0.5.2"
-pint = ">=0.20.1,<0.25.0"
+pint = { version = ">=0.20.1,<0.25.0", optional = true }
 pymediainfo = "^7.0.1"
 pyyaml = "^6.0"
 trakit = "^0.2.2"
@@ -65,6 +65,9 @@ mypy = "^1.17.0"
 types-requests = "^2.32.4.20250611"
 types-mock = "^5.2.0.20250516"
 typing-extensions = "^4.14.1"
+
+[tool.poetry.extras]
+pint = ["pint"]
 
 [build-system]
 requires = ["poetry-core"]
