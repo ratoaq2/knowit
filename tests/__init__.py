@@ -250,7 +250,7 @@ def _parse_value(node):
         if isinstance(value, str):
             for unit in ('pixel', 'bit', 'byte', 'FPS', 'bps', 'Hz'):
                 if value.endswith(' ' + unit):
-                    return units(value[:-(len(unit))] + ' * ' + unit)
+                    return units(value[:-len(unit)]) * units(unit)
 
         return value
 
