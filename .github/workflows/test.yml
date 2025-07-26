@@ -16,11 +16,10 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Install apt packages
-        uses: awalsh128/cache-apt-pkgs-action@v1.5.1
-        with:
-          packages: mediainfo ffmpeg mkvtoolnix
-          version: 1.0
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mediainfo ffmpeg mkvtoolnix
 
       - name: Setup python
         uses: actions/setup-python@v5
