@@ -300,7 +300,7 @@ setuptools = "*"
 name = "flexcache"
 version = "0.3"
 description = "Saves and loads to the cache a transformed versions of a source object."
-optional = false
+optional = true
 python-versions = ">=3.9"
 files = [
     {file = "flexcache-0.3-py3-none-any.whl", hash = "sha256:d43c9fea82336af6e0115e308d9d33a185390b8346a017564611f1466dcd2e32"},
@@ -317,7 +317,7 @@ test = ["pytest", "pytest-cov", "pytest-mpl", "pytest-subtests"]
 name = "flexparser"
 version = "0.4"
 description = "Parsing made fun ... using typing."
-optional = false
+optional = true
 python-versions = ">=3.9"
 files = [
     {file = "flexparser-0.4-py3-none-any.whl", hash = "sha256:3738b456192dcb3e15620f324c447721023c0293f6af9955b481e91d00179846"},
@@ -470,7 +470,7 @@ flake8 = ">=5.0.0"
 name = "pint"
 version = "0.24.4"
 description = "Physical quantities module"
-optional = false
+optional = true
 python-versions = ">=3.9"
 files = [
     {file = "Pint-0.24.4-py3-none-any.whl", hash = "sha256:aa54926c8772159fcf65f82cc0d34de6768c151b32ad1deb0331291c38fe7659"},
@@ -499,7 +499,7 @@ xarray = ["xarray"]
 name = "platformdirs"
 version = "4.3.8"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
-optional = false
+optional = true
 python-versions = ">=3.9"
 files = [
     {file = "platformdirs-4.3.8-py3-none-any.whl", hash = "sha256:ff7059bb7eb1179e2685604f4aaf157cfd9535242bd23742eadc3c13542139b4"},
@@ -838,7 +838,10 @@ h2 = ["h2 (>=4,<5)"]
 socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
+[extras]
+pint = ["pint"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<4.0"
-content-hash = "f9c8e59720ba8fb99aaf11f156cd52c8b5c096e400b6fa9c044d063ff5e8a4a5"
+content-hash = "89441ad960990c35dd13c9e8c1bd69d4e0d50a0796b2e31ff68b33bb66ef750a"

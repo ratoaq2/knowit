@@ -84,8 +84,8 @@ def get_yaml_loader(constructors=None):
 
     class Resolver(DefaultResolver):
         """Custom YAML Resolver."""
-        yaml_implicit_resolvers = custom_yaml_implicit_resolvers
 
+        yaml_implicit_resolvers = custom_yaml_implicit_resolvers
 
     Resolver.add_implicit_resolver(  # regex copied from yaml source
         '!decimal',

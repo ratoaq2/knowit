@@ -1,5 +1,4 @@
 # Need to import knowit to check if it changes the default behavior of pyyaml
-import knowit
 import yaml
 
 
