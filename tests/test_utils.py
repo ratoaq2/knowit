@@ -37,6 +37,9 @@ def test_detect_os(os_name, sys_platform, expected):
                 r'C:\Program Files\Application\some.dll',
                 r'C:\Program Files\Application\some.exe',
                 r'C:\Program Files\Application\another.exe',
+                r'some.dll',
+                r'some.exe',
+                r'another.exe',
             ],
         ),
         (
