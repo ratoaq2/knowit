@@ -499,7 +499,7 @@ xarray = ["xarray"]
 name = "platformdirs"
 version = "4.3.8"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
-optional = true
+optional = false
 python-versions = ">=3.9"
 files = [
     {file = "platformdirs-4.3.8-py3-none-any.whl", hash = "sha256:ff7059bb7eb1179e2685604f4aaf157cfd9535242bd23742eadc3c13542139b4"},
@@ -844,4 +844,4 @@ pint = ["pint"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<4.0"
-content-hash = "89441ad960990c35dd13c9e8c1bd69d4e0d50a0796b2e31ff68b33bb66ef750a"
+content-hash = "2f01eae428193131de1bb551bcc217f341bebd45f9ec2b96e5085ad5b989da56"
