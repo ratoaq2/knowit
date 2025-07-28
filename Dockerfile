@@ -20,6 +20,7 @@ RUN pip install "poetry==$POETRY_VERSION"
 WORKDIR /app
 COPY poetry.lock pyproject.toml README.md /app/
 RUN poetry install --no-interaction --no-ansi --only main
+RUN pip install platformdirs
 COPY knowit/ /app/knowit/
 RUN poetry build --no-interaction --no-ansi
 
