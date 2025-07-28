@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "knowit"
-version = "0.5.8"
+version = "0.5.9"
 description = "Know better your media files"
 authors = [
     "Rato",
@@ -28,6 +28,8 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -44,7 +46,7 @@ include = [
 knowit = "knowit.__main__:main"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<4.0"
+python = ">=3.9,<4.0"
 babelfish = "^0.6.1"
 enzyme = "^0.5.2"
 pint = { version = ">=0.20.1,<0.25.0", optional = true }
