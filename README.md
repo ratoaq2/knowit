@@ -9,6 +9,8 @@ Version](https://img.shields.io/pypi/v/knowit.svg)](https://pypi.python.org/pypi
 
 [![License](https://img.shields.io/github/license/ratoaq2/knowit.svg)](https://github.com/ratoaq2/knowit/blob/master/LICENSE)
 
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/knowit)
+
   - Project page  
     <https://github.com/ratoaq2/knowit>
 
