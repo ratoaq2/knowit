@@ -1,4 +1,4 @@
-FROM python:3.13-slim as builder
+FROM python:3.14-slim as builder
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
@@ -11,7 +11,7 @@ ENV PYTHONFAULTHANDLER=1 \
     POETRY_VIRTUALENVS_CREATE=0
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3-distutils python3-venv \
+    && apt-get install -y --no-install-recommends python3-venv \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -25,7 +25,7 @@ COPY knowit/ /app/knowit/
 RUN poetry build --no-interaction --no-ansi
 
 
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
