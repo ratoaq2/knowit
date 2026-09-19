@@ -1,4 +1,5 @@
 import argparse
+import io
 import json
 import logging
 import os
@@ -12,6 +13,7 @@ from knowit import (
     __url__,
     __version__,
     api,
+    bugreport,
 )
 from knowit.provider import ProviderError
 from knowit.serializer import (
@@ -19,6 +21,12 @@ from knowit.serializer import (
     get_yaml_dumper,
 )
 from knowit.utils import recurse_paths
+
+# A media path may hold characters the console cannot encode, which is a common cause
+# of reports in itself. Escaping them keeps the output readable instead of failing with
+# a UnicodeEncodeError on top of the problem being reported.
+if isinstance(sys.stdout, io.TextIOWrapper):
+    sys.stdout.reconfigure(errors='backslashreplace')
 
 logging.basicConfig(stream=sys.stdout, format='%(message)s')
 logging.getLogger('CONSOLE').setLevel(logging.INFO)
@@ -89,6 +97,27 @@ def build_argument_parser() -> ArgumentParser:
         type=str,
     )
 
+    report_opts = opts.add_argument_group('Bug reporting')
+    report_opts.add_argument(
+        '--bug-report',
+        action='store_true',
+        dest='bug_report',
+        help='Write a report with the environment and the raw output of every provider, to attach to an issue.',
+    )
+    report_opts.add_argument(
+        '--bug-report-output',
+        dest='bug_report_output',
+        metavar='FILE',
+        help='Where to write the bug report. Use - to write it to the standard output.',
+        type=str,
+    )
+    report_opts.add_argument(
+        '--no-redact',
+        action='store_true',
+        dest='no_redact',
+        help='Do not mask titles, file names and tags in the bug report.',
+    )
+
     information_opts = opts.add_argument_group('Information')
     information_opts.add_argument('--version', dest='version', action='store_true', help='Display knowit version.')
 
@@ -151,6 +180,41 @@ def dumps(
     return convert(info, context)
 
 
+#: Options that drive the CLI itself and mean nothing to a provider.
+CLI_ONLY_OPTIONS = frozenset({'videopath', 'bug_report', 'bug_report_output', 'no_redact', 'version', 'yaml'})
+
+
+def build_context(options: argparse.Namespace) -> dict[str, typing.Any]:
+    """Build the context passed to the api from the command line options."""
+    return {k: v for k, v in vars(options).items() if v is not None and k not in CLI_ONLY_OPTIONS}
+
+
+def write_bug_report(paths: list[str], options: argparse.Namespace) -> None:
+    """Build a bug report and write it where the user asked for it."""
+    context = build_context(options)
+    context.pop('report', None)
+    report = bugreport.build_report(paths, context, anonymize=not options.no_redact)
+    content = bugreport.dump_report(report)
+
+    destination = options.bug_report_output or bugreport.default_output_path()
+    if destination == '-':
+        console.info(content)
+        return
+
+    try:
+        with open(destination, 'w', encoding='utf-8') as stream:
+            stream.write(content)
+    except OSError:
+        logger.exception('Could not write the bug report, printing it instead')
+        console.info(content)
+        return
+
+    console.info('Bug report written to %s', destination)
+    if not options.no_redact:
+        console.info('Titles, file names and tags were masked. Use --no-redact to keep them.')
+    console.info('Please attach it to an issue at %s/issues.', __url__)
+
+
 def main(args: list[str] | None = None) -> None:
     """Execute main function for entry point."""
     argument_parser = build_argument_parser()
@@ -164,6 +228,10 @@ def main(args: list[str] | None = None) -> None:
         logger.setLevel(logging.WARNING)
 
     paths = recurse_paths(options.videopath)
+
+    if options.bug_report:
+        write_bug_report(paths, options)
+        return
 
     if not paths:
         if options.version:
