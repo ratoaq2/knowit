@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+.venv
+.mypy_cache
+.pytest_cache
+.ruff_cache
+.coverage
+tests
+scripts
+CLAUDE.md
+Dockerfile
+.dockerignore
