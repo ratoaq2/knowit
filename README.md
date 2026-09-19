@@ -276,7 +276,12 @@ plain ascii name. It then compares the two results:
       enzyme: fails with this name only: the name is the problem
 
 A provider that fails only with your name has a name handling problem. A provider
-that fails with both names has a problem with the file content instead.
+that fails with both names has a problem with the file content instead, and the
+name is not the cause.
+
+The generated sample holds one audio track, so all four providers read it. If a
+provider reports a failure for both names on your system, that provider cannot
+read the sample at all, and its line says nothing about your file name.
 
 Add a file to use your own media as the sample:
 

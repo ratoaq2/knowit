@@ -120,7 +120,7 @@ reporting flow is built so the media is never needed:
 knowit --bug-report /path/to/video.mkv
 
 # For "cannot open this file" reports, which are mostly about the name, not the
-# content. Probes a generated 75 byte Matroska under that name and under an ascii
+# content. Probes a generated Matroska sample under that name and under an ascii
 # control name, then says which backend fails only because of the name.
 knowit --check-name "The Accountant² (2025).mkv"
 

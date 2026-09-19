@@ -8,6 +8,7 @@ that name and compares the result against the same sample under a plain ascii na
 
 import os
 import shutil
+import struct
 import tempfile
 import traceback
 import typing
@@ -15,43 +16,119 @@ import typing
 from knowit import api
 from knowit.bugreport import describe_path
 
+_EBML = b'\x1a\x45\xdf\xa3'
+_SEGMENT = b'\x18\x53\x80\x67'
+_SEEK_HEAD = b'\x11\x4d\x9b\x74'
+_INFO = b'\x15\x49\xa9\x66'
+_TRACKS = b'\x16\x54\xae\x6b'
+_CLUSTER = b'\x1f\x43\xb6\x75'
+
+
+def _vint(value: int) -> bytes:
+    """Encode a length as an EBML variable size integer."""
+    for length in range(1, 9):
+        if value < (1 << (7 * length)) - 1:
+            return (value | (1 << (7 * length))).to_bytes(length, 'big')
+    raise ValueError(value)
+
+
+def _uint(value: int) -> bytes:
+    """Encode an EBML unsigned integer with the fewest bytes."""
+    return b'\x00' if value == 0 else value.to_bytes((value.bit_length() + 7) // 8, 'big')
+
 
 def _element(element_id: bytes, payload: bytes) -> bytes:
-    """Build an EBML element. Payloads are always shorter than 127 bytes here."""
-    return element_id + bytes([0x80 | len(payload)]) + payload
+    """Build an EBML element."""
+    return element_id + _vint(len(payload)) + payload
 
 
-def _build_minimal_mkv() -> bytes:
-    """Build the smallest file every backend still recognises as Matroska."""
+def _build_sample_mkv() -> bytes:
+    """Build the smallest Matroska file that all four backends read successfully.
+
+    A container header alone is not enough. ffprobe stops at "End of file" and enzyme
+    raises "No SeekHead found" when there is no track, which made the name check report
+    a failure for both of them whatever the name was. So the sample carries one real
+    audio track, one cluster, and a SeekHead.
+    """
     header = _element(
-        b'\x1a\x45\xdf\xa3',
+        _EBML,
         b''.join(
             (
-                _element(b'\x42\x86', b'\x01'),  # EBMLVersion
-                _element(b'\x42\xf7', b'\x01'),  # EBMLReadVersion
-                _element(b'\x42\xf2', b'\x04'),  # EBMLMaxIDLength
-                _element(b'\x42\xf3', b'\x08'),  # EBMLMaxSizeLength
+                _element(b'\x42\x86', _uint(1)),  # EBMLVersion
+                _element(b'\x42\xf7', _uint(1)),  # EBMLReadVersion
+                _element(b'\x42\xf2', _uint(4)),  # EBMLMaxIDLength
+                _element(b'\x42\xf3', _uint(8)),  # EBMLMaxSizeLength
                 _element(b'\x42\x82', b'matroska'),  # DocType
-                _element(b'\x42\x87', b'\x04'),  # DocTypeVersion
-                _element(b'\x42\x85', b'\x02'),  # DocTypeReadVersion
+                _element(b'\x42\x87', _uint(4)),  # DocTypeVersion
+                _element(b'\x42\x85', _uint(2)),  # DocTypeReadVersion
             )
         ),
     )
+
     info = _element(
-        b'\x15\x49\xa9\x66',
+        _INFO,
         b''.join(
             (
-                _element(b'\x2a\xd7\xb1', b'\x0f\x42\x40'),  # TimestampScale
+                _element(b'\x2a\xd7\xb1', _uint(1000000)),  # TimestampScale
                 _element(b'\x4d\x80', b'knowit'),  # MuxingApp
                 _element(b'\x57\x41', b'knowit'),  # WritingApp
+                _element(b'\x44\x89', struct.pack('>f', 100.0)),  # Duration
             )
         ),
     )
-    return header + _element(b'\x18\x53\x80\x67', info)
+
+    tracks = _element(
+        _TRACKS,
+        _element(
+            b'\xae',  # TrackEntry
+            b''.join(
+                (
+                    _element(b'\xd7', _uint(1)),  # TrackNumber
+                    _element(b'\x73\xc5', _uint(1)),  # TrackUID
+                    _element(b'\x83', _uint(2)),  # TrackType: audio
+                    _element(b'\x86', b'A_PCM/INT/LIT'),  # CodecID, needs no extradata
+                    _element(
+                        b'\xe1',  # Audio
+                        b''.join(
+                            (
+                                _element(b'\xb5', struct.pack('>f', 8000.0)),  # SamplingFrequency
+                                _element(b'\x9f', _uint(1)),  # Channels
+                                _element(b'\x62\x64', _uint(16)),  # BitDepth
+                            )
+                        ),
+                    ),
+                )
+            ),
+        ),
+    )
+
+    block = _element(b'\xa3', _vint(1) + struct.pack('>h', 0) + b'\x80' + b'\x00\x00' * 400)
+    cluster = _element(_CLUSTER, _element(b'\xe7', _uint(0)) + block)
+
+    def seek_head(info_at: int, tracks_at: int, cluster_at: int) -> bytes:
+        """Build the SeekHead. Positions are relative to the start of the segment data."""
+        entries = b''
+        for element_id, position in ((_INFO, info_at), (_TRACKS, tracks_at), (_CLUSTER, cluster_at)):
+            entries += _element(
+                b'\x4d\xbb',  # Seek
+                _element(b'\x53\xab', element_id)  # SeekID
+                # A fixed width position keeps the SeekHead the same size in both passes,
+                # so the offsets it holds stay correct once they are filled in.
+                + _element(b'\x53\xac', position.to_bytes(8, 'big')),  # SeekPosition
+            )
+        return _element(_SEEK_HEAD, entries)
+
+    head_size = len(seek_head(0, 0, 0))
+    info_at = head_size
+    tracks_at = info_at + len(info)
+    cluster_at = tracks_at + len(tracks)
+    head = seek_head(info_at, tracks_at, cluster_at)
+
+    return header + _element(_SEGMENT, head + info + tracks + cluster)
 
 
-#: A 75 byte Matroska file, used when the reporter has no file to share.
-MINIMAL_MKV = _build_minimal_mkv()
+#: A small Matroska file with one audio track, used when the reporter has no file to share.
+MINIMAL_MKV = _build_sample_mkv()
 
 #: The name the sample is given as a control, to tell a name problem from a file problem.
 CONTROL_NAME = 'knowit-control.mkv'
@@ -147,7 +224,9 @@ def check_name(
 
     return {
         'name': name,
-        'sample': 'the file you provided' if source is not None else 'a generated 75 byte Matroska file',
+        'sample': 'the file you provided'
+        if source is not None
+        else f'a generated {len(MINIMAL_MKV)} byte Matroska file with one audio track',
         'control': control,
         'candidate': candidate,
         'verdict': verdict(control, candidate),
@@ -168,7 +247,7 @@ def verdict(control: typing.Mapping[str, typing.Any], candidate: typing.Mapping[
 
         if candidate_status == control_status:
             if candidate_status == 'error':
-                result[provider_name] = 'fails with any name: not a name problem'
+                result[provider_name] = 'fails with the control name too: the name is not the cause'
             else:
                 result[provider_name] = f'{candidate_status}: the name is handled correctly'
         elif candidate_status == 'error':

@@ -6,6 +6,8 @@ real media file, so they can run everywhere.
 """
 
 import pathlib
+import shutil
+import tempfile
 import typing
 
 import pytest
@@ -22,7 +24,7 @@ from knowit.pathcheck import (
 
 
 def _external_provider_loaded() -> bool:
-    """Tell whether a backend that can read a file without tracks is installed."""
+    """Tell whether an external backend is installed."""
     loaded = api.loaded_providers({})
     return any(loaded.get(name) for name in ('mediainfo', 'ffmpeg', 'mkvmerge'))
 
@@ -33,11 +35,27 @@ needs_external_provider = pytest.mark.skipif(
 )
 
 
-def test_minimal_mkv_is_a_matroska_header() -> None:
+def test_minimal_mkv_is_a_matroska_file() -> None:
     # Then
     assert MINIMAL_MKV.startswith(b'\x1a\x45\xdf\xa3')
     assert b'matroska' in MINIMAL_MKV
-    assert len(MINIMAL_MKV) == 75
+    assert b'A_PCM/INT/LIT' in MINIMAL_MKV
+
+
+@needs_external_provider
+def test_minimal_mkv_is_read_by_every_installed_provider(options: dict[str, typing.Any]) -> None:
+    # Given a sample only some backends can read makes every verdict about them useless
+    directory = tempfile.mkdtemp(prefix='knowit-sample-')
+    options.pop('provider', None)
+    try:
+        # When
+        result = probe_name(directory, CONTROL_NAME, MINIMAL_MKV, options)
+    finally:
+        shutil.rmtree(directory, ignore_errors=True)
+
+    # Then
+    for provider_name, provider_result in result['providers'].items():
+        assert provider_result['status'] in ('ok', 'not installed'), f'{provider_name}: {provider_result.get("error")}'
 
 
 @pytest.mark.parametrize('name', ADVERSARIAL_NAMES, ids=ADVERSARIAL_NAMES)
@@ -117,7 +135,7 @@ def test_verdict_separates_a_name_problem_from_a_file_problem() -> None:
     # Then
     assert verdict(control, candidate) == {
         'a': 'fails with this name only: the name is the problem',
-        'b': 'fails with any name: not a name problem',
+        'b': 'fails with the control name too: the name is not the cause',
     }
 
 
