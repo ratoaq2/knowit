@@ -1,15 +1,16 @@
 import pickle
+import typing
 
 import pytest
 
-from tests import mediafiles
 from knowit import know
+from tests import JsonMedia, Media, mediafiles
 
 from . import assert_expected, id_func
 
 
 @pytest.mark.parametrize('media', mediafiles.get_json_media('mediainfo'), ids=id_func)
-def test_mediainfo_provider(mediainfo, media, options):
+def test_mediainfo_provider(mediainfo: dict[str, typing.Any], media: JsonMedia, options: dict[str, typing.Any]) -> None:
     # Given
     mediainfo[media.video_path] = media.input_data
 
@@ -22,7 +23,7 @@ def test_mediainfo_provider(mediainfo, media, options):
 
 
 @pytest.mark.parametrize('media', mediafiles.get_real_media('mediainfo'), ids=id_func)
-def test_mediainfo_provider_real_media(media, options):
+def test_mediainfo_provider_real_media(media: Media, options: dict[str, typing.Any]) -> None:
     # Given
     options['provider'] = 'mediainfo'
 
@@ -35,7 +36,9 @@ def test_mediainfo_provider_real_media(media, options):
 
 
 @pytest.mark.parametrize('media', mediafiles.get_real_media('mediainfo'), ids=id_func)
-def test_mediainfo_provider_real_media_cli(mediainfo_cli, media, options):
+def test_mediainfo_provider_real_media_cli(
+    mediainfo_cli: dict[str, typing.Any], media: Media, options: dict[str, typing.Any]
+) -> None:
     # Given
     options['provider'] = 'mediainfo'
 

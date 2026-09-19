@@ -1,22 +1,24 @@
 import os
 import typing
 from unittest.mock import patch
+
 import pytest
 
 from knowit.utils import build_path_candidates, detect_os
 
 
 @pytest.mark.parametrize(
-    'os_name, sys_platform, expected', [
+    'os_name, sys_platform, expected',
+    [
         ('nt', None, 'windows'),
         ('dos', None, 'windows'),
         ('os2', None, 'windows'),
         ('ce', None, 'windows'),
         (None, 'darwin', 'macos'),
         (None, None, 'unix'),
-    ]
+    ],
 )
-def test_detect_os(os_name, sys_platform, expected):
+def test_detect_os(os_name: str | None, sys_platform: str | None, expected: str) -> None:
     with patch('knowit.utils.os') as mock_os:
         mock_os.name = os_name
         with patch('knowit.utils.sys') as mock_sys:
@@ -25,7 +27,8 @@ def test_detect_os(os_name, sys_platform, expected):
 
 
 @pytest.mark.parametrize(
-    'os_family, path, names, expected', [
+    'os_family, path, names, expected',
+    [
         (
             'windows',
             r'C:\Application;C:\Program Files\Application',
@@ -64,13 +67,15 @@ def test_detect_os(os_name, sys_platform, expected):
         ),
     ],
 )
-def test_build_path_candidates_for_specified_os(names, os_family, path, expected):
+def test_build_path_candidates_for_specified_os(
+    names: tuple[str, ...], os_family: str, path: str, expected: list[str]
+) -> None:
     with patch('knowit.utils.os') as mock_os:
         mock_os.environ = {'PATH': path}
         mock_os.path = os.path  # don't mock os.path functions
         candidates = build_path_candidates(names, os_family)
 
-        def normalize_paths(paths: typing.Iterable[str]):
+        def normalize_paths(paths: typing.Iterable[str]) -> list[str]:
             """Replace all slashes to a forward slash for comparison purposes."""
             return [p.replace('\\', '/') for p in paths]
 

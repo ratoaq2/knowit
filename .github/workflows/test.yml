@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.10', 3.11, 3.12, 3.13, 3.14]
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -21,31 +21,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mediainfo ffmpeg mkvtoolnix
 
-      - name: Setup python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.1.0
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
 
-      - name: Install poetry
-        uses: snok/install-poetry@v1.4.2
-        with:
-          virtualenvs-in-project: true
-
-      - name: Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
-
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
-
-      - name: Install library
-        run: poetry install --no-interaction
+        run: uv sync --locked
 
       - name: Run tests
-        run: |
-          source .venv/bin/activate
-          bash scripts/test.sh
+        run: bash scripts/test.sh

@@ -5,6 +5,7 @@ import typing
 from knowit import __version__
 from knowit.config import Config
 from knowit.provider import Provider
+
 from .providers import (
     EnzymeProvider,
     FFmpegProvider,
@@ -21,14 +22,14 @@ _provider_map = {
 
 provider_names = _provider_map.keys()
 
-available_providers: typing.Dict[str, Provider] = {}
+available_providers: dict[str, Provider] = {}
 
 
 class KnowitException(Exception):
     """Exception raised when knowit encounters an internal error."""
 
 
-def initialize(context: typing.Optional[typing.Mapping] = None, *, force: bool = False) -> None:
+def initialize(context: typing.Mapping[str, typing.Any] | None = None, *, force: bool = False) -> None:
     """Initialize knowit, reload provider if a new suggested path is given."""
     context = context or {}
     config = Config.build(context.get('config'))
@@ -37,16 +38,13 @@ def initialize(context: typing.Optional[typing.Mapping] = None, *, force: bool =
         suggested_path = context.get(name) or general_config.get(name)
         # create provider if it is not initialized or if it is not loaded and suggesting a new path
         p = available_providers.get(name)
-        if force or p is None or (
-            not p.loaded() and not p.match_executor_location(suggested_path)
-        ):
+        if force or p is None or (not p.loaded() and not p.match_executor_location(suggested_path)):
             available_providers[name] = provider_cls(config, suggested_path)
 
 
 def know(
-        video_path: typing.Union[str, os.PathLike],
-        context: typing.Optional[typing.MutableMapping] = None
-) -> typing.Mapping:
+    video_path: str | os.PathLike[str], context: typing.MutableMapping[str, typing.Any] | None = None
+) -> typing.MutableMapping[str, typing.Any]:
     """Return a mapping of video metadata."""
     video_path = os.fspath(video_path)
 
@@ -66,10 +64,10 @@ def know(
 
         return {}
     except Exception:
-        raise KnowitException(debug_info(context=context, exc_info=True))
+        raise KnowitException(debug_info(context=context, exc_info=True)) from None
 
 
-def dependencies(context: typing.Optional[typing.Mapping] = None) -> typing.Mapping:
+def dependencies(context: typing.Mapping[str, typing.Any] | None = None) -> typing.Mapping[str, typing.Any]:
     """Return all dependencies detected by knowit."""
     deps = {}
     try:
@@ -85,7 +83,7 @@ def dependencies(context: typing.Optional[typing.Mapping] = None) -> typing.Mapp
     return deps
 
 
-def loaded_providers(options: typing.Union[dict[str, typing.Any], None] = None) -> dict[str, bool]:
+def loaded_providers(options: dict[str, typing.Any] | None = None) -> dict[str, bool]:
     """Return a dict with each provider and if they are installed."""
     # initialize providers with options
     initialize(options)
@@ -100,13 +98,13 @@ def _centered(value: str) -> str:
 
 
 def debug_info(
-        context: typing.Optional[typing.MutableMapping] = None,
-        exc_info: bool = False,
+    context: typing.MutableMapping[str, typing.Any] | None = None,
+    exc_info: bool = False,
 ) -> str:
     lines = [
         '+-------------------------------------------------------+',
         _centered(f'KnowIt {__version__}'),
-        '+-------------------------------------------------------+'
+        '+-------------------------------------------------------+',
     ]
 
     first = True
