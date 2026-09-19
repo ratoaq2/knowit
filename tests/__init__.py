@@ -3,6 +3,7 @@ import os
 import pathlib
 import re
 import sys
+import typing
 from collections.abc import Mapping
 from datetime import timedelta
 from io import BytesIO
@@ -17,30 +18,33 @@ from knowit.api import provider_names
 from knowit.serializer import format_property
 from knowit.units import units
 
-
 YAML_EXTENSIONS = ('.yml', '.yaml')
 
 
-duration_re = re.compile(r'(?P<hours>\d{1,2}):'
-                         r'(?P<minutes>\d{1,2}):'
-                         r'(?P<seconds>\d{1,2})(?:\.'
-                         r'(?P<millis>\d{3})'
-                         r'(?P<micro>\d{3})?\d*)?')
+duration_re = re.compile(
+    r'(?P<hours>\d{1,2}):'
+    r'(?P<minutes>\d{1,2}):'
+    r'(?P<seconds>\d{1,2})(?:\.'
+    r'(?P<millis>\d{3})'
+    r'(?P<micro>\d{3})?\d*)?'
+)
 
-serializer.YAMLLoader = serializer.get_yaml_loader({
-    'tag:yaml.org,2002:str': lambda constructor, value: _parse_value(value),
-    'tag:yaml.org,2002:seq': Constructor.construct_sequence,
-})
+serializer.YAMLLoader = serializer.get_yaml_loader(
+    {
+        'tag:yaml.org,2002:str': lambda constructor, value: _parse_value(value),
+        'tag:yaml.org,2002:seq': Constructor.construct_sequence,
+    }
+)
 
 
 one_ms = timedelta(milliseconds=1)
 
 
-def normalize_path(path: str):
+def normalize_path(path: str) -> str:
     return os.fspath(pathlib.Path(path))
 
 
-def parameters_from_yaml(name, input_key=None, expected_key=None):
+def parameters_from_yaml(name: str, input_key: str | None = None, expected_key: str | None = None) -> list[typing.Any]:
     package_name, resource_name = name.split('.', 1)
 
     files = []
@@ -50,7 +54,7 @@ def parameters_from_yaml(name, input_key=None, expected_key=None):
             files.append(yaml_file)
             break
 
-    parameters = []
+    parameters: list[typing.Any] = []
     for file_path in files:
         data = read_yaml(file_path)
 
@@ -70,35 +74,35 @@ def parameters_from_yaml(name, input_key=None, expected_key=None):
     return parameters
 
 
-def read_file(file_path):
-    with open(file_path, 'r') as f:
+def read_file(file_path: str | os.PathLike[str]) -> str:
+    with open(file_path) as f:
         return f.read()
 
 
-def read_yaml(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
+def read_yaml(file_path: str | os.PathLike[str]) -> typing.Any:
+    with open(file_path, encoding='utf-8') as f:
         return yaml.load(f, Loader=serializer.YAMLLoader)
 
 
-def read_json(file_path):
-    with open(file_path, 'r') as f:
+def read_json(file_path: str | os.PathLike[str]) -> typing.Any:
+    with open(file_path) as f:
         return json.loads(f.read())
 
 
-def id_func(param):
+def id_func(param: typing.Any) -> str:
     return repr(param)
 
 
-class MediaFiles(object):
+class MediaFiles:
     """Represent media files in test/data folder."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the object."""
         self.videos = MediaFiles._videos()
         self.datafiles = MediaFiles._provider_datafiles()
 
     @staticmethod
-    def _videos():
+    def _videos() -> list[str]:
         data_path = os.path.join('tests', 'data', 'videos')
 
         # download matroska test suite
@@ -116,8 +120,8 @@ class MediaFiles(object):
         return files
 
     @staticmethod
-    def _provider_datafiles():
-        datafiles = {}
+    def _provider_datafiles() -> dict[str, list[str]]:
+        datafiles: dict[str, list[str]] = {}
         for provider in provider_names:
             files = []
             data_path = os.path.join('tests', 'data', provider)
@@ -131,19 +135,19 @@ class MediaFiles(object):
 
         return datafiles
 
-    def get_real_media(self, provider_name):
+    def get_real_media(self, provider_name: str) -> list['Media']:
         """Return only real video files."""
         return [Media(f, provider_name) for f in self.videos]
 
-    def get_xml_media(self, provider_name):
+    def get_xml_media(self, provider_name: str) -> list['XmlMedia']:
         """Return all videos metadata as xml."""
         return [XmlMedia(f, provider_name) for f in self.datafiles[provider_name]]
 
-    def get_yaml_media(self, provider_name):
+    def get_yaml_media(self, provider_name: str) -> list['YamlMedia']:
         """Return all videos metadata as yaml."""
         return [YamlMedia(f, provider_name) for f in self.datafiles[provider_name]]
 
-    def get_json_media(self, provider_name):
+    def get_json_media(self, provider_name: str) -> list['JsonMedia']:
         """Return all videos metadata as json."""
         return [JsonMedia(f, provider_name) for f in self.datafiles[provider_name]]
 
@@ -151,21 +155,21 @@ class MediaFiles(object):
 mediafiles = MediaFiles()
 
 
-class Media(object):
+class Media:
     """Represent a media."""
 
-    def __init__(self, file_path, provider_name):
+    def __init__(self, file_path: str, provider_name: str):
         """Initialize the object."""
         self.file_path = file_path
         self.provider_name = provider_name
 
     @property
-    def video_path(self):
+    def video_path(self) -> str:
         """Return the video path."""
         return self.file_path
 
     @property
-    def expected_data(self):
+    def expected_data(self) -> typing.Any:
         """Return the expected video metadata."""
         yaml_file = None
         yaml_folder = os.path.normpath(os.path.join(os.path.split(self.video_path)[0], os.pardir))
@@ -175,15 +179,15 @@ class Media(object):
                 break
 
         if not yaml_file or not os.path.isfile(yaml_file):
-            raise IOError('Unable to find expected file for {!r}', self.video_path)
+            raise OSError('Unable to find expected file for {!r}', self.video_path)
 
         return read_yaml(yaml_file)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return the media representation."""
-        return '<{} [{}]>'.format(self.__class__.__name__, self.video_path)
+        return f'<{self.__class__.__name__} [{self.video_path}]>'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the media path."""
         return self.video_path
 
@@ -192,12 +196,12 @@ class DataMedia(Media):
     """Represent a video without the real file, only the video metadata."""
 
     @property
-    def video_path(self):
+    def video_path(self) -> str:
         """Return the video path."""
         return os.path.splitext(self.file_path)[0]
 
     @property
-    def expected_data(self):
+    def expected_data(self) -> typing.Any:
         """Return the expected video metadata."""
         yaml_file = None
         for yaml_ext in YAML_EXTENSIONS:
@@ -206,7 +210,7 @@ class DataMedia(Media):
                 break
 
         if not yaml_file or not os.path.isfile(yaml_file):
-            raise IOError('Unable to find expected file for {!r}', self.video_path)
+            raise OSError('Unable to find expected file for {!r}', self.video_path)
 
         return read_yaml(yaml_file)
 
@@ -215,7 +219,7 @@ class XmlMedia(DataMedia):
     """Represent a video without the real file, only the video metadata as xml."""
 
     @property
-    def input_data(self):
+    def input_data(self) -> str:
         """Return the video metadata as xml."""
         return read_file(self.file_path)
 
@@ -224,7 +228,7 @@ class YamlMedia(DataMedia):
     """Represent a video without the real file, only the video metadata as yaml."""
 
     @property
-    def input_data(self):
+    def input_data(self) -> typing.Any:
         """Return the video metadata as yaml."""
         return read_yaml(self.file_path)
 
@@ -233,24 +237,24 @@ class JsonMedia(DataMedia):
     """Represent a video without the real file, only the video metadata as json."""
 
     @property
-    def input_data(self):
+    def input_data(self) -> typing.Any:
         """Return the video metadata as json."""
         return read_json(self.file_path)
 
 
-def _parse_value(node):
-    def parse_duration(value):
+def _parse_value(node: typing.Any) -> typing.Any:
+    def parse_duration(value: typing.Any) -> typing.Any:
         match = duration_re.match(value)
         if match:
             h, m, s, ms, mc = match.groups('0')
             return timedelta(hours=int(h), minutes=int(m), seconds=int(s), milliseconds=int(ms), microseconds=int(mc))
         return value
 
-    def parse_quantity(value):
+    def parse_quantity(value: typing.Any) -> typing.Any:
         if isinstance(value, str):
             for unit in ('pixel', 'bit', 'byte', 'FPS', 'bps', 'Hz'):
                 if value.endswith(' ' + unit):
-                    return units(value[:-len(unit)]) * units(unit)
+                    return units(value[: -len(unit)]) * units(unit)
 
         return value
 
@@ -261,16 +265,22 @@ def _parse_value(node):
     return result
 
 
-def is_iterable(obj):
+def is_iterable(obj: typing.Any) -> bool:
     return isinstance(obj, (tuple, list))
 
 
-def to_string(profile: str, value):
+def to_string(profile: str, value: typing.Any) -> str | None:
     formatted_value = format_property(profile, value)
     return str(formatted_value) if formatted_value is not None else None
 
 
-def check_equals(expected, actual, different, options, prefix=''):
+def check_equals(
+    expected: typing.Any,
+    actual: typing.Any,
+    different: list[typing.Any],
+    options: typing.Mapping[str, typing.Any],
+    prefix: str = '',
+) -> None:
     if isinstance(expected, Mapping):
         check_mapping_equals(expected, actual, different=different, options=options, prefix=prefix)
     elif is_iterable(expected):
@@ -281,23 +291,37 @@ def check_equals(expected, actual, different, options, prefix=''):
         different.append((prefix, expected, actual))
 
 
-def check_timedelta_equals(expected, actual, different, prefix=''):
+def check_timedelta_equals(
+    expected: timedelta, actual: typing.Any, different: list[typing.Any], prefix: str = ''
+) -> None:
     if not isinstance(actual, timedelta) or not (expected - one_ms) <= actual <= (expected + one_ms):
         different.append((prefix, expected, actual))
 
 
-def check_sequence_equals(expected, actual, different, options, prefix=''):
+def check_sequence_equals(
+    expected: typing.Sequence[typing.Any],
+    actual: typing.Any,
+    different: list[typing.Any],
+    options: typing.Mapping[str, typing.Any],
+    prefix: str = '',
+) -> None:
     if not is_iterable(actual) or len(expected) != len(actual):
         different.append((prefix, expected, actual))
         return
 
     for i, expected_value in enumerate(expected):
         actual_value = actual[i]
-        key = '{0}[{1}].'.format(prefix, i)
+        key = f'{prefix}[{i}].'
         check_equals(expected_value, actual_value, different=different, options=options, prefix=key)
 
 
-def check_mapping_equals(expected, actual, different, options, prefix=''):
+def check_mapping_equals(
+    expected: typing.Mapping[str, typing.Any],
+    actual: typing.Any,
+    different: list[typing.Any],
+    options: typing.Mapping[str, typing.Any],
+    prefix: str = '',
+) -> None:
     if not isinstance(actual, Mapping):
         different.append(('', expected, actual))
         return
@@ -325,16 +349,20 @@ def check_mapping_equals(expected, actual, different, options, prefix=''):
             continue
 
 
-def assert_expected(expected, actual, options=None):
+def assert_expected(
+    expected: typing.Any,
+    actual: typing.MutableMapping[str, typing.Any],
+    options: typing.MutableMapping[str, typing.Any] | None = None,
+) -> None:
     version = None
     if 'provider' in actual:
         version = actual['provider']['version']
         del actual['provider']['version']
 
-    different = []
+    different: list[typing.Any] = []
     check_equals(expected, actual, different=different, options=options or {'profile': 'default'})
-    for (key, expected, actual) in different:
-        print('{0}: Expected {1} got {2}'.format(key, expected, actual), file=sys.stderr)
+    for key, expected, actual in different:
+        print(f'{key}: Expected {expected} got {actual}', file=sys.stderr)
 
     if different and options and options.get('debug_data'):
         print(f'Version: {version}')

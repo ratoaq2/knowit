@@ -1,13 +1,14 @@
-[tool.poetry]
+[project]
 name = "knowit"
 version = "0.7.0-dev"
 description = "Know better your media files"
 authors = [
-    "Rato",
+    { name = "Rato" },
 ]
 license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
-repository = "https://github.com/ratoaq2/knowit"
+requires-python = ">=3.10,<4.0"
 keywords = [
     "video",
     "mkv",
@@ -23,7 +24,6 @@ keywords = [
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -36,41 +36,94 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Multimedia :: Video",
 ]
-include = [
-    { path = "scripts/**", format = "sdist" },
-    { path = "tests/**", format = "sdist" },
-    { path = "setup.cfg", format = "sdist" },
+dependencies = [
+    "babelfish>=0.6.1",
+    "enzyme>=0.5.2",
+    "pymediainfo>=7.0.1",
+    "pyyaml>=6.0",
+    "trakit>=0.2.2",
 ]
 
-[tool.poetry.scripts]
+[project.urls]
+Repository = "https://github.com/ratoaq2/knowit"
+
+[project.optional-dependencies]
+pint = ["pint>=0.20.1"]
+
+[project.scripts]
 knowit = "knowit.__main__:main"
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-babelfish = ">=0.6.1"
-enzyme = ">=0.5.2"
-pint = { version = ">=0.20.1", optional = true }
-pymediainfo = ">=7.0.1"
-pyyaml = ">=6.0"
-trakit = ">=0.2.2"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.4.1"
-pytest-cov = "^6.2.1"
-flake8 = "^7.3.0"
-requests = "^2.32.4"
-flake8-docstrings = "^1.7.0"
-flake8-import-order = "^0.19.2"
-pep8-naming = "^0.15.1"
-pydocstyle = "^6.3.0"
-mypy = "^1.17.0"
-types-requests = "^2.32.4.20250611"
-types-mock = "^5.2.0.20250516"
-typing-extensions = "^4.14.1"
-
-[tool.poetry.extras]
-pint = ["pint"]
+[dependency-groups]
+dev = [
+    "mypy>=1.17.0",
+    "pre-commit>=4.0.0",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "requests>=2.32.4",
+    "ruff>=0.13.0",
+    "types-pyyaml>=6.0.12.20250915",
+    "types-requests>=2.32.4.20250611",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["knowit"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "D", "I", "N", "B", "UP", "C4", "SIM"]
+ignore = [
+    # D100 Missing docstring in public module
+    "D100",
+    # D103 Missing docstring in public function
+    "D103",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = [
+    # D104 Missing docstring in public package
+    "D104",
+    # F401 Imported but unused
+    "F401",
+]
+"knowit/__init__.py" = [
+    # E402 Module level import not at top of file
+    "E402",
+]
+"knowit/api.py" = [
+    # N818 error suffix in exception names
+    "N818",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.isort]
+known-first-party = ["knowit"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.mypy]
+strict = true
+# CI (test.yml) and the Docker image both run on Linux; pin the analysis platform so
+# platform-conditional stubs (e.g. ctypes.WinDLL) behave the same regardless of the
+# contributor's own OS.
+platform = "linux"
+
+[[tool.mypy.overrides]]
+module = [
+    "pint.*",
+    "babelfish.*",
+    "enzyme.*",
+    "pkg_resources.*",
+    "pymediainfo.*",
+    "trakit.*",
+]
+ignore_missing_imports = true

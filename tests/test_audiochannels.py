@@ -1,5 +1,7 @@
+import typing
 
 import pytest
+
 from knowit.rules import AudioChannelsRule
 
 from . import (
@@ -9,12 +11,14 @@ from . import (
 
 
 @pytest.fixture
-def audiochannels_rule():
+def audiochannels_rule() -> AudioChannelsRule:
     return AudioChannelsRule('audio channels')
 
 
 @pytest.mark.parametrize('expected,input', parameters_from_yaml(__name__))
-def test_resolution(audiochannels_rule, context, expected, input):
+def test_resolution(
+    audiochannels_rule: AudioChannelsRule, context: dict[str, typing.Any], expected: typing.Any, input: typing.Any
+) -> None:
     # Given
 
     # When

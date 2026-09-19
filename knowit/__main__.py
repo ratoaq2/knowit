@@ -52,27 +52,14 @@ def build_argument_parser() -> ArgumentParser:
         '--debug',
         action='store_true',
         dest='debug',
-        help='Print information for debugging knowit and for reporting bugs.'
+        help='Print information for debugging knowit and for reporting bugs.',
     )
     output_opts.add_argument(
-        '--report',
-        action='store_true',
-        dest='report',
-        help='Parse media and report all non-detected values'
+        '--report', action='store_true', dest='report', help='Parse media and report all non-detected values'
     )
+    output_opts.add_argument('-y', '--yaml', action='store_true', dest='yaml', help='Display output in yaml format')
     output_opts.add_argument(
-        '-y',
-        '--yaml',
-        action='store_true',
-        dest='yaml',
-        help='Display output in yaml format'
-    )
-    output_opts.add_argument(
-        '-N',
-        '--no-units',
-        action='store_true',
-        dest='no_units',
-        help='Display output without units'
+        '-N', '--no-units', action='store_true', dest='no_units', help='Display output without units'
     )
     output_opts.add_argument(
         '-P',
@@ -103,21 +90,16 @@ def build_argument_parser() -> ArgumentParser:
     )
 
     information_opts = opts.add_argument_group('Information')
-    information_opts.add_argument(
-        '--version',
-        dest='version',
-        action='store_true',
-        help='Display knowit version.'
-    )
+    information_opts.add_argument('--version', dest='version', action='store_true', help='Display knowit version.')
 
     return opts
 
 
 def knowit(
-        video_path: typing.Union[str, os.PathLike],
-        options: argparse.Namespace,
-        context: typing.MutableMapping,
-) -> typing.Mapping:
+    video_path: str | os.PathLike[str],
+    options: argparse.Namespace,
+    context: typing.MutableMapping[str, typing.Any],
+) -> typing.Mapping[str, typing.Any]:
     """Extract video metadata."""
     context['path'] = video_path
     if not options.report:
@@ -132,8 +114,8 @@ def knowit(
 
 
 def _as_yaml(
-        info: typing.Mapping[str, typing.Any],
-        context: typing.Mapping,
+    info: typing.Mapping[str, typing.Any],
+    context: typing.Mapping[str, typing.Any],
 ) -> str:
     """Convert info to string using YAML format."""
     data = {info['path']: info} if 'path' in info else info
@@ -147,8 +129,8 @@ def _as_yaml(
 
 
 def _as_json(
-        info: typing.Mapping[str, typing.Any],
-        context: typing.Mapping,
+    info: typing.Mapping[str, typing.Any],
+    context: typing.Mapping[str, typing.Any],
 ) -> str:
     """Convert info to string using JSON format."""
     return json.dumps(
@@ -160,16 +142,16 @@ def _as_json(
 
 
 def dumps(
-        info: typing.Mapping[str, typing.Any],
-        options: argparse.Namespace,
-        context: typing.Mapping,
+    info: typing.Mapping[str, typing.Any],
+    options: argparse.Namespace,
+    context: typing.Mapping[str, typing.Any],
 ) -> str:
     """Convert info to string using json or yaml format."""
     convert = _as_yaml if options.yaml else _as_json
     return convert(info, context)
 
 
-def main(args: typing.Optional[typing.List[str]] = None) -> None:
+def main(args: list[str] | None = None) -> None:
     """Execute main function for entry point."""
     argument_parser = build_argument_parser()
     args = args or sys.argv[1:]

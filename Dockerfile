@@ -1,28 +1,16 @@
-FROM python:3.14-slim as builder
+FROM python:3.14-slim AS builder
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.8.3 \
-    POETRY_VIRTUALENVS_CREATE=0
+    PYTHONDONTWRITEBYTECODE=1
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3-venv \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip install "poetry==$POETRY_VERSION"
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
-COPY poetry.lock pyproject.toml README.md /app/
-RUN poetry install --no-interaction --no-ansi --only main
-RUN pip install platformdirs
+COPY pyproject.toml uv.lock README.md LICENSE /app/
 COPY knowit/ /app/knowit/
-RUN poetry build --no-interaction --no-ansi
+RUN uv build --wheel
 
 
 FROM python:3.14-slim
@@ -42,7 +30,7 @@ RUN apt-get update \
 
 COPY --from=builder /app/dist /usr/src/dist
 
-RUN pip install /usr/src/dist/knowit-*.tar.gz
+RUN pip install /usr/src/dist/knowit-*.whl
 
 WORKDIR /
 

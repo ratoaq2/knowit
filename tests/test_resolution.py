@@ -1,3 +1,4 @@
+import typing
 
 import pytest
 
@@ -10,12 +11,14 @@ from . import (
 
 
 @pytest.fixture
-def resolution_rule():
+def resolution_rule() -> ResolutionRule:
     return ResolutionRule('resolution')
 
 
 @pytest.mark.parametrize('expected,input', parameters_from_yaml(__name__))
-def test_resolution(resolution_rule, context, expected, input):
+def test_resolution(
+    resolution_rule: ResolutionRule, context: dict[str, typing.Any], expected: typing.Any, input: typing.Any
+) -> None:
     # Given
 
     # When

@@ -1,18 +1,15 @@
 import pickle
+import typing
 
 import pytest
 
 from knowit import know
 
-from . import (
-    assert_expected,
-    id_func,
-    mediafiles
-)
+from . import JsonMedia, Media, assert_expected, id_func, mediafiles
 
 
 @pytest.mark.parametrize('media', mediafiles.get_json_media('mkvmerge'), ids=id_func)
-def test_mkvmerge_provider(mkvmerge, media, options):
+def test_mkvmerge_provider(mkvmerge: dict[str, typing.Any], media: JsonMedia, options: dict[str, typing.Any]) -> None:
     # Given
     mkvmerge[media.video_path] = media.input_data
 
@@ -25,7 +22,7 @@ def test_mkvmerge_provider(mkvmerge, media, options):
 
 
 @pytest.mark.parametrize('media', mediafiles.get_real_media('mkvmerge'), ids=id_func)
-def test_mkvmerge_provider_real_media(media, options):
+def test_mkvmerge_provider_real_media(media: Media, options: dict[str, typing.Any]) -> None:
     # Given
     options['provider'] = 'mkvmerge'
 

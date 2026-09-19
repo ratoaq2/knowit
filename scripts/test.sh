@@ -2,7 +2,7 @@
 
 set -ex
 
-flake8
-mypy knowit
-mypy tests
-pytest --cov-report term --cov-report html --cov knowit -vv tests
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy knowit tests
+uv run pytest --cov-report term --cov-report html --cov knowit -vv tests
