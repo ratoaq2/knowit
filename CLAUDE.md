@@ -139,6 +139,25 @@ redacts the report, `knowit/pathcheck.py` does the name check. `ADVERSARIAL_NAME
 `pathcheck.py` is the regression matrix of names taken from real issues; add to it when
 a new one appears.
 
+**`--check-name` limits**: it only proves something for names that survive as valid
+Unicode text the whole way from the shell to the process — that covers accents, CJK,
+emoji, symbols, and NFC/NFD mismatches. It cannot reproduce a genuinely invalid byte
+sequence (e.g. a name left over from a non-Unicode codepage): such bytes cannot be
+typed, pasted into an issue, or even passed through `docker run`, since all of those
+require valid UTF-8 too — Docker's own CLI replaces invalid bytes in its arguments with
+U+FFFD before the container ever sees them. If a reporter's name looks like mojibake or
+can't be typed cleanly, ask for `--bug-report` on the real file instead: it discovers
+the name with `os.scandir`, which preserves undecodable bytes as lone surrogates
+instead of losing them.
+
+The one thing `--check-name` *can* reproduce that isn't about the name's characters is
+a file system encoding mismatch — run it under a non-UTF-8 locale and a non-ascii name
+fails to even be created:
+
+```bash
+LC_ALL=C PYTHONUTF8=0 knowit --check-name "Café.mkv"
+```
+
 ## Tests
 
 - `tests/conftest.py` fixtures monkeypatch each provider's `Executor` to replay canned

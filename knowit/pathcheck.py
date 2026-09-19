@@ -4,6 +4,22 @@ The most frequent reports are not about the content of a file, they are about it
 a superscript, a fraction, an accent, or a character the file system encoding cannot
 represent. Those need the name, not the media. This module writes a small sample under
 that name and compares the result against the same sample under a plain ascii name.
+
+Limits: `check_name()` only proves something for names that survive as valid Unicode
+text the whole way from the shell to this process. It cannot reproduce a genuinely
+invalid byte sequence, such as a name left over from a non-Unicode codepage: those
+bytes cannot be typed, pasted into an issue, or even passed through `docker run`,
+since all of those require valid UTF-8 too (Docker's own CLI replaces invalid bytes in
+its arguments with U+FFFD before the container ever sees them). For that case, ask the
+reporter to run `--bug-report` on the real file instead: it discovers the name with
+`os.scandir`, which Python decodes with the `surrogateescape` error handler, preserving
+undecodable bytes as lone surrogates instead of losing them.
+
+What `check_name()` *can* reproduce is a file system encoding mismatch: run it under a
+non-UTF-8 locale (`LC_ALL=C PYTHONUTF8=0`) with a non-ascii name, and
+`encodable_to_filesystem_encoding` comes back `False` — the candidate file fails to be
+created with a `UnicodeEncodeError`, and the verdict reports it. This mirrors minimal
+containers or old environments that never set a UTF-8 locale.
 """
 
 import os
