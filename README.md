@@ -185,34 +185,77 @@ Using docker:
 All available CLI options:
 
     $ knowit --help
-    usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO] [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--version] [videopath [videopath ...]]
-    
+    usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO]
+                  [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--bug-report] [--bug-report-output FILE]
+                  [--no-redact] [--version] [videopath ...]
+
     positional arguments:
       videopath             Path to the video to introspect
-    
-    optional arguments:
+
+    options:
       -h, --help            show this help message and exit
-    
+
     Providers:
-      -p PROVIDER, --provider PROVIDER
+      -p, --provider PROVIDER
                             The provider to be used: mediainfo, ffmpeg, mkvmerge or enzyme.
-    
+
     Output:
       --debug               Print information for debugging knowit and for reporting bugs.
       --report              Parse media and report all non-detected values
       -y, --yaml            Display output in yaml format
       -N, --no-units        Display output without units
-      -P PROFILE, --profile PROFILE
+      -P, --profile PROFILE
                             Display values according to specified profile: code, default, human, technical
-    
+
     Configuration:
       --mediainfo MEDIAINFO
                             The location to search for MediaInfo binaries
       --ffmpeg FFMPEG       The location to search for ffprobe (FFmpeg) binaries
       --mkvmerge MKVMERGE   The location to search for mkvmerge (MKVToolNix) binaries
-    
+
+    Bug reporting:
+      --bug-report          Write a report with the environment and the raw output of every provider, to
+                            attach to an issue.
+      --bug-report-output FILE
+                            Where to write the bug report. Use - to write it to the standard output.
+      --no-redact           Do not mask titles, file names and tags in the bug report.
+
     Information:
       --version             Display knowit version.
+
+## Reporting a problem
+
+Do not send your media file. It is not needed, and it is usually too large.
+Run this command instead:
+
+    $ knowit --bug-report "/path/to/your/video.mkv"
+    Bug report written to knowit-report.yml
+
+Attach `knowit-report.yml` to an issue at
+<https://github.com/ratoaq2/knowit/issues>.
+
+The report contains:
+
+- the knowit version, and where knowit is installed from
+- the Python version, the operating system, and the text encodings in use
+- the location and version of MediaInfo, ffprobe, mkvmerge and enzyme
+- the characters of the file path, with their Unicode names
+- the raw output of every installed provider for that file
+- the values knowit parsed from that output, or the error it failed with
+
+Titles, file names and tags are masked. Non-ascii characters are kept, because
+they are often the cause of the problem. Use `--no-redact` to keep the original
+text.
+
+If knowit is bundled in another application, such as Bazarr or Medusa, run the
+command with the same Python that runs that application:
+
+    $ python -m knowit --bug-report "/path/to/your/video.mkv"
+
+If a codec, a profile or another value is not known by knowit, use `--report`
+instead. It accepts a directory and lists every value knowit does not know:
+
+    $ knowit --report /path/to/your/media
 
 ## Installation
 

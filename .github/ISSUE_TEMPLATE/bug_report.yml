@@ -1,0 +1,56 @@
+name: Bug report
+description: Report an error or a wrong value returned by knowit.
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the report.
+
+        Do not send your media file. It is not necessary, and it is usually too large.
+        The bug report below contains everything needed to reproduce the problem.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+      description: Describe the problem. If a value is wrong, tell us the expected value.
+      placeholder: |
+        knowit fails with an error on some files.
+        The audio codec is reported as AC3, but the file contains E-AC3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-report
+    attributes:
+      label: Bug report file
+      description: |
+        Run this command and attach the `knowit-report.yml` file it creates:
+
+        ```
+        knowit --bug-report "/path/to/your/video.mkv"
+        ```
+
+        The file holds the environment and the raw output of each backend.
+        Titles, file names and tags are masked. Add `--no-redact` to keep them.
+
+        If knowit is bundled in another application, such as Bazarr or Medusa,
+        run the command with the same Python that runs that application:
+
+        ```
+        python -m knowit --bug-report "/path/to/your/video.mkv"
+        ```
+
+        If you cannot run the command, paste the full error output instead.
+      placeholder: Attach knowit-report.yml here, or paste its content.
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Anything else that can help. For example the application that calls knowit.
+    validations:
+      required: false

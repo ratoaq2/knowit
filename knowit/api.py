@@ -146,13 +146,28 @@ def debug_info(
         lines.append(traceback.format_exc())
 
     lines.append('')
-    lines.extend(
-        (
-            BOX_LINE,
-            _centered('Please report any bug or feature request at'),
-            _centered(f'{__url__}/issues.'),
-            BOX_LINE,
-        )
-    )
+    lines.extend(_format_footer(context))
 
     return '\n'.join(lines)
+
+
+def _format_footer(context: typing.Mapping[str, typing.Any] | None = None) -> list[str]:
+    """Tell the user the one command that produces a report we can act on.
+
+    The instruction is not boxed: the box truncates, and a truncated command cannot be
+    copied. This text is printed by every application that embeds knowit, so it is the
+    place where most users learn what to send.
+    """
+    path = os.fspath(context['path']) if context and context.get('path') else '<path to your video>'
+    return [
+        BOX_LINE,
+        _centered('Please report this problem at'),
+        _centered(f'{__url__}/issues'),
+        BOX_LINE,
+        '',
+        'Run this command and attach the file it creates to the issue.',
+        'Your media file is not needed, and titles are masked in the report:',
+        '',
+        f'  knowit --bug-report "{path}"',
+        '',
+    ]
