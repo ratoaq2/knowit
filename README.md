@@ -187,7 +187,7 @@ All available CLI options:
     $ knowit --help
     usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO]
                   [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--bug-report] [--bug-report-output FILE]
-                  [--no-redact] [--version] [videopath ...]
+                  [--no-redact] [--check-name NAME] [--version] [videopath ...]
 
     positional arguments:
       videopath             Path to the video to introspect
@@ -219,6 +219,7 @@ All available CLI options:
       --bug-report-output FILE
                             Where to write the bug report. Use - to write it to the standard output.
       --no-redact           Do not mask titles, file names and tags in the bug report.
+      --check-name NAME     Check whether a file name makes a provider fail. No media file is needed.
 
     Information:
       --version             Display knowit version.
@@ -256,6 +257,30 @@ If a codec, a profile or another value is not known by knowit, use `--report`
 instead. It accepts a directory and lists every value knowit does not know:
 
     $ knowit --report /path/to/your/media
+
+### Problems with a file name
+
+Many problems come from the name of the file, not from its content: a superscript,
+a fraction, an accent, or a character the file system encoding cannot represent.
+For those, only the name is needed:
+
+    $ knowit --check-name "The Accountant² (2025).mkv"
+
+knowit writes a small generated Matroska file under that name, and also under a
+plain ascii name. It then compares the two results:
+
+    result:
+      mediainfo: ok: the name is handled correctly
+      ffmpeg: ok: the name is handled correctly
+      mkvmerge: ok: the name is handled correctly
+      enzyme: fails with this name only: the name is the problem
+
+A provider that fails only with your name has a name handling problem. A provider
+that fails with both names has a problem with the file content instead.
+
+Add a file to use your own media as the sample:
+
+    $ knowit --check-name "The Accountant² (2025).mkv" /path/to/any/video.mkv
 
 ## Installation
 

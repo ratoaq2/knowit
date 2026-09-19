@@ -48,6 +48,22 @@ body:
       required: true
 
   - type: textarea
+    id: check-name
+    attributes:
+      label: File name check
+      description: |
+        Only if the error mentions a file name or a path. Paste the result of:
+
+        ```
+        knowit --check-name "The name of your file.mkv"
+        ```
+
+        This needs the name only. It does not need your media file.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
     id: extra
     attributes:
       label: Additional context

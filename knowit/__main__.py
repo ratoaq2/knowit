@@ -14,7 +14,9 @@ from knowit import (
     __version__,
     api,
     bugreport,
+    pathcheck,
 )
+from knowit.environment import format_section
 from knowit.provider import ProviderError
 from knowit.serializer import (
     get_json_encoder,
@@ -117,6 +119,13 @@ def build_argument_parser() -> ArgumentParser:
         dest='no_redact',
         help='Do not mask titles, file names and tags in the bug report.',
     )
+    report_opts.add_argument(
+        '--check-name',
+        dest='check_name',
+        metavar='NAME',
+        help='Check whether a file name makes a provider fail. No media file is needed.',
+        type=str,
+    )
 
     information_opts = opts.add_argument_group('Information')
     information_opts.add_argument('--version', dest='version', action='store_true', help='Display knowit version.')
@@ -181,7 +190,9 @@ def dumps(
 
 
 #: Options that drive the CLI itself and mean nothing to a provider.
-CLI_ONLY_OPTIONS = frozenset({'videopath', 'bug_report', 'bug_report_output', 'no_redact', 'version', 'yaml'})
+CLI_ONLY_OPTIONS = frozenset(
+    {'videopath', 'bug_report', 'bug_report_output', 'check_name', 'no_redact', 'version', 'yaml'}
+)
 
 
 def build_context(options: argparse.Namespace) -> dict[str, typing.Any]:
@@ -215,6 +226,33 @@ def write_bug_report(paths: list[str], options: argparse.Namespace) -> None:
     console.info('Please attach it to an issue at %s/issues.', __url__)
 
 
+def run_check_name(paths: list[str], options: argparse.Namespace) -> None:
+    """Check a file name and print the outcome for each provider."""
+    context = build_context(options)
+    context.pop('report', None)
+    result = pathcheck.check_name(options.check_name, context, paths[0] if paths else None)
+
+    console.info('Checking the name: %s', result['name'])
+    console.info('Using %s', result['sample'])
+    console.info('')
+
+    path_info = (result['candidate'] or {}).get('path')
+    if path_info:
+        console.info('\n'.join(format_section('path', path_info)))
+        console.info('')
+
+    console.info('\n'.join(format_section('result', result['verdict'])))
+    console.info('')
+    console.info('Add --bug-report-output to keep the full detail:')
+    console.info('  knowit --check-name %r --bug-report-output report.yml', options.check_name)
+
+    if options.bug_report_output:
+        content = bugreport.dump_report(result)
+        with open(options.bug_report_output, 'w', encoding='utf-8') as stream:
+            stream.write(content)
+        console.info('Full result written to %s', options.bug_report_output)
+
+
 def main(args: list[str] | None = None) -> None:
     """Execute main function for entry point."""
     argument_parser = build_argument_parser()
@@ -228,6 +266,10 @@ def main(args: list[str] | None = None) -> None:
         logger.setLevel(logging.WARNING)
 
     paths = recurse_paths(options.videopath)
+
+    if options.check_name:
+        run_check_name(paths, options)
+        return
 
     if options.bug_report:
         write_bug_report(paths, options)
