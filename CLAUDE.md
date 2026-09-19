@@ -109,6 +109,36 @@ Exceptions: `KnowitException` (raised by `api.know()` on any internal failure, w
 `debug_info()` for bug reports) and `ProviderError`/`MalformedFileError`/
 `UnsupportedFileFormatError` (raised by providers, caught by `know()`).
 
+## Reproducing a user issue
+
+Users cannot send their media, and the maintainer cannot reproduce without it. The
+reporting flow is built so the media is never needed:
+
+```bash
+# What the reporter runs. Writes knowit-report.yml: environment, path diagnostics,
+# and the raw output of every installed backend, with titles masked.
+knowit --bug-report /path/to/video.mkv
+
+# For "cannot open this file" reports, which are mostly about the name, not the
+# content. Probes a generated 75 byte Matroska under that name and under an ascii
+# control name, then says which backend fails only because of the name.
+knowit --check-name "The Accountant² (2025).mkv"
+
+# What the maintainer runs on the attached file. Writes tests/data/<provider>/
+# issue-220-example.mkv.{json,yml} for every backend that produced output.
+uv run python scripts/import_report.py knowit-report.yml --issue 220
+uv run pytest tests -k issue-220
+```
+
+The importer replays the raw data through the current code to generate the `.yml`, so
+the fixture starts self consistent. For a wrong-value report, correct the `.yml` to the
+expected values first: the test then fails until the bug is fixed.
+
+`knowit/environment.py` collects the environment, `knowit/bugreport.py` builds and
+redacts the report, `knowit/pathcheck.py` does the name check. `ADVERSARIAL_NAMES` in
+`pathcheck.py` is the regression matrix of names taken from real issues; add to it when
+a new one appears.
+
 ## Tests
 
 - `tests/conftest.py` fixtures monkeypatch each provider's `Executor` to replay canned

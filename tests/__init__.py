@@ -75,7 +75,7 @@ def parameters_from_yaml(name: str, input_key: str | None = None, expected_key: 
 
 
 def read_file(file_path: str | os.PathLike[str]) -> str:
-    with open(file_path) as f:
+    with open(file_path, encoding='utf-8') as f:
         return f.read()
 
 
@@ -85,7 +85,7 @@ def read_yaml(file_path: str | os.PathLike[str]) -> typing.Any:
 
 
 def read_json(file_path: str | os.PathLike[str]) -> typing.Any:
-    with open(file_path) as f:
+    with open(file_path, encoding='utf-8') as f:
         return json.loads(f.read())
 
 
