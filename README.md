@@ -185,34 +185,107 @@ Using docker:
 All available CLI options:
 
     $ knowit --help
-    usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO] [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--version] [videopath [videopath ...]]
-    
+    usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO]
+                  [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--bug-report] [--bug-report-output FILE]
+                  [--no-redact] [--check-name NAME] [--version] [videopath ...]
+
     positional arguments:
       videopath             Path to the video to introspect
-    
-    optional arguments:
+
+    options:
       -h, --help            show this help message and exit
-    
+
     Providers:
-      -p PROVIDER, --provider PROVIDER
+      -p, --provider PROVIDER
                             The provider to be used: mediainfo, ffmpeg, mkvmerge or enzyme.
-    
+
     Output:
       --debug               Print information for debugging knowit and for reporting bugs.
       --report              Parse media and report all non-detected values
       -y, --yaml            Display output in yaml format
       -N, --no-units        Display output without units
-      -P PROFILE, --profile PROFILE
+      -P, --profile PROFILE
                             Display values according to specified profile: code, default, human, technical
-    
+
     Configuration:
       --mediainfo MEDIAINFO
                             The location to search for MediaInfo binaries
       --ffmpeg FFMPEG       The location to search for ffprobe (FFmpeg) binaries
       --mkvmerge MKVMERGE   The location to search for mkvmerge (MKVToolNix) binaries
-    
+
+    Bug reporting:
+      --bug-report          Write a report with the environment and the raw output of every provider, to
+                            attach to an issue.
+      --bug-report-output FILE
+                            Where to write the bug report. Use - to write it to the standard output.
+      --no-redact           Do not mask titles, file names and tags in the bug report.
+      --check-name NAME     Check whether a file name makes a provider fail. No media file is needed.
+
     Information:
       --version             Display knowit version.
+
+## Reporting a problem
+
+Do not send your media file. It is not needed, and it is usually too large.
+Run this command instead:
+
+    $ knowit --bug-report "/path/to/your/video.mkv"
+    Bug report written to knowit-report.yml
+
+Attach `knowit-report.yml` to an issue at
+<https://github.com/ratoaq2/knowit/issues>.
+
+The report contains:
+
+- the knowit version, and where knowit is installed from
+- the Python version, the operating system, and the text encodings in use
+- the location and version of MediaInfo, ffprobe, mkvmerge and enzyme
+- the characters of the file path, with their Unicode names
+- the raw output of every installed provider for that file
+- the values knowit parsed from that output, or the error it failed with
+
+Titles, file names and tags are masked. Non-ascii characters are kept, because
+they are often the cause of the problem. Use `--no-redact` to keep the original
+text.
+
+If knowit is bundled in another application, such as Bazarr or Medusa, run the
+command with the same Python that runs that application:
+
+    $ python -m knowit --bug-report "/path/to/your/video.mkv"
+
+If a codec, a profile or another value is not known by knowit, use `--report`
+instead. It accepts a directory and lists every value knowit does not know:
+
+    $ knowit --report /path/to/your/media
+
+### Problems with a file name
+
+Many problems come from the name of the file, not from its content: a superscript,
+a fraction, an accent, or a character the file system encoding cannot represent.
+For those, only the name is needed:
+
+    $ knowit --check-name "The Accountant² (2025).mkv"
+
+knowit writes a small generated Matroska file under that name, and also under a
+plain ascii name. It then compares the two results:
+
+    result:
+      mediainfo: ok: the name is handled correctly
+      ffmpeg: ok: the name is handled correctly
+      mkvmerge: ok: the name is handled correctly
+      enzyme: fails with this name only: the name is the problem
+
+A provider that fails only with your name has a name handling problem. A provider
+that fails with both names has a problem with the file content instead, and the
+name is not the cause.
+
+The generated sample holds one audio track, so all four providers read it. If a
+provider reports a failure for both names on your system, that provider cannot
+read the sample at all, and its line says nothing about your file name.
+
+Add a file to use your own media as the sample:
+
+    $ knowit --check-name "The Accountant² (2025).mkv" /path/to/any/video.mkv
 
 ## Installation
 

@@ -2,8 +2,13 @@ import os
 import traceback
 import typing
 
-from knowit import __version__
+from knowit import __url__, __version__
 from knowit.config import Config
+from knowit.environment import (
+    collect_environment,
+    format_environment,
+    format_section,
+)
 from knowit.provider import Provider
 
 from .providers import (
@@ -92,50 +97,77 @@ def loaded_providers(options: dict[str, typing.Any] | None = None) -> dict[str, 
     return {k: p.loaded() for k, p in available_providers.items()}
 
 
+BOX_LINE = '+-------------------------------------------------------+'
+
+
 def _centered(value: str) -> str:
     value = value[-52:]
     return f'| {value:^53} |'
+
+
+def _format_request(context: typing.Mapping[str, typing.Any]) -> list[str]:
+    """Render the options knowit was called with, excluding internal machinery."""
+    request = {k: v for k, v in context.items() if v and k not in ('report', 'debug_data')}
+    return format_section('request', request) if request else []
 
 
 def debug_info(
     context: typing.MutableMapping[str, typing.Any] | None = None,
     exc_info: bool = False,
 ) -> str:
+    """Return a report of the running environment, suitable for pasting into an issue.
+
+    Every value is rendered in full: truncating a path or a library location hides
+    exactly the detail most bug reports turn out to depend on.
+    """
     lines = [
-        '+-------------------------------------------------------+',
+        BOX_LINE,
         _centered(f'KnowIt {__version__}'),
-        '+-------------------------------------------------------+',
+        BOX_LINE,
+        '',
+        format_environment(collect_environment(context)),
     ]
-
-    first = True
-    for info in dependencies(context).values():
-        if not first:
-            lines.append(_centered(''))
-        first = False
-
-        for k, v in info.items():
-            lines.append(_centered(k))
-            lines.append(_centered(v))
 
     if context:
         debug_data = context.pop('debug_data', None)
 
-        lines.append('+-------------------------------------------------------+')
-        for k, v in context.items():
-            if v:
-                lines.append(_centered(f'{k}: {v}'))
+        request_lines = _format_request(context)
+        if request_lines:
+            lines.append('')
+            lines.extend(request_lines)
 
         if debug_data:
-            lines.append('+-------------------------------------------------------+')
+            lines.append('')
+            lines.append('raw provider data:')
             lines.append(debug_data())
 
     if exc_info:
-        lines.append('+-------------------------------------------------------+')
+        lines.append('')
         lines.append(traceback.format_exc())
 
-    lines.append('+-------------------------------------------------------+')
-    lines.append(_centered('Please report any bug or feature request at'))
-    lines.append(_centered('https://github.com/ratoaq2/knowit/issues.'))
-    lines.append('+-------------------------------------------------------+')
+    lines.append('')
+    lines.extend(_format_footer(context))
 
     return '\n'.join(lines)
+
+
+def _format_footer(context: typing.Mapping[str, typing.Any] | None = None) -> list[str]:
+    """Tell the user the one command that produces a report we can act on.
+
+    The instruction is not boxed: the box truncates, and a truncated command cannot be
+    copied. This text is printed by every application that embeds knowit, so it is the
+    place where most users learn what to send.
+    """
+    path = os.fspath(context['path']) if context and context.get('path') else '<path to your video>'
+    return [
+        BOX_LINE,
+        _centered('Please report this problem at'),
+        _centered(f'{__url__}/issues'),
+        BOX_LINE,
+        '',
+        'Run this command and attach the file it creates to the issue.',
+        'Your media file is not needed, and titles are masked in the report:',
+        '',
+        f'  knowit --bug-report "{path}"',
+        '',
+    ]
