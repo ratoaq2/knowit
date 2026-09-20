@@ -1,0 +1,49 @@
+name: Unknown or missing value
+description: knowit does not know a codec, a profile or another value found in your media.
+labels: ['knowledge']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template when knowit runs without an error, but a value is missing
+        or is reported as unknown.
+
+  - type: textarea
+    id: report
+    attributes:
+      label: Unknown values
+      description: |
+        Run this command on the files that have the problem, and paste the result:
+
+        ```
+        knowit --report "/path/to/your/media"
+        ```
+
+        The command accepts a directory. It lists every value knowit does not know.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected values
+      description: Tell us what each unknown value means, if you know it.
+      placeholder: |
+        "MLP FBA 16-ch" is TrueHD with Atmos.
+    validations:
+      required: false
+
+  - type: textarea
+    id: bug-report
+    attributes:
+      label: Bug report file
+      description: |
+        Optional, but it makes the fix much faster. Attach the file created by:
+
+        ```
+        knowit --bug-report "/path/to/your/video.mkv"
+        ```
+      placeholder: Attach knowit-report.yml here.
+    validations:
+      required: false

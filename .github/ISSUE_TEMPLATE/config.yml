@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Feature request
+    url: https://github.com/ratoaq2/knowit/issues/new
+    about: Open a blank issue and describe the feature you need.
