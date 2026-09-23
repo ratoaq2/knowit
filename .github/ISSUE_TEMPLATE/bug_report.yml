@@ -1,6 +1,6 @@
 name: Bug report
 description: Report an error or a wrong value returned by knowit.
-labels: ['bug']
+labels: ['type: bug', 'status: triage']
 body:
   - type: markdown
     attributes:

@@ -7,7 +7,7 @@ Version](https://img.shields.io/pypi/v/knowit.svg)](https://pypi.python.org/pypi
 
 [![tests](https://github.com/ratoaq2/knowit/actions/workflows/test.yml/badge.svg)](https://github.com/ratoaq2/knowit/actions/workflows/test.yml)
 
-[![License](https://img.shields.io/github/license/ratoaq2/knowit.svg)](https://github.com/ratoaq2/knowit/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/ratoaq2/knowit.svg)](https://github.com/ratoaq2/knowit/blob/main/LICENSE)
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/knowit)
 

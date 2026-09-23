@@ -37,9 +37,9 @@ A few patterns recur because of how this codebase's dynamic runtime data meets s
 - **`Property[T]`'s `value` parameter is `typing.Any`, not `T`.** `T` describes what
   `handle()` *returns* (the parsed/typed result), not what it receives — the input is
   always raw, untyped track data from mediainfo/ffprobe/mkvmerge/enzyme. Don't "fix" this
-  back to `T`; it was deliberately loosened in `knowit/core.py` to make every subclass's
-  override honest (see `Configurable.handle`'s `typing.cast(str, value)` for how it
-  reconciles the raw input with its own string-based key lookups).
+  back to `T` in `Property.handle` (`knowit/core.py`). One exception exists:
+  `Configurable.handle` declares `value: T` and then uses `typing.cast(str, value)`,
+  because its lookups always use a string key.
 - **`Configurable._extract_key` returns `str | typing.Literal[False]`**, not `str | bool`.
   `False` is a real sentinel meaning "skip the lookup, don't warn" — it is never `True`.
   Modeling it as `Literal[False]` lets mypy narrow the return to plain `str` after an
@@ -70,9 +70,12 @@ A few patterns recur because of how this codebase's dynamic runtime data meets s
 ```
 knowit/
   api.py           # public entry points: know(), dependencies(), initialize()
-  __main__.py       # CLI (argparse) — thin wrapper around api.know()
+  __main__.py       # CLI (argparse): api.know() plus --report, --bug-report, --check-name
+  bugreport.py      # builds and redacts the --bug-report file
   config.py         # loads defaults.yml (+ optional user config) into a Config object
   core.py           # base classes: Reportable, Property, Configurable, MultiValue, Rule
+  environment.py    # collects environment information for bug reports
+  pathcheck.py      # --check-name: probes a generated sample under the reporter's file name
   provider.py       # Provider / Executor abstractions shared by all four backends
   serializer.py     # YAML/JSON dump helpers, custom YAML loader/dumper
   units.py          # pint UnitRegistry wrapper (falls back to NullRegistry if pint absent)

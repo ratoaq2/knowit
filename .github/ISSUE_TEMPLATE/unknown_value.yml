@@ -1,6 +1,6 @@
 name: Unknown or missing value
 description: knowit does not know a codec, a profile or another value found in your media.
-labels: ['knowledge']
+labels: ['type: feature', 'status: triage']
 body:
   - type: markdown
     attributes:
