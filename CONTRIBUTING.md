@@ -21,7 +21,7 @@ too.
 
 - Keep the code small. See "Code: lazy senior dev" in `CLAUDE.md`.
 - Strict mypy: annotate every function.
-- Ruff formats the code (single quotes, 120-character lines). Do not format by hand against it.
+- Ruff formats the code. Its settings are in `pyproject.toml`. Do not format by hand against it.
 - Flat package layout: `knowit/`, not `src/knowit/`.
 - Ruff also checks docstrings (pep257). Module and function docstrings are optional. The rule set is in
   `pyproject.toml`.

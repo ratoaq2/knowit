@@ -27,6 +27,10 @@ Rules for knowledge files:
   checks it).
 - Write paths in backticks, relative to the repo root, so the check can find them.
 - Write what is true now. Do not write history ("we changed X to Y"). Git keeps the history.
+- Do not copy a value that a config file owns (a version, a setting, a list of options). Name the owner
+  file. The check fails on a copied version. If a doc must explain a setting, link the doc from the rule
+  whose `paths:` cover the owner file. Then `scripts/check_knowledge.py --changed` shows the doc when the
+  owner changes.
 - Write in STE100 (`writing-style` skill).
 - Do not save project facts in personal Claude memory. Put them in the repo, so every contributor gets
   them.
