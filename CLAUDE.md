@@ -4,7 +4,7 @@ Library and CLI that read video file metadata with MediaInfo, ffprobe, mkvmerge,
 
 ## Commands
 
-`uv` only (not poetry or pip). Python 3.10 to 3.14.
+`uv` only (not poetry or pip).
 
 ```
 uv sync

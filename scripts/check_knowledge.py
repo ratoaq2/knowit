@@ -2,7 +2,9 @@
 
 Without arguments, it fails when:
 - a glob in the ``paths:`` frontmatter of a ``.claude/rules/*.md`` file matches no tracked file,
-- a knowledge file names, in backticks, a repository path that does not exist.
+- a knowledge file names, in backticks, a repository path that does not exist,
+- a knowledge file copies a version (``owner/action@v5``, ``Python 3.12``). Another file owns the version:
+  ``pyproject.toml``, ``uv.lock``, or a workflow. Name that file instead, so the text cannot become stale.
 
 With ``--changed [BASE]``, it lists the rules (and the docs they link to) that cover the files changed since
 BASE (default: ``main``). Read them and fix every statement that the change makes wrong.
@@ -25,6 +27,7 @@ PLACEHOLDER_CHARS = frozenset('<>*{}[]|$')
 FENCED_BLOCK = re.compile(r'^```.*?^```', re.MULTILINE | re.DOTALL)
 INLINE_CODE = re.compile(r'`([^`\s]+)`')
 FRONTMATTER = re.compile(r'\A---\n(.*?)\n---\n', re.DOTALL)
+COPIED_VERSION = re.compile(r'[\w.-]+/[\w.-]+@v?\d[\w.]*|\bPython 3\.\d+')
 FRONTMATTER_ITEM = re.compile(r'^\s*-\s*["\']?([^"\'\n]+?)["\']?\s*$', re.MULTILINE)
 
 
@@ -77,6 +80,11 @@ def path_references(text: str, prefixes: tuple[str, ...]) -> list[str]:
     return [ref for ref in refs if ref.startswith(prefixes) and not PLACEHOLDER_CHARS.intersection(ref)]
 
 
+def copied_versions(text: str) -> list[str]:
+    """Return the versions that the text copies from the files that own them."""
+    return COPIED_VERSION.findall(text)
+
+
 def exists(ref: str, files: Sequence[str]) -> bool:
     ref = ref.rstrip('/')
     return any(f == ref or f.startswith(ref + '/') for f in files)
@@ -105,9 +113,12 @@ def check(root: Path, files: Sequence[str]) -> list[str]:
             if not matches(pattern, present):
                 errors.append(f'{rule}: paths glob `{pattern}` matches no file')
     for doc in knowledge_files(present):
-        for ref in path_references((root / doc).read_text(encoding='utf-8'), prefixes):
+        text = (root / doc).read_text(encoding='utf-8')
+        for ref in path_references(text, prefixes):
             if not exists(ref, present):
                 errors.append(f'{doc}: `{ref}` does not exist')
+        for version in copied_versions(text):
+            errors.append(f'{doc}: `{version}` copies a version. Name the file that owns it')
     return errors
 
 

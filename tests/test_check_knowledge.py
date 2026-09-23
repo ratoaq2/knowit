@@ -48,6 +48,11 @@ def test_path_references(ck: ModuleType) -> None:
     assert ck.path_references(text, ('docs/', 'pkg/', 'tests/')) == ['docs/a.md', 'pkg/', 'tests/t.py']
 
 
+def test_copied_versions(ck: ModuleType) -> None:
+    text = 'Use `astral-sh/setup-uv@v5` and actions/checkout@v4.2.1 on Python 3.12, not `setup-uv` or Python 3.'
+    assert ck.copied_versions(text) == ['astral-sh/setup-uv@v5', 'actions/checkout@v4.2.1', 'Python 3.12']
+
+
 def test_top_level_dirs(ck: ModuleType) -> None:
     assert ck.top_level_dirs(['README.md', 'docs/a.md', 'pkg/sub/x.py', '.claude/rules/r.md']) == (
         '.claude/',
@@ -58,7 +63,7 @@ def test_top_level_dirs(ck: ModuleType) -> None:
 
 def test_check_finds_broken_references(ck: ModuleType, tmp_path: Path) -> None:
     files = {
-        'CLAUDE.md': 'See `docs/a.md` and `docs/missing.md`.',
+        'CLAUDE.md': 'See `docs/a.md` and `docs/missing.md`. Python 3.10 to 3.14.',
         'docs/a.md': 'Code in `pkg/`.',
         'pkg/core.py': '',
         '.claude/rules/r.md': '---\npaths:\n  - "pkg/*.py"\n  - "pkg/gone.py"\n---\n',
@@ -70,6 +75,7 @@ def test_check_finds_broken_references(ck: ModuleType, tmp_path: Path) -> None:
     assert ck.check(tmp_path, list(files)) == [
         '.claude/rules/r.md: paths glob `pkg/gone.py` matches no file',
         'CLAUDE.md: `docs/missing.md` does not exist',
+        'CLAUDE.md: `Python 3.10` copies a version. Name the file that owns it',
     ]
 
 
