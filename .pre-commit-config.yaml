@@ -15,3 +15,9 @@ repos:
         types: [python]
         pass_filenames: false
         args: [knowit, tests]
+      - id: check-knowledge
+        name: check knowledge references
+        entry: uv run python scripts/check_knowledge.py
+        language: system
+        pass_filenames: false
+        always_run: true
