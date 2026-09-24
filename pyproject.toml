@@ -122,7 +122,6 @@ module = [
     "pint.*",
     "babelfish.*",
     "enzyme.*",
-    "pkg_resources.*",
     "pymediainfo.*",
     "trakit.*",
 ]
