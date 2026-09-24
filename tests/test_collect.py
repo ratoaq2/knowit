@@ -400,6 +400,27 @@ def test_build_record_keeps_a_deep_probe_error(
     assert result['deep'] == {'error': 'ProviderError: ffprobe failed with exit status 1: Invalid data found'}
 
 
+def test_build_record_masks_the_path_in_a_deep_probe_error(
+    ffmpeg: dict[str, typing.Any], options: dict[str, typing.Any], video: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Given ffprobe quotes the path in its error message
+    ffmpeg[video] = copy.deepcopy(FFMPEG_RAW)
+
+    def failing_run_command(args: list[str]) -> str:
+        raise ProviderError(f'ffprobe failed with exit status 1: {video}: Invalid data found')
+
+    monkeypatch.setattr(collect, 'run_command', failing_run_command)
+
+    # When
+    record = build_record(video, options, deep=True)
+
+    # Then
+    error = record['providers']['ffmpeg']['deep']['error']
+    assert 'Invalid data found' in error
+    assert 'Some Movie' not in error
+    assert os.path.dirname(video) not in error
+
+
 def test_build_record_without_deep_has_no_frames(
     ffmpeg: dict[str, typing.Any], options: dict[str, typing.Any], video: str
 ) -> None:
