@@ -1,5 +1,6 @@
 import ctypes
 import json
+import locale
 import os
 import re
 import typing
@@ -38,6 +39,7 @@ from knowit.provider import (
     MalformedFileError,
     NotFoundExecutor,
     Provider,
+    ProviderError,
     run_command,
 )
 from knowit.rules import (
@@ -77,6 +79,16 @@ To load MediaInfo from a specific location, please define the location as follow
   knowit --mediainfo /opt/mediainfo/libmediainfo.dylib <video_path>
 =========================================================================================
 """
+
+
+def open_error(filename: str) -> ProviderError:
+    """Return the error for a file that mediainfo cannot open, with a hint for a non-UTF-8 locale."""
+    message = f'mediainfo cannot open {filename}'
+    ctype = locale.setlocale(locale.LC_CTYPE)
+    if os.name != 'nt' and not filename.isascii() and 'utf' not in ctype.lower():
+        # libmediainfo converts the name with the C library locale, not with the Python file system encoding
+        message += f'. The locale is {ctype!r}, not UTF-8. Set LANG=C.UTF-8 and try again.'
+    return ProviderError(message)
 
 
 class MediaInfoExecutor(Executor):
@@ -180,8 +192,10 @@ class MediaInfoCTypesExecutor(MediaInfoExecutor):
     }
 
     def _execute(self, filename: str) -> typing.Mapping[str, typing.Any]:
-        # Create a MediaInfo handle
-        data = MediaInfo.parse(filename, library_file=self.location, output='JSON')
+        try:
+            data = MediaInfo.parse(filename, library_file=self.location, output='JSON')
+        except (RuntimeError, FileNotFoundError) as e:
+            raise open_error(filename) from e
 
         result: typing.Mapping[str, typing.Any] = json.loads(data) if data else {}
         return result
@@ -379,7 +393,11 @@ class MediaInfoProvider(Provider):
             )
 
         result: typing.MutableMapping[str, typing.Any] = {}
-        tracks = data.get('media', {}).get('track', [])
+        media = data.get('media', {})
+        if media is None:
+            # mediainfo cli prints "media": null and exits with 0 when it cannot open the file
+            raise open_error(video_path)
+        tracks = media.get('track', [])
         if tracks:
             general_tracks = []
             video_tracks = []

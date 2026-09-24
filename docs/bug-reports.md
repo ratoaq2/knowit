@@ -46,9 +46,12 @@ UTF-8. The Docker CLI changes invalid bytes in its arguments to U+FFFD before th
 If a name looks like mojibake, or the reporter cannot type it correctly, ask for `--bug-report` on the real
 file. It finds the name with `os.scandir`, which keeps undecodable bytes as lone surrogates.
 
-`--check-name` can also show a file system encoding mismatch. Under a non-UTF-8 locale, knowit cannot
-create a file with a non-ascii name:
+`--check-name` can also show a locale mismatch. Under the C locale, Python uses UTF-8 for file names (UTF-8
+mode), but the C library does not. knowit creates the file, and mediainfo and mkvmerge cannot open it
+(issue #200). ffprobe and enzyme can open it. The mediainfo error tells the user to set `LANG=C.UTF-8`:
 
 ```bash
-LC_ALL=C PYTHONUTF8=0 knowit --check-name "Café.mkv"
+LC_ALL=C knowit --check-name "Café.mkv"
 ```
+
+With `PYTHONUTF8=0` added, knowit cannot create a file with a non-ascii name.

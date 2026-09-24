@@ -1,3 +1,5 @@
+import locale
+import os
 import pickle
 import typing
 
@@ -88,3 +90,25 @@ def test_mediainfo_open_error_raises_provider_error(
 
     # Then
     assert 'Everyone’s Dignity.mkv' in str(error.value)
+
+
+@pytest.mark.parametrize(
+    ('filename', 'ctype', 'hint'),
+    [
+        pytest.param('Everyone’s Dignity.mkv', 'C', True, id='non-ascii-c-locale'),
+        pytest.param('Everyone’s Dignity.mkv', 'C.UTF-8', False, id='non-ascii-utf8-locale'),
+        pytest.param('ascii.mkv', 'C', False, id='ascii-c-locale'),
+    ],
+)
+def test_mediainfo_open_error_locale_hint(
+    filename: str, ctype: str, hint: bool, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Given
+    monkeypatch.setattr(os, 'name', 'posix')
+    monkeypatch.setattr(locale, 'setlocale', lambda category: ctype)
+
+    # When
+    error = mediainfo_module.open_error(filename)
+
+    # Then
+    assert ('Set LANG=C.UTF-8' in str(error)) is hint
