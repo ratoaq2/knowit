@@ -15,7 +15,7 @@ import traceback
 import typing
 
 from knowit import __version__, api
-from knowit.bugreport import describe_path, probe_provider
+from knowit.bugreport import describe_path, mask_path, probe_provider
 from knowit.environment import collect_environment
 from knowit.provider import run_command
 from knowit.serializer import get_json_encoder
@@ -130,7 +130,7 @@ def build_record(
         if deep and name == 'ffmpeg' and result.get('status') == 'ok':
             result['deep'] = _deep_probe(text)
         providers[name] = result
-    record['providers'] = providers
+    record['providers'] = mask_path(providers, text) if anonymize else providers
 
     return record
 

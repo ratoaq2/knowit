@@ -250,13 +250,14 @@ The report contains:
 - the knowit version, and where knowit is installed from
 - the Python version, the operating system, and the text encodings in use
 - the location and version of MediaInfo, ffprobe, mkvmerge and enzyme
-- the characters of the file path, with their Unicode names
+- the non-ascii symbols of the file path, with their Unicode names, and its text encoding facts
 - the raw output of every installed provider for that file
 - the values knowit parsed from that output, or the error it failed with
 
-Titles, file names and tags are masked. Non-ascii characters are kept, because
-they are often the cause of the problem. Use `--no-redact` to keep the original
-text.
+Titles, file names and free-text tags are masked. Letters and digits of every
+script are masked. Symbols, such as `–` or `™`, are kept, because they are often
+the cause of the problem. Technical tags, such as the track language, are kept.
+Use `--no-redact` to keep the original text.
 
 If knowit is bundled in another application, such as Bazarr or Medusa, run the
 command with the same Python that runs that application:
