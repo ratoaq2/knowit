@@ -187,7 +187,8 @@ All available CLI options:
     $ knowit --help
     usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO]
                   [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--bug-report] [--bug-report-output FILE]
-                  [--no-redact] [--check-name NAME] [--version] [videopath ...]
+                  [--no-redact] [--check-name NAME] [--collect] [-o FILE] [--deep] [--version]
+                  [videopath ...]
 
     positional arguments:
       videopath             Path to the video to introspect
@@ -218,8 +219,17 @@ All available CLI options:
                             attach to an issue.
       --bug-report-output FILE
                             Where to write the bug report. Use - to write it to the standard output.
-      --no-redact           Do not mask titles, file names and tags in the bug report.
+      --no-redact           Do not mask titles, file names and tags in the bug report or the collected data.
       --check-name NAME     Check whether a file name makes a provider fail. No media file is needed.
+
+    Collect:
+      --collect             Write the output of every provider for each file, to improve knowit. Use
+                            --no-redact to keep titles.
+      -o, --collect-output FILE
+                            Where to write the collected data, default knowit-collect.jsonl.gz. A run
+                            continues an existing file.
+      --deep                Also read the first video frames with ffprobe, for HDR10+ and Dolby Vision data.
+                            Slower.
 
     Information:
       --version             Display knowit version.
@@ -286,6 +296,28 @@ read the sample at all, and its line says nothing about your file name.
 Add a file to use your own media as the sample:
 
     $ knowit --check-name "The Accountant² (2025).mkv" /path/to/any/video.mkv
+
+## Helping to improve knowit
+
+knowit is more correct when it sees many different files. You can send the
+output of the providers for your whole library. Your media is not needed:
+
+    $ knowit --collect /path/to/your/media
+
+This writes `knowit-collect.jsonl.gz`. It uses all installed providers. Use
+`-p` to use only one. Titles, file names and free-text tags are masked, as in a
+bug report. Use `-o` to write to a different file.
+
+A large library takes some time. You can stop the scan with Ctrl+C. Run the same
+command again to continue: files that did not change are not read again.
+
+Add `--deep` to also read the first video frames with ffprobe. This finds HDR10+
+and Dolby Vision data, but it is slower.
+
+At the end, knowit shows a summary with the values it does not know. When a
+file becomes too large to attach to an issue, knowit continues in a new file
+(`knowit-collect.part2.jsonl.gz`, and so on). Attach all the files to an issue at
+<https://github.com/ratoaq2/knowit/issues>.
 
 ## Installation
 
