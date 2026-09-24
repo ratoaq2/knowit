@@ -51,6 +51,8 @@ metadata. The package is flat: `knowit/`.
 ## Errors
 
 - Providers raise `ProviderError`, `MalformedFileError`, or `UnsupportedFileFormatError`.
+- The CLI executors run the backend with `run_command()` in `knowit/provider.py`. When the backend
+  fails, it raises `ProviderError` with the message of the backend.
 - `api.know()` catches every error and raises `KnowitException`. Its message is `debug_info()`, which is
   the text for a bug report.
 

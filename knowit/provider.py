@@ -1,5 +1,6 @@
 import contextlib
 import os
+import subprocess
 import typing
 from logging import NullHandler, getLogger
 
@@ -212,3 +213,12 @@ class UnsupportedFileFormatError(ProviderError):
     """Unsupported File Format error."""
 
     pass
+
+
+def run_command(args: list[str]) -> str:
+    """Run a backend command and return its output. Keep the backend message when it fails."""
+    process = subprocess.run(args, capture_output=True)
+    if process.returncode:
+        message = (process.stderr or process.stdout).decode(errors='replace').strip()
+        raise ProviderError(f'{os.path.basename(args[0])} failed with exit status {process.returncode}: {message}')
+    return process.stdout.decode()
