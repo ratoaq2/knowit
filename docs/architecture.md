@@ -8,8 +8,9 @@ metadata. The package is flat: `knowit/`.
 | Module | Role |
 | --- | --- |
 | `knowit/api.py` | Public entry points: `know()`, `dependencies()`, `initialize()`. |
-| `knowit/__main__.py` | CLI (argparse). Calls `api.know()`. Also has `--report`, `--bug-report`, and `--check-name`. |
+| `knowit/__main__.py` | CLI (argparse). Calls `api.know()`. Also has `--report`, `--bug-report`, `--check-name`, and `--collect`. |
 | `knowit/bugreport.py` | Builds and redacts the `--bug-report` file. |
+| `knowit/collect.py` | `--collect`: builds the record of each file (the redacted output of each provider), writes the records to JSON Lines parts, and resumes a stopped run. |
 | `knowit/config.py` | Loads `knowit/defaults.yml` and an optional user config into a `Config` object. |
 | `knowit/core.py` | Base classes: `Reportable`, `Property`, `Configurable`, `MultiValue`, `Rule`. |
 | `knowit/environment.py` | Collects the environment information for bug reports. |
