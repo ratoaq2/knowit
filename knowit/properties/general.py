@@ -82,6 +82,13 @@ class Language(Property[babelfish.Language]):
 
     def handle(self, value: typing.Any, context: typing.MutableMapping[str, typing.Any]) -> babelfish.Language | None:
         """Handle languages."""
+        if not isinstance(value, str):
+            # A provider can yield a structured value (e.g. mediainfo returning a mapping) where a
+            # language code is expected. babelfish only parses strings and a mapping of 3 keys would
+            # otherwise pass the alpha3 length check below.
+            self.report(value, context)
+            return babelfish.Language('und')
+
         try:
             if len(value) == 3:
                 try:

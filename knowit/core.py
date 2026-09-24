@@ -41,8 +41,11 @@ class Reportable(typing.Generic[T]):
 
         if 'report' in context:
             report_map = context['report'].setdefault(self.description, {})
-            if value not in report_map:
-                report_map[value] = context['path']
+            # a raw track value is not always hashable: mappings and lists have to be keyed by their
+            # representation instead.
+            key = value if isinstance(value, typing.Hashable) else repr(value)
+            if key not in report_map:
+                report_map[key] = context['path']
         logger.info('Invalid %s: %r', self.description, value)
 
 

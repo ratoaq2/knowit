@@ -1,6 +1,6 @@
 ---
 name: triage-issue
-description: Label a GitHub issue and draft a reply to the reporter. Use to triage, label, classify, or reply to issues.
+description: Label a GitHub issue and draft a reply to the reporter. Use to triage, label, classify, reply to, or close issues.
 ---
 
 # Triage an issue
@@ -22,11 +22,29 @@ information.
    code, and the full error. For knowit, ask for the `knowit-report.yml` file from
    `knowit --bug-report <file>`. It has all of these items and the raw backend output. For an error about
    a file name, also ask for the output of `knowit --check-name "<name>"`. See `docs/bug-reports.md`.
-5. Draft a reply in strict STE100 (`writing-style` skill). Ask for each missing item in a separate
-   sentence.
+5. Draft a reply in strict STE100 (`writing-style` skill) and in the reply style below. Ask for each
+   missing item in a separate sentence.
 6. Show the labels and the reply to the user. **Wait for approval.** Then run
    `gh issue edit <n> --add-label ... --remove-label ...` and `gh issue comment <n> --body-file <file>`.
 7. If the user wants to start work, continue with the `investigate` skill.
+
+## Reply style
+
+Write as the maintainer: short, direct, and to the point.
+
+- Give the decision, the reason, and the next action for the reporter. Two or three sentences are
+  usually enough.
+- Do not put the investigation in the reply: no root cause, no code, no analysis. It goes in the PR or
+  in `plans/`.
+- No greeting, no thanks, no apology.
+
+Example: close an old issue that has not enough information to reproduce
+(`gh issue close <n> --reason "not planned" --comment "..."`):
+
+> Closing this as stale. There is not enough information to reproduce it: no MediaInfo version and no
+> raw output.
+>
+> If it still happens, please open a new issue with the output of `knowit --bug-report <file>`.
 
 ## Labels
 
