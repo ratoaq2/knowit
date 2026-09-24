@@ -23,6 +23,7 @@ from knowit.provider import (
     MalformedFileError,
     NotFoundExecutor,
     Provider,
+    run_command,
 )
 from knowit.rules import (
     AudioChannelsRule,
@@ -103,7 +104,7 @@ class MkvMergeCliExecutor(MkvMergeExecutor):
 
     def _execute(self, filename: str) -> str:
         assert self.location is not None
-        return check_output([self.location, '-i', '-F', 'json', filename]).decode()
+        return run_command([self.location, '-i', '-F', 'json', filename])
 
     @classmethod
     def create(

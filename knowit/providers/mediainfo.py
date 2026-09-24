@@ -38,6 +38,7 @@ from knowit.provider import (
     MalformedFileError,
     NotFoundExecutor,
     Provider,
+    run_command,
 )
 from knowit.rules import (
     AtmosRule,
@@ -127,7 +128,7 @@ class MediaInfoCliExecutor(MediaInfoExecutor):
 
     def _execute(self, filename: str) -> typing.Mapping[str, typing.Any]:
         assert self.location is not None
-        data = check_output([self.location, '--Output=JSON', '--Full', filename]).decode()
+        data = run_command([self.location, '--Output=JSON', '--Full', filename])
 
         result: typing.Mapping[str, typing.Any] = json.loads(data) if data else {}
         return result

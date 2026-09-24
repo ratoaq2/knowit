@@ -29,6 +29,7 @@ from knowit.provider import (
     MalformedFileError,
     NotFoundExecutor,
     Provider,
+    run_command,
 )
 from knowit.rules import (
     AudioChannelsRule,
@@ -114,11 +115,11 @@ class FFmpegCliExecutor(FFmpegExecutor):
 
     def _execute(self, filename: str) -> str:
         assert self.location is not None
-        return check_output(
+        return run_command(
             [
                 self.location,
                 '-v',
-                'quiet',
+                'error',
                 '-print_format',
                 'json',
                 '-show_format',
@@ -126,7 +127,7 @@ class FFmpegCliExecutor(FFmpegExecutor):
                 '-sexagesimal',
                 filename,
             ]
-        ).decode()
+        )
 
     @classmethod
     def create(
