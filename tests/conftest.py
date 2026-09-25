@@ -1,3 +1,4 @@
+import sys
 import typing
 from unittest.mock import Mock
 
@@ -26,6 +27,20 @@ def config() -> Config:
 @pytest.fixture
 def options() -> dict[str, typing.Any]:
     return {'profile': 'code'}
+
+
+@pytest.fixture
+def home(tmp_path_factory: pytest.TempPathFactory, monkeypatch: pytest.MonkeyPatch) -> str:
+    """Make a home folder with a user name in it, and install Python in it."""
+    path = tmp_path_factory.mktemp('someone')
+    python = path / 'venv' / 'bin' / 'python'
+    python.parent.mkdir(parents=True)
+    # platform.libc_ver() reads the executable.
+    python.write_bytes(b'')
+    monkeypatch.setenv('HOME', str(path))
+    monkeypatch.setenv('USERPROFILE', str(path))
+    monkeypatch.setattr(sys, 'executable', str(python))
+    return str(path)
 
 
 def setup_mediainfo(

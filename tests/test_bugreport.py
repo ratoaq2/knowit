@@ -1,3 +1,4 @@
+import os
 import pathlib
 import typing
 
@@ -16,7 +17,8 @@ from knowit.bugreport import (
     redact,
 )
 from knowit.provider import ProviderError
-from knowit.providers.ffmpeg import FFmpegProvider
+from knowit.providers.ffmpeg import FFmpegExecutor, FFmpegProvider
+from tests import read_json
 
 
 def test_mask_text_hides_words_but_keeps_shape() -> None:
@@ -333,6 +335,26 @@ def test_written_report_is_utf8(tmp_path: pathlib.Path, options: dict[str, typin
 
     # Then
     assert yaml.safe_load(destination.read_text(encoding='utf-8'))['knowit_version']
+
+
+def test_build_report_hides_the_home_folder(
+    ffmpeg: dict[str, typing.Any],
+    options: dict[str, typing.Any],
+    home: str,
+    tmp_path: pathlib.Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Given ffprobe is in the home folder
+    video = str(tmp_path / 'video.mkv')
+    ffmpeg[video] = read_json('tests/data/ffmpeg/media_001.mkv.json')
+    monkeypatch.setattr(FFmpegExecutor.get_executor_instance(), 'location', os.path.join(home, 'bin', 'ffprobe'))
+
+    # When
+    report = build_report([video], options)
+
+    # Then
+    assert 'someone' not in dump_report(report)
+    assert report['media'][0]['providers']['ffmpeg']['location'] == os.path.join('~', 'bin', 'ffprobe')
 
 
 def test_build_report_masks_the_path_in_a_provider_error(

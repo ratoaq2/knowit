@@ -25,6 +25,7 @@ from knowit.collect import (
     strip_blobs,
 )
 from knowit.provider import ProviderError
+from knowit.providers.ffmpeg import FFmpegExecutor
 from tests import read_json
 
 MEDIAINFO_RAW = read_json('tests/data/mediainfo/media_001.mkv.json')
@@ -103,6 +104,27 @@ def test_build_record_masks_titles_and_path(
     assert 'Super Title' not in content
     assert 'Some Movie' not in content
     assert record['providers']['ffmpeg']['status'] == 'ok'
+
+
+def test_capture_hides_the_home_folder(
+    ffmpeg: dict[str, typing.Any],
+    options: dict[str, typing.Any],
+    video: str,
+    home: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Given ffprobe is in the home folder
+    ffmpeg[video] = copy.deepcopy(FFMPEG_RAW)
+    ffprobe = os.path.join(home, 'bin', 'ffprobe')
+    monkeypatch.setattr(FFmpegExecutor.get_executor_instance(), 'location', ffprobe)
+
+    # When
+    header = build_header(options)
+    record = build_record(video, options)
+
+    # Then
+    assert 'someone' not in json.dumps([header, record], default=str)
+    assert record['providers']['ffmpeg']['location'] == os.path.join('~', 'bin', 'ffprobe')
 
 
 def test_build_record_without_redaction_keeps_titles(
