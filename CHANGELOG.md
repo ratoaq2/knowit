@@ -21,6 +21,8 @@ The notes for older versions are in the [GitHub releases](https://github.com/rat
   Japanese. Before, they stayed readable in the titles and in the path.
 - mediainfo now gives the video codec, the audio codec, and the subtitle format of MP4, MPEG-TS, and
   Blu-ray files. Before, they were empty for codec ids such as `hev1`, `mp4a-40-2`, and `36`.
+- New HDR formats `HDR10+` and `HDR Vivid` (mediainfo). New audio codec `DTS:X` (mediainfo and ffmpeg),
+  also for IMAX Enhanced audio. ffmpeg now gives Dolby Atmos and the DTS-HD MA profile.
 
 - When ffprobe, mediainfo, or mkvmerge fails, the error now shows the message of the backend, not only the
   exit status. ([#44](https://github.com/ratoaq2/knowit/issues/44))

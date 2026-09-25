@@ -32,6 +32,7 @@ from knowit.provider import (
     run_command,
 )
 from knowit.rules import (
+    AtmosRule,
     AudioChannelsRule,
     ClosedCaptionRule,
     HearingImpairedRule,
@@ -190,6 +191,7 @@ class FFmpegProvider(Provider):
                     'duration': Duration('duration', 'tags.duration', description='audio duration'),
                     'codec': AudioCodec(config, 'profile', 'codec_name', description='audio codec'),
                     'profile': AudioProfile(config, 'profile', description='audio codec profile'),
+                    'format_commercial': Property('profile', private=True),
                     'channels_count': AudioChannels('channels', description='audio channels count'),
                     'channels': None,  # populated with AudioChannelsRule
                     'bit_depth': Quantity('bits_per_raw_sample', unit=units.bit, description='audio bit depth'),
@@ -221,6 +223,7 @@ class FFmpegProvider(Provider):
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
                     'channels': AudioChannelsRule('audio channels'),
+                    'atmos': AtmosRule(config, 'atmos rule', private=True),
                 },
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),

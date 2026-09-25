@@ -10,7 +10,10 @@ logger.addHandler(NullHandler())
 
 
 class AtmosRule(Rule[typing.Any]):
-    """Atmos rule."""
+    """Add the object audio codec (Dolby Atmos or DTS:X) that the commercial format names."""
+
+    #: Text in the commercial format, and the code of the object audio codec. IMAX Enhanced audio is DTS:X.
+    markers = (('atmos', 'ATMOS'), ('dts:x', 'DTS:X'), ('imax enhanced', 'DTS:X'))
 
     def __init__(self, config: Config, name: str, **kwargs: typing.Any):
         """Initialize an Atmos rule."""
@@ -25,9 +28,11 @@ class AtmosRule(Rule[typing.Any]):
     ) -> typing.Any:
         """Execute the rule against properties."""
         profile = context.get('profile') or 'default'
-        format_commercial = pv_props.get('format_commercial')
-        if 'codec' in props and format_commercial and 'atmos' in format_commercial.lower():
-            props['codec'] = [props['codec'], getattr(self.audio_codecs['ATMOS'], profile)]
+        format_commercial = str(pv_props.get('format_commercial') or '').lower()
+        for marker, code in self.markers:
+            if 'codec' in props and marker in format_commercial:
+                props['codec'] = [props['codec'], getattr(self.audio_codecs[code], profile)]
+                break
         return None
 
 

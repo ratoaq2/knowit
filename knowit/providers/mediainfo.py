@@ -344,8 +344,9 @@ class MediaInfoProvider(Provider):
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
                     'channels': AudioChannelsRule('audio channels'),
-                    'atmos': AtmosRule(config, 'atmos rule', private=True),
+                    # DtsHdRule compares one codec. AtmosRule can make it a list.
                     'dtshd': DtsHdRule(config, 'dts-hd rule', private=True),
+                    'atmos': AtmosRule(config, 'atmos rule', private=True),
                 },
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),

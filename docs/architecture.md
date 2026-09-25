@@ -43,7 +43,7 @@ metadata. The package is flat: `knowit/`.
   try again with a less specific key. Example: `AudioCodec` removes all text after a `/`.
 - `Rule`: runs after all properties of a track. It gets the `props` and `pv_props` dicts and can add,
   change, or delete fields. Examples: `ResolutionRule` derives `1080p` from the width, the height, and the
-  aspect ratio. `AtmosRule` changes the codec when it finds Dolby Atmos.
+  aspect ratio. `AtmosRule` adds Dolby Atmos or DTS:X to the codec.
 - `Executor`: runs the external process or library call. Examples: `MediaInfoCliExecutor` runs the
   `mediainfo` binary. `MediaInfoCTypesExecutor` loads `libmediainfo` with ctypes. `NotFoundExecutor`
   stands in when nothing is installed. Its `__bool__` always returns `False`. `Provider.loaded()` uses
