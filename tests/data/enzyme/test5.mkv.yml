@@ -19,6 +19,7 @@ audio:
   channels: '2.0'
   default: true
 - id: 10
+  language: en
   name: Commentary
   codec: AAC
   channels_count: 1
@@ -26,20 +27,29 @@ audio:
   commentary: true
 subtitle:
 - id: 3
+  language: en
+  format: SUBRIP
   default: true
 - id: 4
+  format: SUBRIP
   language: hu
 - id: 5
+  format: SUBRIP
   language: de
 - id: 6
+  format: SUBRIP
   language: fr
 - id: 8
+  format: SUBRIP
   language: es
 - id: 9
+  format: SUBRIP
   language: it
 - id: 11
+  format: SUBRIP
   language: ja
 - id: 7
+  format: SUBRIP
   language: und
 provider:
   name: enzyme

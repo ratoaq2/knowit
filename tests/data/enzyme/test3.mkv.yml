@@ -13,6 +13,7 @@ video:
   default: true
 audio:
 - id: 2
+  language: en
   codec: MP3
   channels_count: 2
   channels: '2.0'
