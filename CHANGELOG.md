@@ -26,6 +26,9 @@ The notes for older versions are in the [GitHub releases](https://github.com/rat
 - ffmpeg now gives the video bit depth of HEVC files, for example `10 bit`. Before, it was empty.
 - mkvmerge now gives the track name, the subtitle format, and the hearing impaired flag of subtitles.
   Before, they were empty. Thus the guesses from the track name, such as `pt-BR` or SDH, also work now.
+- enzyme now gives the subtitle format, for example `SUBRIP` or `PGS`. Before, it was empty.
+- enzyme now gives `en` for a track without a language element. This is the Matroska default. Before, the
+  language was empty.
 - New `commentary` property for audio and subtitle tracks. It comes from the commentary flag (ffmpeg,
   mkvmerge) or from the track name (all providers).
 
