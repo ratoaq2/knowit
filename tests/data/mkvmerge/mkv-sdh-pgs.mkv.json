@@ -1,0 +1,60 @@
+{
+    "container": {
+        "properties": {
+            "duration": 7200000000000,
+            "title": "xxxxx"
+        }
+    },
+    "tracks": [
+        {
+            "properties": {
+                "codec_id": "V_MPEG4/ISO/AVC",
+                "default_track": true,
+                "display_dimensions": "1920x804",
+                "language_ietf": "en",
+                "number": 1
+            },
+            "type": "video"
+        },
+        {
+            "properties": {
+                "audio_channels": 6,
+                "audio_sampling_frequency": 48000,
+                "codec_id": "A_DTS",
+                "default_track": true,
+                "language_ietf": "en",
+                "number": 2
+            },
+            "type": "audio"
+        },
+        {
+            "properties": {
+                "codec_id": "S_TEXT/UTF8",
+                "language_ietf": "en",
+                "number": 3,
+                "track_name": "xxxxxxx (xxx)"
+            },
+            "type": "subtitles"
+        },
+        {
+            "properties": {
+                "codec_id": "S_TEXT/UTF8",
+                "flag_hearing_impaired": true,
+                "language_ietf": "en",
+                "number": 4,
+                "track_name": "xxxxxxx (xxx xxx)"
+            },
+            "type": "subtitles"
+        },
+        {
+            "properties": {
+                "codec_id": "S_HDMV/PGS",
+                "flag_hearing_impaired": true,
+                "language_ietf": "en",
+                "number": 5,
+                "track_name": "xxxxxxx (xxx)"
+            },
+            "type": "subtitles"
+        }
+    ]
+}
