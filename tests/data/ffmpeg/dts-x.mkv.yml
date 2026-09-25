@@ -1,0 +1,33 @@
+path: /xxxxx/xxxxx.mkv
+duration: '10.0'
+size: 10000000000
+bit_rate: 20000000
+container: mkv
+video:
+- id: 0
+  language: en
+  width: 1920
+  height: 1080
+  scan_type: PROGRESSIVE
+  aspect_ratio: '1.778'
+  pixel_aspect_ratio: '1.0'
+  resolution: 1080p
+  frame_rate: '23.976'
+  bit_depth: 8
+  codec: H264
+  profile: HIGH
+  default: true
+audio:
+- id: 1
+  language: en
+  codec:
+  - DTSHD
+  - DTSX
+  profile: MA
+  channels_count: 8
+  channels: '7.1'
+  bit_depth: 24
+  sampling_rate: 48000
+  default: true
+provider:
+  name: ffmpeg
