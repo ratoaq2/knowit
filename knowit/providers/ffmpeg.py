@@ -19,6 +19,7 @@ from knowit.properties import (
     Ratio,
     ScanType,
     SubtitleFormat,
+    VideoBitDepth,
     VideoCodec,
     VideoProfile,
     VideoProfileLevel,
@@ -176,7 +177,9 @@ class FFmpegProvider(Provider):
                     'frame_rate': Ratio('r_frame_rate', unit=units.FPS, description='video frame rate'),
                     # frame_rate_mode
                     'bit_rate': Quantity('bit_rate', 'tags.bps', unit=units.bps, description='video bit rate'),
-                    'bit_depth': Quantity('bits_per_raw_sample', unit=units.bit, description='video bit depth'),
+                    'bit_depth': VideoBitDepth(
+                        'bits_per_raw_sample', 'pix_fmt', unit=units.bit, description='video bit depth'
+                    ),
                     'codec': VideoCodec(config, 'codec_name', description='video codec'),
                     'profile': VideoProfile(config, 'profile', description='video codec profile'),
                     'profile_level': VideoProfileLevel(config, 'level', description='video codec profile level'),

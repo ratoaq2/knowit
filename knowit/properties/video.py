@@ -3,7 +3,21 @@ import typing
 from decimal import Decimal
 
 from knowit.core import Configurable, Property
+from knowit.properties.general import Quantity
 from knowit.utils import round_decimal
+
+
+class VideoBitDepth(Quantity):
+    """Video bit depth from a number or from a ffmpeg pixel format: yuv420p10le."""
+
+    pix_fmt_re = re.compile(r'yuvj?\d+p(?P<bit_depth>\d+)?(?:le|be)?')
+
+    def handle(self, value: typing.Any, context: typing.MutableMapping[str, typing.Any]) -> typing.Any:
+        """Handle bit depth."""
+        match = self.pix_fmt_re.fullmatch(value) if isinstance(value, str) else None
+        if match:
+            value = match['bit_depth'] or 8
+        return super().handle(value, context)
 
 
 class VideoCodec(Configurable[str]):

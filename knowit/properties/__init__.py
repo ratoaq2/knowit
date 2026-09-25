@@ -18,6 +18,7 @@ from knowit.properties.subtitle import (
 from knowit.properties.video import (
     Ratio,
     ScanType,
+    VideoBitDepth,
     VideoCodec,
     VideoDimensions,
     VideoEncoder,
@@ -40,6 +41,7 @@ __all__ = [
     'Ratio',
     'ScanType',
     'SubtitleFormat',
+    'VideoBitDepth',
     'VideoCodec',
     'VideoDimensions',
     'VideoEncoder',

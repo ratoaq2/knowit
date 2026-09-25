@@ -23,6 +23,7 @@ The notes for older versions are in the [GitHub releases](https://github.com/rat
   Blu-ray files. Before, they were empty for codec ids such as `hev1`, `mp4a-40-2`, and `36`.
 - New HDR formats `HDR10+` and `HDR Vivid` (mediainfo). New audio codec `DTS:X` (mediainfo and ffmpeg),
   also for IMAX Enhanced audio. ffmpeg now gives Dolby Atmos and the DTS-HD MA profile.
+- ffmpeg now gives the video bit depth of HEVC files, for example `10 bit`. Before, it was empty.
 
 - When ffprobe, mediainfo, or mkvmerge fails, the error now shows the message of the backend, not only the
   exit status. ([#44](https://github.com/ratoaq2/knowit/issues/44))
