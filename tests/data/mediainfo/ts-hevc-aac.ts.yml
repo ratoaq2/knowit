@@ -1,0 +1,33 @@
+path: /xxxxx/xxxxx.ts
+duration: '7200.0'
+size: 10000000000
+bit_rate: 20000000
+container: ts
+video:
+- id: 257
+  duration: '7200.0'
+  width: 3840
+  height: 2160
+  scan_type: PROGRESSIVE
+  aspect_ratio: '1.778'
+  pixel_aspect_ratio: '1.0'
+  resolution: 2160p
+  frame_rate: '59.94'
+  bit_depth: 10
+  codec: H265
+  profile: MAIN10
+  profile_level: '5.1'
+  hdr_format: HDR10
+  media_type: video/H265
+audio:
+- id: 258
+  duration: '7200.0'
+  codec: AAC
+  profile: LC
+  channels_count: 2
+  channels: '2.0'
+  bit_rate_mode: VBR
+  sampling_rate: 48000
+  compression: LOSSY
+provider:
+  name: mediainfo

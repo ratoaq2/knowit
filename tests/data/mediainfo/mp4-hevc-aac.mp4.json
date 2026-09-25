@@ -1,0 +1,50 @@
+{
+    "media": {
+        "track": [
+            {
+                "@type": "General",
+                "CompleteName": "/xxxxx/xxxxx.mp4",
+                "CodecID": "isom",
+                "FileSize": "10000000000",
+                "Duration": "7200.000",
+                "OverallBitRate": "20000000",
+                "Title": "xxxxx"
+            },
+            {
+                "@type": "Video",
+                "ID": "1",
+                "Format": "HEVC",
+                "Format_Profile": "Main 10",
+                "Format_Level": "4",
+                "InternetMediaType": "video/H265",
+                "CodecID": "hev1",
+                "Duration": "7200.000",
+                "BitRate": "20000000",
+                "Width": "1920",
+                "Height": "816",
+                "PixelAspectRatio": "1.000",
+                "DisplayAspectRatio": "2.353",
+                "FrameRate": "23.976",
+                "BitDepth": "10",
+                "StreamSize": "1000000000",
+                "Encoded_Library_Name": "x265"
+            },
+            {
+                "@type": "Audio",
+                "ID": "2",
+                "Format": "AAC",
+                "Format_AdditionalFeatures": "LC",
+                "CodecID": "mp4a-40-2",
+                "Duration": "7200.000",
+                "BitRate_Mode": "CBR",
+                "BitRate": "224000",
+                "Channels": "2",
+                "SamplingRate": "48000",
+                "Compression_Mode": "Lossy",
+                "StreamSize": "100000000",
+                "Language": "en",
+                "Default": "Yes"
+            }
+        ]
+    }
+}
