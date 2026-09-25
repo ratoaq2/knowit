@@ -33,6 +33,9 @@ The test then fails until the bug is fixed.
   technical keys in `TECHNICAL_TAG_KEYS`. knowit reads these keys, for example the track language.
   `mask_path()` also masks the path, its folder, and its file name in every string of the provider
   results. The error messages of the backends quote the path.
+  `mask_home()` replaces the home folder with `~` in every key and string. The locations of Python,
+  knowit, and the backends, and the tracebacks, often start with the home folder, and it holds the user
+  name.
   The mediainfo encoder version (`Encoded_Library`) is masked. A custom encoder build can put the name of
   a release group in it. `Encoded_Library_Name` stays readable, because knowit reads it.
   The unique ids (Matroska segment and track uids) and the dates (encoding, tagging, and file dates) are

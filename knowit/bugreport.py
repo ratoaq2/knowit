@@ -173,6 +173,28 @@ def mask_path(data: typing.Any, path: str) -> typing.Any:
     return data
 
 
+def mask_home(data: typing.Any, home: str | None = None) -> typing.Any:
+    """Return a copy of `data` with the home folder replaced by `~` in every key and string.
+
+    The locations of Python, knowit, and the backends, and the tracebacks, often start with
+    the home folder, and it holds the user name. A location is a key in the provider versions.
+    """
+    home = os.path.expanduser('~') if home is None else home
+    if not home.strip('/\\'):
+        return data
+
+    if isinstance(data, dict):
+        return {mask_home(key, home): mask_home(value, home) for key, value in data.items()}
+
+    if isinstance(data, list):
+        return [mask_home(item, home) for item in data]
+
+    if isinstance(data, str):
+        return '~' if data == home else data.replace(home + os.sep, '~' + os.sep)
+
+    return data
+
+
 def describe_path(path: str | os.PathLike[str], anonymize: bool = True) -> dict[str, typing.Any]:
     """Describe a path in a way that is safe to publish but keeps the failing detail.
 
@@ -337,7 +359,7 @@ def build_report(
     if media:
         report['media'] = media
 
-    return report
+    return mask_home(report) if anonymize else report
 
 
 def dump_report(report: typing.Mapping[str, typing.Any]) -> str:
