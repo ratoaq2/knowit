@@ -19,6 +19,8 @@ The notes for older versions are in the [GitHub releases](https://github.com/rat
   the last file of a Blu-ray playlist (mediainfo `FolderName_Last`).
 - A redacted `--bug-report` now masks the non-ascii letters and digits, for example a title in Cyrillic or
   Japanese. Before, they stayed readable in the titles and in the path.
+- mediainfo now gives the video codec, the audio codec, and the subtitle format of MP4, MPEG-TS, and
+  Blu-ray files. Before, they were empty for codec ids such as `hev1`, `mp4a-40-2`, and `36`.
 
 - When ffprobe, mediainfo, or mkvmerge fails, the error now shows the message of the backend, not only the
   exit status. ([#44](https://github.com/ratoaq2/knowit/issues/44))

@@ -272,14 +272,18 @@ knowledge:
   AudioCodec:
     AC3:
       - AC3
+      - AC-3
       - BSID9
       - BSID10
       - 2000
     EAC3:
       - EAC3
+      - E-AC-3
       - AC3+
     TRUEHD:
       - TRUEHD
+      # mediainfo format of TrueHD: 'MLP FBA'
+      - MLP
     ATMOS:
       - ATMOS
     DTS:

@@ -273,7 +273,7 @@ class MediaInfoProvider(Provider):
                     # frame_rate_mode
                     'bit_rate': Quantity('BitRate', unit=units.bps, description='video bit rate'),
                     'bit_depth': Quantity('BitDepth', unit=units.bit, description='video bit depth'),
-                    'codec': VideoCodec(config, 'CodecID', description='video codec'),
+                    'codec': VideoCodec(config, 'CodecID', 'Format', description='video codec'),
                     'profile': VideoProfile(config, 'Format_Profile', description='video codec profile'),
                     'profile_level': Property('Format_Level', description='video codec profile level'),
                     'profile_tier': VideoProfileTier(config, 'Format_Tier', description='video codec profile tier'),
@@ -291,7 +291,7 @@ class MediaInfoProvider(Provider):
                     'language': Language('Language', description='audio language'),
                     'duration': Duration('Duration', resolution=1000, description='audio duration'),
                     'size': Quantity('StreamSize', unit=units.byte, description='audio stream size'),
-                    'codec': MultiValue(AudioCodec(config, 'CodecID', description='audio codec')),
+                    'codec': MultiValue(AudioCodec(config, 'CodecID', 'Format', description='audio codec')),
                     'format_commercial': Property('Format_Commercial', private=True),
                     'profile': MultiValue(
                         AudioProfile(
@@ -329,7 +329,7 @@ class MediaInfoProvider(Provider):
                     'hearing_impaired': None,  # populated with HearingImpairedRule
                     '_closed_caption': Property('ClosedCaptionsPresent', private=True),
                     'closed_caption': None,  # populated with ClosedCaptionRule
-                    'format': SubtitleFormat(config, 'CodecID', description='subtitle format'),
+                    'format': SubtitleFormat(config, 'CodecID', 'Format', description='subtitle format'),
                     'forced': YesNo('Forced', hide_value=False, description='subtitle track forced'),
                     'default': YesNo('Default', hide_value=False, description='subtitle track default'),
                 },
