@@ -24,6 +24,7 @@ from knowit.provider import (
 from knowit.rules import (
     AudioChannelsRule,
     ClosedCaptionRule,
+    CommentaryRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
@@ -78,6 +79,7 @@ class EnzymeProvider(Provider):
                     'codec': AudioCodec(config, 'codec_id', description='audio codec'),
                     'channels_count': Basic('channels', data_type=int, description='audio channels count'),
                     'channels': None,  # populated with AudioChannelsRule
+                    'commentary': None,  # populated with CommentaryRule
                     'forced': YesNo('forced', hide_value=False, description='audio track forced'),
                     'default': YesNo('default', hide_value=False, description='audio track default'),
                     'enabled': YesNo('enabled', hide_value=True, description='audio track enabled'),
@@ -88,6 +90,7 @@ class EnzymeProvider(Provider):
                     'language': Language('language', description='subtitle language'),
                     'hearing_impaired': None,  # populated with HearingImpairedRule
                     'closed_caption': None,  # populated with ClosedCaptionRule
+                    'commentary': None,  # populated with CommentaryRule
                     'forced': YesNo('forced', hide_value=False, description='subtitle track forced'),
                     'default': YesNo('default', hide_value=False, description='subtitle track default'),
                     'enabled': YesNo('enabled', hide_value=True, description='subtitle track enabled'),
@@ -102,11 +105,13 @@ class EnzymeProvider(Provider):
                 'audio': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
+                    'commentary': CommentaryRule('audio commentary', override=True),
                     'channels': AudioChannelsRule('audio channels'),
                 },
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('subtitle language', override=True),
+                    'commentary': CommentaryRule('subtitle commentary', override=True),
                     'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
                     'closed_caption': ClosedCaptionRule('closed caption', override=True),
                 },

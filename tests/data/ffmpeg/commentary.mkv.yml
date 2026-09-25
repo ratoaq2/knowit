@@ -1,0 +1,55 @@
+title: xxxxx
+path: /xxxxx/xxxxx.mkv
+duration: '7200.0'
+size: 10000000000
+bit_rate: 20000000
+container: mkv
+video:
+- id: 0
+  width: 3840
+  height: 2160
+  scan_type: PROGRESSIVE
+  aspect_ratio: '1.778'
+  pixel_aspect_ratio: '1.0'
+  resolution: 2160p
+  frame_rate: '23.976'
+  bit_depth: 10
+  codec: H265
+  profile: MAIN10
+  default: true
+audio:
+- id: 1
+  language: en
+  codec:
+  - TRUEHD
+  - ATMOS
+  channels_count: 8
+  channels: '7.1'
+  bit_depth: 24
+  sampling_rate: 48000
+  default: true
+- id: 3
+  name: xxxxxxxxxx
+  language: en
+  codec: AC3
+  channels_count: 2
+  channels: '2.0'
+  bit_rate: 192000
+  sampling_rate: 48000
+  commentary: true
+subtitle:
+- id: 4
+  language: en
+  format: SUBRIP
+- id: 5
+  name: xxxxxxx (xxx)
+  language: en
+  hearing_impaired: true
+  format: PGS
+- id: 38
+  name: xxxxxxx (xxxxxxxxxx)
+  language: en
+  format: PGS
+  commentary: true
+provider:
+  name: ffmpeg

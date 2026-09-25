@@ -36,6 +36,7 @@ from knowit.rules import (
     AtmosRule,
     AudioChannelsRule,
     ClosedCaptionRule,
+    CommentaryRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
@@ -200,6 +201,7 @@ class FFmpegProvider(Provider):
                     'bit_depth': Quantity('bits_per_raw_sample', unit=units.bit, description='audio bit depth'),
                     'bit_rate': Quantity('bit_rate', 'tags.bps', unit=units.bps, description='audio bit rate'),
                     'sampling_rate': Quantity('sample_rate', unit=units.Hz, description='audio sampling rate'),
+                    'commentary': YesNo('disposition.comment', hide_value=False, description='audio commentary'),
                     'forced': YesNo('disposition.forced', hide_value=False, description='audio track forced'),
                     'default': YesNo('disposition.default', hide_value=False, description='audio track default'),
                 },
@@ -212,6 +214,7 @@ class FFmpegProvider(Provider):
                     ),
                     'closed_caption': None,  # populated with ClosedCaptionRule
                     'format': SubtitleFormat(config, 'codec_name', description='subtitle format'),
+                    'commentary': YesNo('disposition.comment', hide_value=False, description='subtitle commentary'),
                     'forced': YesNo('disposition.forced', hide_value=False, description='subtitle track forced'),
                     'default': YesNo('disposition.default', hide_value=False, description='subtitle track default'),
                 },
@@ -225,12 +228,14 @@ class FFmpegProvider(Provider):
                 'audio': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
+                    'commentary': CommentaryRule('audio commentary', override=True),
                     'channels': AudioChannelsRule('audio channels'),
                     'atmos': AtmosRule(config, 'atmos rule', private=True),
                 },
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('subtitle language', override=True),
+                    'commentary': CommentaryRule('subtitle commentary', override=True),
                     'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
                     'closed_caption': ClosedCaptionRule('closed caption', override=True),
                 },

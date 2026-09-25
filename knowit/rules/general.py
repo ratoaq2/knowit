@@ -45,3 +45,18 @@ class LanguageRule(Rule[typing.Any]):
         if 'language' in guess:
             return guess['language']
         return None
+
+
+class CommentaryRule(Rule[typing.Any]):
+    """Commentary rule."""
+
+    def execute(
+        self,
+        props: typing.MutableMapping[str, typing.Any],
+        pv_props: typing.MutableMapping[str, typing.Any],
+        context: typing.MutableMapping[str, typing.Any],
+    ) -> typing.Any:
+        """Commentary detection using name."""
+        if 'guessed' in pv_props:
+            return pv_props['guessed'].get('commentary')
+        return None

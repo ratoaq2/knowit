@@ -1,0 +1,44 @@
+duration: '7200.0'
+path: tests/data/mkvmerge/commentary.mkv
+container: mkv
+video:
+- id: 1
+  language: und
+  width: 3840
+  height: 2160
+  scan_type: PROGRESSIVE
+  resolution: 2160p
+  codec: H265
+  default: true
+audio:
+- id: 2
+  language: en
+  codec: TRUEHD
+  channels_count: 8
+  channels: '7.1'
+  sampling_rate: 48000
+  default: true
+- id: 4
+  name: xxxxxxxxxx
+  language: en
+  codec: AC3
+  channels_count: 2
+  channels: '2.0'
+  sampling_rate: 48000
+  commentary: true
+subtitle:
+- id: 5
+  language: en
+  format: SUBRIP
+- id: 6
+  name: xxxxxxx (xxx)
+  language: en
+  hearing_impaired: true
+  format: PGS
+- id: 39
+  name: xxxxxxx (xxxxxxxxxx)
+  language: en
+  format: PGS
+  commentary: true
+provider:
+  name: mkvmerge

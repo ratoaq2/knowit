@@ -1,0 +1,70 @@
+{
+    "container": {
+        "properties": {
+            "duration": 7200000000000
+        }
+    },
+    "tracks": [
+        {
+            "properties": {
+                "codec_id": "V_MPEGH/ISO/HEVC",
+                "default_track": true,
+                "display_dimensions": "3840x2160",
+                "language_ietf": "und",
+                "number": 1
+            },
+            "type": "video"
+        },
+        {
+            "properties": {
+                "audio_channels": 8,
+                "audio_sampling_frequency": 48000,
+                "codec_id": "A_TRUEHD",
+                "default_track": true,
+                "language_ietf": "en",
+                "number": 2
+            },
+            "type": "audio"
+        },
+        {
+            "properties": {
+                "audio_channels": 2,
+                "audio_sampling_frequency": 48000,
+                "codec_id": "A_AC3",
+                "flag_commentary": true,
+                "language_ietf": "en",
+                "number": 4,
+                "track_name": "xxxxxxxxxx"
+            },
+            "type": "audio"
+        },
+        {
+            "properties": {
+                "codec_id": "S_TEXT/UTF8",
+                "language_ietf": "en",
+                "number": 5
+            },
+            "type": "subtitles"
+        },
+        {
+            "properties": {
+                "codec_id": "S_HDMV/PGS",
+                "flag_hearing_impaired": true,
+                "language_ietf": "en",
+                "number": 6,
+                "track_name": "xxxxxxx (xxx)"
+            },
+            "type": "subtitles"
+        },
+        {
+            "properties": {
+                "codec_id": "S_HDMV/PGS",
+                "flag_commentary": true,
+                "language_ietf": "en",
+                "number": 39,
+                "track_name": "xxxxxxx (xxxxxxxxxx)"
+            },
+            "type": "subtitles"
+        }
+    ]
+}

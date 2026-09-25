@@ -33,6 +33,7 @@ audio:
   channels_count: 1
   channels: '1.0'
   sampling_rate: 22050
+  commentary: true
 subtitle:
 - id: 2
   language: en

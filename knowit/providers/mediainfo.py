@@ -46,6 +46,7 @@ from knowit.rules import (
     AtmosRule,
     AudioChannelsRule,
     ClosedCaptionRule,
+    CommentaryRule,
     DtsHdRule,
     HearingImpairedRule,
     LanguageRule,
@@ -319,6 +320,7 @@ class MediaInfoProvider(Provider):
                     'compression': MultiValue(
                         AudioCompression(config, 'Compression_Mode', description='audio compression')
                     ),
+                    'commentary': None,  # populated with CommentaryRule
                     'forced': YesNo('Forced', hide_value=False, description='audio track forced'),
                     'default': YesNo('Default', hide_value=False, description='audio track default'),
                 },
@@ -330,6 +332,7 @@ class MediaInfoProvider(Provider):
                     '_closed_caption': Property('ClosedCaptionsPresent', private=True),
                     'closed_caption': None,  # populated with ClosedCaptionRule
                     'format': SubtitleFormat(config, 'CodecID', 'Format', description='subtitle format'),
+                    'commentary': None,  # populated with CommentaryRule
                     'forced': YesNo('Forced', hide_value=False, description='subtitle track forced'),
                     'default': YesNo('Default', hide_value=False, description='subtitle track default'),
                 },
@@ -343,6 +346,7 @@ class MediaInfoProvider(Provider):
                 'audio': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
+                    'commentary': CommentaryRule('audio commentary', override=True),
                     'channels': AudioChannelsRule('audio channels'),
                     # DtsHdRule compares one codec. AtmosRule can make it a list.
                     'dtshd': DtsHdRule(config, 'dts-hd rule', private=True),
@@ -351,6 +355,7 @@ class MediaInfoProvider(Provider):
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('subtitle language', override=True),
+                    'commentary': CommentaryRule('subtitle commentary', override=True),
                     'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
                     'closed_caption': ClosedCaptionRule('closed caption', override=True),
                 },

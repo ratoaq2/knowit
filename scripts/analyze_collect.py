@@ -45,7 +45,7 @@ FOCUS_FIELDS = (
 
 #: Focus fields that knowit can guess from the track name. The replay sees masked names, so these come
 #: from the parse that the scan stored.
-NAME_FIELDS = ('language', 'hearing_impaired', 'closed_caption')
+NAME_FIELDS = ('language', 'hearing_impaired', 'closed_caption', 'commentary')
 
 #: Raw field names with these words come first in the unmapped list.
 KEYWORDS = (
