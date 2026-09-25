@@ -24,6 +24,8 @@ The notes for older versions are in the [GitHub releases](https://github.com/rat
 - New HDR formats `HDR10+` and `HDR Vivid` (mediainfo). New audio codec `DTS:X` (mediainfo and ffmpeg),
   also for IMAX Enhanced audio. ffmpeg now gives Dolby Atmos and the DTS-HD MA profile.
 - ffmpeg now gives the video bit depth of HEVC files, for example `10 bit`. Before, it was empty.
+- mkvmerge now gives the track name, the subtitle format, and the hearing impaired flag of subtitles.
+  Before, they were empty. Thus the guesses from the track name, such as `pt-BR` or SDH, also work now.
 
 - When ffprobe, mediainfo, or mkvmerge fails, the error now shows the message of the backend, not only the
   exit status. ([#44](https://github.com/ratoaq2/knowit/issues/44))
