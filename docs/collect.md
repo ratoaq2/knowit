@@ -75,3 +75,6 @@ call does not change.
 - `unmapped`: the raw fields that no provider mapping reads. The fields that match `KEYWORDS` come first
   (marked `*`), then the most frequent ones.
 - `export`: writes the fixtures of one file to `tests/data/<provider>/`, as `import_report.py` does.
+  An exported fixture still identifies the file (see above). Before you commit it, remove the tracks
+  and the fields that the test does not need. Replace the durations, sizes, bit rates, and names with
+  round values. Then write the `.yml` again from the replay.
