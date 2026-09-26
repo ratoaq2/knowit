@@ -1,7 +1,7 @@
 # Bug reports
 
 Users cannot send their media, and the maintainer cannot reproduce a bug without it. The report flow does
-not need the media.
+not need the media. The user instructions are in `docs/troubleshooting.md`.
 
 ## Flow
 
