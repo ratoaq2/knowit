@@ -496,7 +496,7 @@ wheels = [
 
 [[package]]
 name = "knowit"
-version = "0.7.1"
+version = "0.7.2.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "babelfish" },
