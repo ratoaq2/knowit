@@ -1,6 +1,6 @@
 [project]
 name = "knowit"
-version = "0.7.1-dev"
+version = "0.7.1"
 description = "Know your media files better"
 authors = [
     { name = "Rato" },

@@ -2,7 +2,7 @@
 
 The notes for older versions are in the [GitHub releases](https://github.com/ratoaq2/knowit/releases).
 
-## Unreleased
+## 0.7.1
 
 - The Docker image now installs the `pint` extra. The values show with units, for example `31.76 MB`.
 - New `--collect` mode. It writes the output of every provider for each file of a media library, to help
