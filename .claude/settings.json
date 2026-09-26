@@ -13,6 +13,7 @@
       "Bash(gh issue list *)",
       "Bash(gh pr view *)",
       "Bash(gh label list *)",
+      "Bash(uv run knowit --help)",
       "PowerShell(uv run pytest *)",
       "PowerShell(uv run ruff *)",
       "PowerShell(uv run mypy *)",
@@ -24,7 +25,10 @@
       "PowerShell(gh issue view *)",
       "PowerShell(gh issue list *)",
       "PowerShell(gh pr view *)",
-      "PowerShell(gh label list *)"
+      "PowerShell(gh label list *)",
+      "PowerShell(Get-Content *)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Test-Path *)"
     ]
   },
   "skillOverrides": {
