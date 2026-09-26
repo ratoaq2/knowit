@@ -33,7 +33,7 @@ body:
         ```
 
         The file holds the environment and the raw output of each backend.
-        Titles, file names and tags are masked. Add `--no-redact` to keep them.
+        Titles, file names and free-text tags are masked. Add `--no-redact` to keep them.
 
         If knowit is bundled in another application, such as Bazarr or Medusa,
         run the command with the same Python that runs that application:

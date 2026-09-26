@@ -1,0 +1,38 @@
+title: xxxxx
+duration: '7200.0'
+path: tests/data/mkvmerge/mkv-sdh-pgs.mkv
+container: mkv
+video:
+- id: 1
+  language: en
+  width: 1920
+  height: 804
+  scan_type: PROGRESSIVE
+  resolution: 1080p
+  codec: H264
+  default: true
+audio:
+- id: 2
+  language: en
+  codec: DTS
+  channels_count: 6
+  channels: '5.1'
+  sampling_rate: 48000
+  default: true
+subtitle:
+- id: 3
+  name: xxxxxxx (xxx)
+  language: en
+  format: SUBRIP
+- id: 4
+  name: xxxxxxx (xxx xxx)
+  language: en
+  hearing_impaired: true
+  format: SUBRIP
+- id: 5
+  name: xxxxxxx (xxx)
+  language: en
+  hearing_impaired: true
+  format: PGS
+provider:
+  name: mkvmerge

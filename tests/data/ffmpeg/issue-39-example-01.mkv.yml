@@ -14,6 +14,7 @@ video:
     resolution: 1080p
     frame_rate: 23.976 FPS
     bit_rate: 900213
+    bit_depth: 8 bit
     codec: H265
     profile: MAIN
     default: true

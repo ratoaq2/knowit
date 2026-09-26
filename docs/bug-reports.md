@@ -29,7 +29,20 @@ The test then fails until the bug is fixed.
 
 - `knowit/environment.py` collects the environment.
 - `knowit/bugreport.py` builds and redacts the report. Redaction is on by default. `--no-redact` turns it
-  off.
+  off. Redaction masks all values in the ffprobe `tags` and the mediainfo `extra` blocks, except the
+  technical keys in `TECHNICAL_TAG_KEYS`. knowit reads these keys, for example the track language.
+  `mask_path()` also masks the path, its folder, and its file name in every string of the provider
+  results. The error messages of the backends quote the path.
+  `mask_home()` replaces the home folder with `~` in every key and string. The locations of Python,
+  knowit, and the backends, and the tracebacks, often start with the home folder, and it holds the user
+  name.
+  The mediainfo encoder version (`Encoded_Library`) is masked. A custom encoder build can put the name of
+  a release group in it. `Encoded_Library_Name` stays readable, because knowit reads it.
+  The unique ids (Matroska segment and track uids) and the dates (encoding, tagging, and file dates) are
+  masked. They identify one file, and the file dates tell when the user got it.
+  `mask_text()` masks the letters and digits of every script. A non-ascii title identifies the media too.
+  Symbols and combining marks stay readable. In the path description, `non_ascii` names only these
+  symbols. It shows the masked letters and digits as `non-ascii letter` and `non-ascii number`.
 - `knowit/pathcheck.py` does the name check. `ADVERSARIAL_NAMES` in that file is the regression list of
   names from real issues. Add a name when a new one comes in.
 - `.github/ISSUE_TEMPLATE/` asks the reporter for these commands.

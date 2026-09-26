@@ -46,6 +46,7 @@ from knowit.rules import (
     AtmosRule,
     AudioChannelsRule,
     ClosedCaptionRule,
+    CommentaryRule,
     DtsHdRule,
     HearingImpairedRule,
     LanguageRule,
@@ -273,7 +274,7 @@ class MediaInfoProvider(Provider):
                     # frame_rate_mode
                     'bit_rate': Quantity('BitRate', unit=units.bps, description='video bit rate'),
                     'bit_depth': Quantity('BitDepth', unit=units.bit, description='video bit depth'),
-                    'codec': VideoCodec(config, 'CodecID', description='video codec'),
+                    'codec': VideoCodec(config, 'CodecID', 'Format', description='video codec'),
                     'profile': VideoProfile(config, 'Format_Profile', description='video codec profile'),
                     'profile_level': Property('Format_Level', description='video codec profile level'),
                     'profile_tier': VideoProfileTier(config, 'Format_Tier', description='video codec profile tier'),
@@ -291,7 +292,7 @@ class MediaInfoProvider(Provider):
                     'language': Language('Language', description='audio language'),
                     'duration': Duration('Duration', resolution=1000, description='audio duration'),
                     'size': Quantity('StreamSize', unit=units.byte, description='audio stream size'),
-                    'codec': MultiValue(AudioCodec(config, 'CodecID', description='audio codec')),
+                    'codec': MultiValue(AudioCodec(config, 'CodecID', 'Format', description='audio codec')),
                     'format_commercial': Property('Format_Commercial', private=True),
                     'profile': MultiValue(
                         AudioProfile(
@@ -319,6 +320,7 @@ class MediaInfoProvider(Provider):
                     'compression': MultiValue(
                         AudioCompression(config, 'Compression_Mode', description='audio compression')
                     ),
+                    'commentary': None,  # populated with CommentaryRule
                     'forced': YesNo('Forced', hide_value=False, description='audio track forced'),
                     'default': YesNo('Default', hide_value=False, description='audio track default'),
                 },
@@ -329,7 +331,8 @@ class MediaInfoProvider(Provider):
                     'hearing_impaired': None,  # populated with HearingImpairedRule
                     '_closed_caption': Property('ClosedCaptionsPresent', private=True),
                     'closed_caption': None,  # populated with ClosedCaptionRule
-                    'format': SubtitleFormat(config, 'CodecID', description='subtitle format'),
+                    'format': SubtitleFormat(config, 'CodecID', 'Format', description='subtitle format'),
+                    'commentary': None,  # populated with CommentaryRule
                     'forced': YesNo('Forced', hide_value=False, description='subtitle track forced'),
                     'default': YesNo('Default', hide_value=False, description='subtitle track default'),
                 },
@@ -343,13 +346,16 @@ class MediaInfoProvider(Provider):
                 'audio': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
+                    'commentary': CommentaryRule('audio commentary', override=True),
                     'channels': AudioChannelsRule('audio channels'),
-                    'atmos': AtmosRule(config, 'atmos rule', private=True),
+                    # DtsHdRule compares one codec. AtmosRule can make it a list.
                     'dtshd': DtsHdRule(config, 'dts-hd rule', private=True),
+                    'atmos': AtmosRule(config, 'atmos rule', private=True),
                 },
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('subtitle language', override=True),
+                    'commentary': CommentaryRule('subtitle commentary', override=True),
                     'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
                     'closed_caption': ClosedCaptionRule('closed caption', override=True),
                 },

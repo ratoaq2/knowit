@@ -1,6 +1,8 @@
+import os
 import pathlib
 import typing
 
+import pytest
 import yaml
 
 from knowit import bugreport
@@ -14,6 +16,9 @@ from knowit.bugreport import (
     mask_text,
     redact,
 )
+from knowit.provider import ProviderError
+from knowit.providers.ffmpeg import FFmpegExecutor, FFmpegProvider
+from tests import read_json
 
 
 def test_mask_text_hides_words_but_keeps_shape() -> None:
@@ -24,13 +29,13 @@ def test_mask_text_hides_words_but_keeps_shape() -> None:
     assert masked == 'xxx xxxxxxxxxx 0 (0000).xxx'
 
 
-def test_mask_text_keeps_non_ascii_characters() -> None:
-    # Given non-ascii characters are the subject of most path reports
+def test_mask_text_masks_non_ascii_letters_and_digits() -> None:
+    # Given a title in any script identifies the media as much as an ascii title
     # When
-    masked = mask_text('The Accountant² 33⅓ é')
+    masked = mask_text('The Accountant² 33⅓ é – ８番出口 Україна')
 
-    # Then
-    assert masked == 'xxx xxxxxxxxxx² 00⅓ é'
+    # Then symbols stay readable
+    assert masked == 'xxx xxxxxxxxxx0 000 x – 0xxx xxxxxxx'
 
 
 def test_redact_masks_known_free_text_keys() -> None:
@@ -44,12 +49,128 @@ def test_redact_masks_known_free_text_keys() -> None:
     assert result == {'Title': 'xxxx xxxxxxx xxxx', 'Format': 'Matroska', 'Width': '1920'}
 
 
+def test_redact_masks_encoded_library_version() -> None:
+    # Given a custom encoder build, where the version holds the name of a release group
+    data = {
+        'Encoded_Library': 'x265 - 3.3+4-group:[Linux] 10bit',
+        'Encoded_Library_String': 'x265 3.3+4-group:[Linux] 10bit',
+        'Encoded_Library_Name': 'x265',
+        'Encoded_Library_Version': '3.3+4-group:[Linux] 10bit',
+    }
+
+    # When
+    result = redact(data, RAW_TEXT_KEYS)
+
+    # Then the name stays readable, because knowit reads it
+    assert result == {
+        'Encoded_Library': 'x000 - 0.0+0-xxxxx:[xxxxx] 00xxx',
+        'Encoded_Library_String': 'x000 0.0+0-xxxxx:[xxxxx] 00xxx',
+        'Encoded_Library_Name': 'x265',
+        'Encoded_Library_Version': '0.0+0-xxxxx:[xxxxx] 00xxx',
+    }
+
+
+def test_redact_masks_unique_ids_and_dates() -> None:
+    # Given mkvmerge and mediainfo values that identify one file
+    data = {
+        'container': {
+            'properties': {
+                'segment_uid': 'ab12cd34ef56ab78',
+                'date_utc': '2001-02-03T04:05:06Z',
+                'date_local': '2001-02-03T04:05:06+00:00',
+            },
+        },
+        'tracks': [{'properties': {'uid': 1234567890123456789, 'number': 1}}],
+        'Encoded_Date': '2001-02-03 04:05:06 UTC',
+        'Tagged_Date': '2001-02-03 04:05:06 UTC',
+        'File_Modified_Date': '2002-03-04 05:06:07 UTC',
+        'File_Modified_Date_Local': '2002-03-04 05:06:07',
+    }
+
+    # When
+    result = redact(data, RAW_TEXT_KEYS)
+
+    # Then
+    assert result == {
+        'container': {
+            'properties': {
+                'segment_uid': 'xx00xx00xx00xx00',
+                'date_utc': '0000-00-00x00:00:00x',
+                'date_local': '0000-00-00x00:00:00+00:00',
+            },
+        },
+        'tracks': [{'properties': {'uid': 0, 'number': 1}}],
+        'Encoded_Date': '0000-00-00 00:00:00 xxx',
+        'Tagged_Date': '0000-00-00 00:00:00 xxx',
+        'File_Modified_Date': '0000-00-00 00:00:00 xxx',
+        'File_Modified_Date_Local': '0000-00-00 00:00:00',
+    }
+
+
 def test_redact_is_case_insensitive() -> None:
     # When
     result = redact({'tags': {'TITLE': 'Episode', 'ENCODER': 'Lavf'}}, RAW_TEXT_KEYS)
 
     # Then
     assert result == {'tags': {'TITLE': 'xxxxxxx', 'ENCODER': 'xxxx'}}
+
+
+def test_redact_keeps_technical_tags() -> None:
+    # Given ffprobe tags, where the track language and the statistics sit next to the title
+    tags = {
+        'language': 'eng',
+        'title': 'Director Commentary',
+        'BPS': '640000',
+        'BPS-eng': '640000',
+        'DURATION': '01:00:00.000000000',
+        'NUMBER_OF_FRAMES': '112500',
+        'NUMBER_OF_BYTES': '288000000',
+        'mimetype': 'application/x-truetype-font',
+    }
+
+    # When
+    result = redact({'streams': [{'tags': tags}]}, RAW_TEXT_KEYS)
+
+    # Then
+    assert result == {'streams': [{'tags': {**tags, 'title': 'xxxxxxxx xxxxxxxxxx'}}]}
+
+
+def test_redact_masks_enzyme_track_and_chapter_names() -> None:
+    # Given enzyme output, where track and chapter names can hold the movie title
+    data = {
+        'video_tracks': [{'name': 'Some Movie', 'codec_id': 'V_MPEGH/ISO/HEVC'}],
+        'chapters': [{'string': 'The Heist', 'language': 'eng'}],
+    }
+
+    # When
+    result = redact(data, RAW_TEXT_KEYS)
+
+    # Then
+    assert result == {
+        'video_tracks': [{'name': 'xxxx xxxxx', 'codec_id': 'V_MPEGH/ISO/HEVC'}],
+        'chapters': [{'string': 'xxx xxxxx', 'language': 'eng'}],
+    }
+
+
+def test_redact_masks_the_last_file_of_a_playlist() -> None:
+    # Given a mediainfo track of a Blu-ray playlist, which names the folder of its last file
+    track = {
+        'FolderName_Last': '/storage/Some Movie/BDMV/STREAM',
+        'FileName_Last': '00167',
+        'FileNameExtension_Last': '00167.m2ts',
+        'FileExtension_Last': 'm2ts',
+    }
+
+    # When
+    result = redact(track, RAW_TEXT_KEYS)
+
+    # Then
+    assert result == {
+        'FolderName_Last': '/xxxxxxx/xxxx xxxxx/xxxx/xxxxxx',
+        'FileName_Last': '00000',
+        'FileNameExtension_Last': '00000.x0xx',
+        'FileExtension_Last': 'm2ts',
+    }
 
 
 def test_redact_does_not_break_track_lists() -> None:
@@ -85,9 +206,18 @@ def test_redact_leaves_numbers_alone() -> None:
     assert result['frame_rate'] == 23.976
 
 
+def test_describe_path_hides_non_ascii_letters_and_digits_by_default() -> None:
+    # When
+    info = describe_path('/movies/８番出口 – café.mkv')
+
+    # Then the path does not show the title, but shows that it has non-ascii characters
+    assert info['basename'] == '0xxx – xxxx.xxx'
+    assert info['non_ascii'] == ['U+2013 EN DASH', 'non-ascii letter', 'non-ascii number']
+
+
 def test_describe_path_names_every_non_ascii_character() -> None:
     # When
-    info = describe_path('/movies/The Accountant² (2025)/movie ⅓.mkv')
+    info = describe_path('/movies/The Accountant² (2025)/movie ⅓.mkv', anonymize=False)
 
     # Then
     assert info['non_ascii'] == [
@@ -205,3 +335,45 @@ def test_written_report_is_utf8(tmp_path: pathlib.Path, options: dict[str, typin
 
     # Then
     assert yaml.safe_load(destination.read_text(encoding='utf-8'))['knowit_version']
+
+
+def test_build_report_hides_the_home_folder(
+    ffmpeg: dict[str, typing.Any],
+    options: dict[str, typing.Any],
+    home: str,
+    tmp_path: pathlib.Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Given ffprobe is in the home folder
+    video = str(tmp_path / 'video.mkv')
+    ffmpeg[video] = read_json('tests/data/ffmpeg/media_001.mkv.json')
+    monkeypatch.setattr(FFmpegExecutor.get_executor_instance(), 'location', os.path.join(home, 'bin', 'ffprobe'))
+
+    # When
+    report = build_report([video], options)
+
+    # Then
+    assert 'someone' not in dump_report(report)
+    assert report['media'][0]['providers']['ffmpeg']['location'] == os.path.join('~', 'bin', 'ffprobe')
+
+
+def test_build_report_masks_the_path_in_a_provider_error(
+    tmp_path: pathlib.Path, options: dict[str, typing.Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Given ffprobe quotes the path in its error message
+    video = tmp_path / 'Some Movie (2024).mkv'
+    video.write_bytes(b'\0' * 10)
+
+    def failing_describe(self: FFmpegProvider, video_path: str, context: typing.Any) -> typing.Any:
+        raise ProviderError(f'ffprobe failed with exit status 1: {video_path}: Invalid data found')
+
+    monkeypatch.setattr(FFmpegProvider, 'describe', failing_describe)
+
+    # When
+    report = build_report([str(video)], options)
+
+    # Then
+    result = report['media'][0]['providers']['ffmpeg']
+    assert 'Invalid data found' in result['traceback']
+    assert 'Some Movie' not in result['traceback']
+    assert str(tmp_path) not in result['traceback']

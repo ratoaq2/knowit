@@ -1,0 +1,51 @@
+{
+    "media": {
+        "track": [
+            {
+                "@type": "General",
+                "CompleteName": "/xxxxx/xxxxx.mkv",
+                "FileSize": "10000000000",
+                "Duration": "7200.000",
+                "OverallBitRate": "20000000",
+                "Title": "xxxxx"
+            },
+            {
+                "@type": "Video",
+                "ID": "1",
+                "Format_Profile": "Main 10",
+                "Format_Level": "5.1",
+                "HDR_Format": "Dolby Vision / SMPTE ST 2094 App 4 / HDR Vivid",
+                "InternetMediaType": "video/H265",
+                "CodecID": "V_MPEGH/ISO/HEVC",
+                "Duration": "7200.000",
+                "BitRate": "20000000",
+                "Width": "3840",
+                "Height": "1600",
+                "PixelAspectRatio": "1.000",
+                "DisplayAspectRatio": "2.400",
+                "FrameRate": "23.976",
+                "BitDepth": "10",
+                "StreamSize": "1000000000",
+                "Title": "xxxxx",
+                "Default": "Yes"
+            },
+            {
+                "@type": "Audio",
+                "ID": "2",
+                "Format_AdditionalFeatures": "XLL",
+                "CodecID": "A_DTS",
+                "Duration": "7200.000",
+                "BitRate_Mode": "VBR",
+                "BitRate": "3000000",
+                "Channels": "6",
+                "SamplingRate": "48000",
+                "BitDepth": "24",
+                "Compression_Mode": "Lossless",
+                "StreamSize": "100000000",
+                "Title": "xxxxx",
+                "Language": "en",
+                "Default": "Yes"
+            }
+        ]
+    }
+}

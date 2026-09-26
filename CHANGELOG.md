@@ -4,6 +4,34 @@ The notes for older versions are in the [GitHub releases](https://github.com/rat
 
 ## Unreleased
 
+- New `--collect` mode. It writes the output of every provider for each file of a media library, to help
+  improve knowit. Titles are masked. A stopped scan continues where it stopped. `--deep` also reads the
+  HDR10+ and Dolby Vision data of the first video frames with ffprobe.
+- A redacted `--bug-report` now keeps the technical ffprobe tags, such as the track language. Before, it
+  masked them with the titles.
+- A redacted `--bug-report` now masks the mediainfo encoder version, for example `x265 - 3.3+4-group`.
+  A custom encoder build can put the name of a release group in it.
+- A redacted `--bug-report` now masks the Matroska segment and track uids, and the encoding, tagging, and
+  file dates. Before, they could identify the file.
+- A redacted `--bug-report` now masks the enzyme track names and chapter names. Before, a title in these
+  names stayed readable.
+- A redacted `--bug-report` now masks the path in the error messages of the backends, and the folder of
+  the last file of a Blu-ray playlist (mediainfo `FolderName_Last`).
+- A redacted `--bug-report` now masks the non-ascii letters and digits, for example a title in Cyrillic or
+  Japanese. Before, they stayed readable in the titles and in the path.
+- mediainfo now gives the video codec, the audio codec, and the subtitle format of MP4, MPEG-TS, and
+  Blu-ray files. Before, they were empty for codec ids such as `hev1`, `mp4a-40-2`, and `36`.
+- New HDR formats `HDR10+` and `HDR Vivid` (mediainfo). New audio codec `DTS:X` (mediainfo and ffmpeg),
+  also for IMAX Enhanced audio. ffmpeg now gives Dolby Atmos and the DTS-HD MA profile.
+- ffmpeg now gives the video bit depth of HEVC files, for example `10 bit`. Before, it was empty.
+- mkvmerge now gives the track name, the subtitle format, and the hearing impaired flag of subtitles.
+  Before, they were empty. Thus the guesses from the track name, such as `pt-BR` or SDH, also work now.
+- enzyme now gives the subtitle format, for example `SUBRIP` or `PGS`. Before, it was empty.
+- enzyme now gives `en` for a track without a language element. This is the Matroska default. Before, the
+  language was empty.
+- New `commentary` property for audio and subtitle tracks. It comes from the commentary flag (ffmpeg,
+  mkvmerge) or from the track name (all providers).
+
 - When ffprobe, mediainfo, or mkvmerge fails, the error now shows the message of the backend, not only the
   exit status. ([#44](https://github.com/ratoaq2/knowit/issues/44))
 - A language value that is not a string no longer stops the analysis of the file. knowit reports it and

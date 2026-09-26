@@ -1,0 +1,40 @@
+title: xxxxx
+path: /xxxxx/xxxxx.mp4
+duration: '7200.0'
+size: 10000000000
+bit_rate: 20000000
+container: mp4
+video:
+- id: 1
+  duration: '7200.0'
+  size: 1000000000
+  width: 1920
+  height: 816
+  scan_type: PROGRESSIVE
+  aspect_ratio: '2.353'
+  pixel_aspect_ratio: '1.0'
+  resolution: 1080p
+  frame_rate: '23.976'
+  bit_rate: 20000000
+  bit_depth: 10
+  codec: H265
+  profile: MAIN10
+  profile_level: '4'
+  encoder: X265
+  media_type: video/H265
+audio:
+- id: 2
+  language: en
+  duration: '7200.0'
+  size: 100000000
+  codec: AAC
+  profile: LC
+  channels_count: 2
+  channels: '2.0'
+  bit_rate: 224000
+  bit_rate_mode: CBR
+  sampling_rate: 48000
+  compression: LOSSY
+  default: true
+provider:
+  name: mediainfo

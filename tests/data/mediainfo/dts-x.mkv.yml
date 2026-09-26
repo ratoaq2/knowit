@@ -1,0 +1,40 @@
+path: /xxxxx/xxxxx.mkv
+duration: '10.0'
+size: 10000000000
+bit_rate: 20000000
+container: mkv
+video:
+- id: 1
+  language: en
+  duration: '10.0'
+  width: 1920
+  height: 1080
+  scan_type: PROGRESSIVE
+  aspect_ratio: '1.778'
+  pixel_aspect_ratio: '1.0'
+  resolution: 1080p
+  frame_rate: '23.976'
+  bit_depth: 8
+  codec: H264
+  profile: HIGH
+  profile_level: '4.1'
+  encoder: X264
+  media_type: video/H264
+  default: true
+audio:
+- id: 2
+  language: en
+  duration: '10.0'
+  codec:
+  - DTSHD
+  - DTSX
+  profile: MA
+  channels_count: 8
+  channels: '7.1'
+  bit_depth: 24
+  bit_rate_mode: VBR
+  sampling_rate: 48000
+  compression: LOSSLESS
+  default: true
+provider:
+  name: mediainfo

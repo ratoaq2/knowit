@@ -40,6 +40,7 @@ audio:
   channels: '1.0'
   sampling_rate: 22050
   compression: LOSSY
+  commentary: true
 subtitle:
 - id: 3
   language: en

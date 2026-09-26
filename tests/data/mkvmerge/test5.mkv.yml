@@ -20,28 +20,38 @@ audio:
   sampling_rate: 48000
   default: true
 - id: 10
+  name: Commentary
   language: en
   codec: AAC
   channels_count: 1
   channels: 1.0
   sampling_rate: 22050
+  commentary: true
 subtitle:
 - id: 3
   language: en
+  format: SUBRIP
   default: true
 - id: 4
   language: hu
+  format: SUBRIP
 - id: 5
   language: de
+  format: SUBRIP
 - id: 6
   language: fr
+  format: SUBRIP
 - id: 8
   language: es
+  format: SUBRIP
 - id: 9
   language: it
+  format: SUBRIP
 - id: 11
   language: ja
+  format: SUBRIP
 - id: 7
   language: und
+  format: SUBRIP
 provider:
   name: mkvmerge

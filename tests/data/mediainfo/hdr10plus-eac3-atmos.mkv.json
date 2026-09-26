@@ -1,0 +1,48 @@
+{
+    "media": {
+        "track": [
+            {
+                "@type": "General",
+                "CompleteName": "/xxxxx/xxxxx.mkv",
+                "FileSize": "10000000000",
+                "Duration": "7200.000",
+                "OverallBitRate": "20000000"
+            },
+            {
+                "@type": "Video",
+                "ID": "1",
+                "Format_Profile": "Main 10",
+                "Format_Level": "5",
+                "HDR_Format": "SMPTE ST 2094 App 4",
+                "InternetMediaType": "video/H265",
+                "CodecID": "V_MPEGH/ISO/HEVC",
+                "Duration": "7200.000",
+                "BitRate": "20000000",
+                "Width": "2872",
+                "Height": "2156",
+                "PixelAspectRatio": "1.000",
+                "DisplayAspectRatio": "1.332",
+                "FrameRate": "23.976",
+                "BitDepth": "10",
+                "StreamSize": "1000000000",
+                "Language": "en",
+                "Default": "Yes"
+            },
+            {
+                "@type": "Audio",
+                "ID": "2",
+                "Format_Commercial": "Dolby Digital Plus with Dolby Atmos",
+                "CodecID": "A_EAC3",
+                "Duration": "7200.000",
+                "BitRate_Mode": "CBR",
+                "BitRate": "768000",
+                "Channels": "6",
+                "SamplingRate": "48000",
+                "Compression_Mode": "Lossy",
+                "StreamSize": "100000000",
+                "Language": "en",
+                "Default": "Yes"
+            }
+        ]
+    }
+}

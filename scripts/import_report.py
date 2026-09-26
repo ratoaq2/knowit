@@ -62,11 +62,21 @@ def replay(provider_name: str, video_path: str, raw: typing.Any) -> typing.Any:
     """
     api.available_providers.clear()
     api.initialize({})
+    return describe_raw(provider_name, video_path, raw)
+
+
+def describe_raw(
+    provider_name: str,
+    video_path: str,
+    raw: typing.Any,
+    context: dict[str, typing.Any] | None = None,
+) -> typing.Any:
+    """Run the current code over the raw data, with the providers that are already initialized."""
     provider = api.available_providers.get(provider_name)
     if provider is None:
         return None
 
-    context: dict[str, typing.Any] = {'profile': 'code'}
+    context = context if context is not None else {'profile': 'code'}
     if provider_name == 'enzyme':
         original_classmethod = EnzymeProvider.extract_info
         EnzymeProvider.extract_info = classmethod(lambda cls, filename: raw)  # type: ignore[assignment,method-assign]

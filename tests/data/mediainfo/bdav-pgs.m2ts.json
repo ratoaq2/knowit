@@ -1,0 +1,19 @@
+{
+    "media": {
+        "track": [
+            {
+                "@type": "General",
+                "CompleteName": "/xxxxx/xxxxx.m2ts",
+                "FileSize": "10000000000",
+                "Duration": "7200.000",
+                "OverallBitRate": "20000000"
+            },
+            {
+                "@type": "Text",
+                "ID": "5120",
+                "Format": "PGS",
+                "CodecID": "145"
+            }
+        ]
+    }
+}

@@ -14,6 +14,7 @@ from knowit.properties import (
     Duration,
     Language,
     Quantity,
+    SubtitleFormat,
     VideoCodec,
     VideoDimensions,
     YesNo,
@@ -28,6 +29,7 @@ from knowit.provider import (
 from knowit.rules import (
     AudioChannelsRule,
     ClosedCaptionRule,
+    CommentaryRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
@@ -137,7 +139,7 @@ class MkvMergeProvider(Provider):
                 },
                 'video': {
                     'id': Basic('number', data_type=int, description='video track number'),
-                    'name': Property('name', description='video track name'),
+                    'name': Property('track_name', description='video track name'),
                     'language': Language('language_ietf', 'language', description='video language'),
                     'width': VideoDimensions('display_dimensions', dimension='width'),
                     'height': VideoDimensions('display_dimensions', dimension='height'),
@@ -159,7 +161,7 @@ class MkvMergeProvider(Provider):
                 },
                 'audio': {
                     'id': Basic('number', data_type=int, description='audio track number'),
-                    'name': Property('name', description='audio track name'),
+                    'name': Property('track_name', description='audio track name'),
                     'language': Language('language_ietf', 'language', description='audio language'),
                     'codec': AudioCodec(config, 'codec_id', description='audio codec'),
                     'channels_count': Basic('audio_channels', data_type=int, description='audio channels count'),
@@ -167,16 +169,21 @@ class MkvMergeProvider(Provider):
                     'sampling_rate': Quantity(
                         'audio_sampling_frequency', unit=units.Hz, description='audio sampling rate'
                     ),
+                    'commentary': YesNo('flag_commentary', hide_value=False, description='audio commentary'),
                     'forced': YesNo('forced_track', hide_value=False, description='audio track forced'),
                     'default': YesNo('default_track', hide_value=False, description='audio track default'),
                     'enabled': YesNo('enabled_track', hide_value=True, description='audio track enabled'),
                 },
                 'subtitle': {
                     'id': Basic('number', data_type=int, description='subtitle track number'),
-                    'name': Property('name', description='subtitle track name'),
+                    'name': Property('track_name', description='subtitle track name'),
                     'language': Language('language_ietf', 'language', description='subtitle language'),
-                    'hearing_impaired': None,  # populated with HearingImpairedRule
+                    'hearing_impaired': YesNo(
+                        'flag_hearing_impaired', hide_value=False, description='subtitle hearing impaired'
+                    ),
                     'closed_caption': None,  # populated with ClosedCaptionRule
+                    'format': SubtitleFormat(config, 'codec_id', description='subtitle format'),
+                    'commentary': YesNo('flag_commentary', hide_value=False, description='subtitle commentary'),
                     'forced': YesNo('forced_track', hide_value=False, description='subtitle track forced'),
                     'default': YesNo('default_track', hide_value=False, description='subtitle track default'),
                     'enabled': YesNo('enabled_track', hide_value=True, description='subtitle track enabled'),
@@ -191,11 +198,13 @@ class MkvMergeProvider(Provider):
                 'audio': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
+                    'commentary': CommentaryRule('audio commentary', override=True),
                     'channels': AudioChannelsRule('audio channels'),
                 },
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('subtitle language', override=True),
+                    'commentary': CommentaryRule('subtitle commentary', override=True),
                     'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
                     'closed_caption': ClosedCaptionRule('closed caption', override=True),
                 },

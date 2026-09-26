@@ -19,6 +19,7 @@ from knowit.properties import (
     Ratio,
     ScanType,
     SubtitleFormat,
+    VideoBitDepth,
     VideoCodec,
     VideoProfile,
     VideoProfileLevel,
@@ -32,8 +33,10 @@ from knowit.provider import (
     run_command,
 )
 from knowit.rules import (
+    AtmosRule,
     AudioChannelsRule,
     ClosedCaptionRule,
+    CommentaryRule,
     HearingImpairedRule,
     LanguageRule,
     ResolutionRule,
@@ -175,7 +178,9 @@ class FFmpegProvider(Provider):
                     'frame_rate': Ratio('r_frame_rate', unit=units.FPS, description='video frame rate'),
                     # frame_rate_mode
                     'bit_rate': Quantity('bit_rate', 'tags.bps', unit=units.bps, description='video bit rate'),
-                    'bit_depth': Quantity('bits_per_raw_sample', unit=units.bit, description='video bit depth'),
+                    'bit_depth': VideoBitDepth(
+                        'bits_per_raw_sample', 'pix_fmt', unit=units.bit, description='video bit depth'
+                    ),
                     'codec': VideoCodec(config, 'codec_name', description='video codec'),
                     'profile': VideoProfile(config, 'profile', description='video codec profile'),
                     'profile_level': VideoProfileLevel(config, 'level', description='video codec profile level'),
@@ -190,11 +195,13 @@ class FFmpegProvider(Provider):
                     'duration': Duration('duration', 'tags.duration', description='audio duration'),
                     'codec': AudioCodec(config, 'profile', 'codec_name', description='audio codec'),
                     'profile': AudioProfile(config, 'profile', description='audio codec profile'),
+                    'format_commercial': Property('profile', private=True),
                     'channels_count': AudioChannels('channels', description='audio channels count'),
                     'channels': None,  # populated with AudioChannelsRule
                     'bit_depth': Quantity('bits_per_raw_sample', unit=units.bit, description='audio bit depth'),
                     'bit_rate': Quantity('bit_rate', 'tags.bps', unit=units.bps, description='audio bit rate'),
                     'sampling_rate': Quantity('sample_rate', unit=units.Hz, description='audio sampling rate'),
+                    'commentary': YesNo('disposition.comment', hide_value=False, description='audio commentary'),
                     'forced': YesNo('disposition.forced', hide_value=False, description='audio track forced'),
                     'default': YesNo('disposition.default', hide_value=False, description='audio track default'),
                 },
@@ -207,6 +214,7 @@ class FFmpegProvider(Provider):
                     ),
                     'closed_caption': None,  # populated with ClosedCaptionRule
                     'format': SubtitleFormat(config, 'codec_name', description='subtitle format'),
+                    'commentary': YesNo('disposition.comment', hide_value=False, description='subtitle commentary'),
                     'forced': YesNo('disposition.forced', hide_value=False, description='subtitle track forced'),
                     'default': YesNo('disposition.default', hide_value=False, description='subtitle track default'),
                 },
@@ -220,11 +228,14 @@ class FFmpegProvider(Provider):
                 'audio': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('audio language', override=True),
+                    'commentary': CommentaryRule('audio commentary', override=True),
                     'channels': AudioChannelsRule('audio channels'),
+                    'atmos': AtmosRule(config, 'atmos rule', private=True),
                 },
                 'subtitle': {
                     'guessed': GuessTitleRule('guessed properties', private=True),
                     'language': LanguageRule('subtitle language', override=True),
+                    'commentary': CommentaryRule('subtitle commentary', override=True),
                     'hearing_impaired': HearingImpairedRule('subtitle hearing impaired', override=True),
                     'closed_caption': ClosedCaptionRule('closed caption', override=True),
                 },

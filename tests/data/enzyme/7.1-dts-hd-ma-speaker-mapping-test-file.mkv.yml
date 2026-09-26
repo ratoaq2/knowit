@@ -13,6 +13,7 @@ video:
   default: true
 audio:
 - id: 2
+  language: en
   name: 7.1Ch DTS-HD MA
   codec: DTS
   channels_count: 6

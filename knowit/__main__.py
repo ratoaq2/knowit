@@ -14,6 +14,7 @@ from knowit import (
     __version__,
     api,
     bugreport,
+    collect,
     pathcheck,
 )
 from knowit.environment import format_section
@@ -117,7 +118,7 @@ def build_argument_parser() -> ArgumentParser:
         '--no-redact',
         action='store_true',
         dest='no_redact',
-        help='Do not mask titles, file names and tags in the bug report.',
+        help='Do not mask titles, file names and tags in the bug report or the collected data.',
     )
     report_opts.add_argument(
         '--check-name',
@@ -125,6 +126,29 @@ def build_argument_parser() -> ArgumentParser:
         metavar='NAME',
         help='Check whether a file name makes a provider fail. No media file is needed.',
         type=str,
+    )
+
+    collect_opts = opts.add_argument_group('Collect')
+    collect_opts.add_argument(
+        '--collect',
+        action='store_true',
+        dest='collect',
+        help='Write the output of every provider for each file, to improve knowit. Use --no-redact to keep titles.',
+    )
+    collect_opts.add_argument(
+        '-o',
+        '--collect-output',
+        dest='collect_output',
+        metavar='FILE',
+        help=f'Where to write the collected data, default {collect.DEFAULT_OUTPUT}. A run continues an existing file.',
+        type=str,
+    )
+
+    collect_opts.add_argument(
+        '--deep',
+        action='store_true',
+        dest='deep',
+        help='Also read the first video frames with ffprobe, for HDR10+ and Dolby Vision data. Slower.',
     )
 
     information_opts = opts.add_argument_group('Information')
@@ -191,7 +215,18 @@ def dumps(
 
 #: Options that drive the CLI itself and mean nothing to a provider.
 CLI_ONLY_OPTIONS = frozenset(
-    {'videopath', 'bug_report', 'bug_report_output', 'check_name', 'no_redact', 'version', 'yaml'}
+    {
+        'videopath',
+        'bug_report',
+        'bug_report_output',
+        'check_name',
+        'collect',
+        'collect_output',
+        'deep',
+        'no_redact',
+        'version',
+        'yaml',
+    }
 )
 
 
@@ -224,6 +259,36 @@ def write_bug_report(paths: list[str], options: argparse.Namespace) -> None:
     if not options.no_redact:
         console.info('Titles, file names and tags were masked. Use --no-redact to keep them.')
     console.info('Please attach it to an issue at %s/issues.', __url__)
+
+
+def run_collect(paths: list[str], options: argparse.Namespace) -> None:
+    """Collect the output of every provider for each file, and print a summary."""
+    context = build_context(options)
+    output = options.collect_output or collect.DEFAULT_OUTPUT
+    total = len(paths)
+
+    def on_file(index: int, video_path: str, status: str) -> None:
+        console.info('[%d/%d] %s: %s', index, total, status, video_path)
+
+    summary = collect.run(paths, output, context, anonymize=not options.no_redact, deep=options.deep, on_file=on_file)
+
+    console.info('')
+    if summary.get('interrupted'):
+        console.info('Stopped. Run the same command again to continue.')
+    console.info(
+        'Files: %d, captured: %d, skipped (already in the output): %d',
+        summary['files'],
+        summary['captured'],
+        summary['skipped'],
+    )
+    for name, count in summary['errors'].items():
+        console.info('%s failed on %d files', name, count)
+    if summary['unknown']:
+        console.info('Unknown values:')
+        console.info(dumps(summary['unknown'], options, vars(options)))
+    console.info('Written to %s', output)
+    if not options.no_redact:
+        console.info('Titles, file names and tags were masked. Use --no-redact to keep them.')
 
 
 def run_check_name(paths: list[str], options: argparse.Namespace) -> None:
@@ -269,6 +334,10 @@ def main(args: list[str] | None = None) -> None:
 
     if options.check_name:
         run_check_name(paths, options)
+        return
+
+    if options.collect:
+        run_collect(paths, options)
         return
 
     if options.bug_report:

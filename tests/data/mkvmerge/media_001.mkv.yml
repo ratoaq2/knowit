@@ -39,9 +39,12 @@ audio:
 subtitle:
 - id: 6
   language: en
+  format: PGS
 - id: 7
   language: de
+  format: PGS
 - id: 8
   language: pt-BR
+  format: PGS
 provider:
   name: mkvmerge

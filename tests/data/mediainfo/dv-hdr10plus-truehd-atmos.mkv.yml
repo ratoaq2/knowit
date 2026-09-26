@@ -1,0 +1,45 @@
+title: xxxxx
+path: /xxxxx/xxxxx.mkv
+duration: '7200.0'
+size: 10000000000
+bit_rate: 20000000
+container: mkv
+video:
+- id: 1
+  language: en
+  duration: '7200.0'
+  size: 1000000000
+  width: 3840
+  height: 2160
+  scan_type: PROGRESSIVE
+  aspect_ratio: '1.778'
+  pixel_aspect_ratio: '1.0'
+  resolution: 2160p
+  frame_rate: '23.976'
+  bit_rate: 20000000
+  bit_depth: 10
+  codec: H265
+  profile: MAIN10
+  profile_level: '5.1'
+  hdr_format:
+  - DV
+  - HDR10PLUS
+  media_type: video/H265
+audio:
+- id: 2
+  language: en
+  duration: '7200.0'
+  size: 100000000
+  codec:
+  - TRUEHD
+  - ATMOS
+  channels_count: 8
+  channels: '7.1'
+  bit_depth: 24
+  bit_rate: 3000000
+  bit_rate_mode: VBR
+  sampling_rate: 48000
+  compression: LOSSLESS
+  default: true
+provider:
+  name: mediainfo

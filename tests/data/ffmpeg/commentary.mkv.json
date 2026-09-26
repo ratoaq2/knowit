@@ -1,0 +1,90 @@
+{
+    "streams": [
+        {
+            "index": 0,
+            "codec_name": "hevc",
+            "profile": "Main 10",
+            "codec_type": "video",
+            "width": 3840,
+            "height": 2160,
+            "sample_aspect_ratio": "1:1",
+            "display_aspect_ratio": "16:9",
+            "pix_fmt": "yuv420p10le",
+            "r_frame_rate": "24000/1001",
+            "disposition": {
+                "default": 1
+            }
+        },
+        {
+            "index": 1,
+            "codec_name": "truehd",
+            "profile": "Dolby TrueHD + Dolby Atmos",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 8,
+            "bits_per_raw_sample": "24",
+            "disposition": {
+                "default": 1
+            },
+            "tags": {
+                "language": "eng"
+            }
+        },
+        {
+            "index": 3,
+            "codec_name": "ac3",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 2,
+            "bit_rate": "192000",
+            "disposition": {
+                "comment": 1
+            },
+            "tags": {
+                "language": "eng",
+                "title": "xxxxxxxxxx"
+            }
+        },
+        {
+            "index": 4,
+            "codec_name": "subrip",
+            "codec_type": "subtitle",
+            "tags": {
+                "language": "eng"
+            }
+        },
+        {
+            "index": 5,
+            "codec_name": "hdmv_pgs_subtitle",
+            "codec_type": "subtitle",
+            "disposition": {
+                "hearing_impaired": 1
+            },
+            "tags": {
+                "language": "eng",
+                "title": "xxxxxxx (xxx)"
+            }
+        },
+        {
+            "index": 38,
+            "codec_name": "hdmv_pgs_subtitle",
+            "codec_type": "subtitle",
+            "disposition": {
+                "comment": 1
+            },
+            "tags": {
+                "language": "eng",
+                "title": "xxxxxxx (xxxxxxxxxx)"
+            }
+        }
+    ],
+    "format": {
+        "filename": "/xxxxx/xxxxx.mkv",
+        "duration": "2:00:00.000000",
+        "size": "10000000000",
+        "bit_rate": "20000000",
+        "tags": {
+            "title": "xxxxx"
+        }
+    }
+}

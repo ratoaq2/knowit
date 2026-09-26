@@ -1,0 +1,43 @@
+{
+    "streams": [
+        {
+            "index": 0,
+            "codec_name": "hevc",
+            "profile": "Main 10",
+            "codec_type": "video",
+            "width": 3840,
+            "height": 2160,
+            "sample_aspect_ratio": "1:1",
+            "display_aspect_ratio": "16:9",
+            "pix_fmt": "yuv420p10le",
+            "r_frame_rate": "24000/1001",
+            "tags": {
+                "language": "eng"
+            }
+        },
+        {
+            "index": 1,
+            "codec_name": "truehd",
+            "profile": "Dolby TrueHD + Dolby Atmos",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 8,
+            "bits_per_raw_sample": "24",
+            "disposition": {
+                "default": 1
+            },
+            "tags": {
+                "language": "eng"
+            }
+        }
+    ],
+    "format": {
+        "filename": "/xxxxx/xxxxx.mkv",
+        "duration": "2:00:00.000000",
+        "size": "10000000000",
+        "bit_rate": "20000000",
+        "tags": {
+            "title": "xxxxx"
+        }
+    }
+}

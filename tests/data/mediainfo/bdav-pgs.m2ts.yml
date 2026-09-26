@@ -1,0 +1,10 @@
+path: /xxxxx/xxxxx.m2ts
+duration: '7200.0'
+size: 10000000000
+bit_rate: 20000000
+container: m2ts
+subtitle:
+- id: 5120
+  format: PGS
+provider:
+  name: mediainfo
