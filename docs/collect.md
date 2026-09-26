@@ -2,7 +2,7 @@
 
 `knowit --collect` captures the output of the providers for a whole media library. The maintainer uses
 the capture to find wrong or missing values, to find raw fields that knowit does not read, and to make
-test fixtures. The media is not needed.
+test fixtures. The media is not needed. The user instructions are in `docs/troubleshooting.md`.
 
 ## Flow
 

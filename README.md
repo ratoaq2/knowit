@@ -1,350 +1,233 @@
-# KnowIt
+# knowit
 
-Know better your media files.
+**Know your media files better.**
 
-[![Latest
-Version](https://img.shields.io/pypi/v/knowit.svg)](https://pypi.python.org/pypi/knowit)
+Read the metadata of video files: codecs, resolution, HDR, audio channels, languages, and subtitles.
 
-[![tests](https://github.com/ratoaq2/knowit/actions/workflows/test.yml/badge.svg)](https://github.com/ratoaq2/knowit/actions/workflows/test.yml)
-
+[![PyPI version](https://img.shields.io/pypi/v/knowit.svg)](https://pypi.org/project/knowit/)
+[![Python versions](https://img.shields.io/pypi/pyversions/knowit.svg)](https://pypi.org/project/knowit/)
+[![Tests](https://github.com/ratoaq2/knowit/actions/workflows/test.yml/badge.svg)](https://github.com/ratoaq2/knowit/actions/workflows/test.yml)
+[![Docker pulls](https://img.shields.io/docker/pulls/ratoaq2/knowit.svg)](https://hub.docker.com/r/ratoaq2/knowit)
 [![License](https://img.shields.io/github/license/ratoaq2/knowit.svg)](https://github.com/ratoaq2/knowit/blob/main/LICENSE)
 
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/knowit)
+## Why knowit
 
-  - Project page  
-    <https://github.com/ratoaq2/knowit>
+Different tools give video metadata in different formats and with different names. knowit reads the
+output of MediaInfo, ffprobe, mkvmerge, or enzyme. It gives the result in one format, with the same names
+and units for all of them. You can use knowit as a command or as a Python library.
 
-## Usage
+## Quick start
 
-### CLI
+1. Install knowit:
 
-Extract information from a video file:
+   ```bash
+   uv tool install "knowit[pint]"
+   ```
 
-    $ knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
-    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
-    Knowit 0.4.0 found:
-    {
-        "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
-        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
-        "duration": "0:01:37",
-        "size": "40.77 MB",
-        "bit_rate": "3.3 Mbps",
-        "container": "mkv",
-        "video": [
-            {
-                "id": 1,
-                "duration": "0:01:37",
-                "width": "1920 pixel",
-                "height": "1080 pixel",
-                "scan_type": "Progressive",
-                "aspect_ratio": "1.778",
-                "pixel_aspect_ratio": "1.0",
-                "resolution": "1080p",
-                "frame_rate": "23.976 FPS",
-                "bit_depth": "8 bit",
-                "codec": "H.264",
-                "profile": "Main",
-                "profile_level": "4",
-                "media_type": "video/H264",
-                "default": true
-            }
-        ],
-        "audio": [
-            {
-                "id": 2,
-                "name": "7.1Ch DTS-HD MA",
-                "language": "English",
-                "duration": "0:01:37",
-                "codec": "DTS-HD",
-                "profile": "Master Audio",
-                "channels_count": 8,
-                "channels": "7.1",
-                "bit_depth": "24 bit",
-                "bit_rate_mode": "Variable",
-                "sampling_rate": "48.0 KHz",
-                "compression": "Lossless",
-                "default": true
-            }
-        ],
-        "provider": {
-            "name": "mediainfo",
-            "version": {
-                "pymediainfo": "5.0.3",
-                "libmediainfo.so.0": "v20.9"
-            }
-        }
-    }
+2. Read a video:
 
-Extract information from a video file using ffmpeg:
+   ```text
+   $ knowit movie.mkv
+   {
+       "title": "Big Buck Bunny",
+       "path": "movie.mkv",
+       "duration": "0:00:46",
+       "size": "31.76 MB",
+       "bit_rate": "5.4 Mbps",
+       "container": "mkv",
+       "video": [
+           {
+               "id": 1,
+               "width": "1024 pixel",
+               "height": "576 pixel",
+               "resolution": "576p",
+               "frame_rate": "24.0 FPS",
+               "codec": "H.264",
+               ...
+           }
+       ],
+       "audio": [
+           {
+               "id": 2,
+               "codec": "AAC",
+               "channels": "2.0",
+               "sampling_rate": "48.0 KHz",
+               ...
+           }
+       ],
+       "subtitle": [
+           {
+               "id": 3,
+               "language": "English",
+               "format": "SubRip",
+               "default": true
+           },
+           ...
+       ]
+   }
+   ```
 
-    $ knowit --provider ffmpeg /folder/Audio Samples/hd_dtsma_7.1.mkv
-    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
-    Knowit 0.4.0 found:
-    {
-        "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
-        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
-        "duration": "0:01:37",
-        "size": "40.77 MB",
-        "bit_rate": "3.3 Mbps",
-        "container": "mkv",
-        "video": [
-            {
-                "id": 0,
-                "width": "1920 pixel",
-                "height": "1080 pixel",
-                "scan_type": "Progressive",
-                "aspect_ratio": "1.778",
-                "pixel_aspect_ratio": "1.0",
-                "resolution": "1080p",
-                "frame_rate": "23.976 FPS",
-                "bit_depth": "8 bit",
-                "codec": "H.264",
-                "profile": "Main",
-                "default": true
-            }
-        ],
-        "audio": [
-            {
-                "id": 1,
-                "name": "7.1Ch DTS-HD MA",
-                "language": "English",
-                "codec": "DTS-HD",
-                "profile": "Master Audio",
-                "channels_count": 8,
-                "channels": "7.1",
-                "bit_depth": "24 bit",
-                "sampling_rate": "48.0 KHz",
-                "default": true
-            }
-        ],
-        "provider": {
-            "name": "ffmpeg",
-            "version": {
-                "ffprobe": "v4.2.4-1ubuntu0.1"
-            }
-        }
-    }
-
-Using docker:
-
-    docker run -it --rm -v /folder:/folder knowit /folder/Audio Samples/hd_dtsma_7.1.mkv
-    For: /folder/Audio Samples/hd_dtsma_7.1.mkv
-    Knowit 0.4.0 found:
-    {
-        "title": "7.1Ch DTS-HD MA - Speaker Mapping Test File",
-        "path": "/folder/Audio Samples/hd_dtsma_7.1.mkv",
-        "duration": "0:01:37",
-        "size": "40.77 MB",
-        "bit_rate": "3.3 Mbps",
-        "container": "mkv",
-        "video": [
-            {
-                "id": 1,
-                "duration": "0:01:37",
-                "width": "1920 pixel",
-                "height": "1080 pixel",
-                "scan_type": "Progressive",
-                "aspect_ratio": "1.778",
-                "pixel_aspect_ratio": "1.0",
-                "resolution": "1080p",
-                "frame_rate": "23.976 FPS",
-                "bit_depth": "8 bit",
-                "codec": "H.264",
-                "profile": "Main",
-                "profile_level": "4",
-                "media_type": "video/H264",
-                "default": true
-            }
-        ],
-        "audio": [
-            {
-                "id": 2,
-                "name": "7.1Ch DTS-HD MA",
-                "language": "English",
-                "duration": "0:01:37",
-                "codec": "DTS-HD",
-                "profile": "Master Audio",
-                "channels_count": 8,
-                "channels": "7.1",
-                "bit_depth": "24 bit",
-                "bit_rate_mode": "Variable",
-                "sampling_rate": "48.0 KHz",
-                "compression": "Lossless",
-                "default": true
-            }
-        ],
-        "provider": {
-            "name": "mediainfo",
-            "version": {
-                "pymediainfo": "5.0.3",
-                "libmediainfo.so.0": "v20.9"
-            }
-        }
-    }
-
-All available CLI options:
-
-    $ knowit --help
-    usage: knowit [-h] [-p PROVIDER] [--debug] [--report] [-y] [-N] [-P PROFILE] [--mediainfo MEDIAINFO]
-                  [--ffmpeg FFMPEG] [--mkvmerge MKVMERGE] [--bug-report] [--bug-report-output FILE]
-                  [--no-redact] [--check-name NAME] [--collect] [-o FILE] [--deep] [--version]
-                  [videopath ...]
-
-    positional arguments:
-      videopath             Path to the video to introspect
-
-    options:
-      -h, --help            show this help message and exit
-
-    Providers:
-      -p, --provider PROVIDER
-                            The provider to be used: mediainfo, ffmpeg, mkvmerge or enzyme.
-
-    Output:
-      --debug               Print information for debugging knowit and for reporting bugs.
-      --report              Parse media and report all non-detected values
-      -y, --yaml            Display output in yaml format
-      -N, --no-units        Display output without units
-      -P, --profile PROFILE
-                            Display values according to specified profile: code, default, human, technical
-
-    Configuration:
-      --mediainfo MEDIAINFO
-                            The location to search for MediaInfo binaries
-      --ffmpeg FFMPEG       The location to search for ffprobe (FFmpeg) binaries
-      --mkvmerge MKVMERGE   The location to search for mkvmerge (MKVToolNix) binaries
-
-    Bug reporting:
-      --bug-report          Write a report with the environment and the raw output of every provider, to
-                            attach to an issue.
-      --bug-report-output FILE
-                            Where to write the bug report. Use - to write it to the standard output.
-      --no-redact           Do not mask titles, file names and tags in the bug report or the collected data.
-      --check-name NAME     Check whether a file name makes a provider fail. No media file is needed.
-
-    Collect:
-      --collect             Write the output of every provider for each file, to improve knowit. Use
-                            --no-redact to keep titles.
-      -o, --collect-output FILE
-                            Where to write the collected data, default knowit-collect.jsonl.gz. A run
-                            continues an existing file.
-      --deep                Also read the first video frames with ffprobe, for HDR10+ and Dolby Vision data.
-                            Slower.
-
-    Information:
-      --version             Display knowit version.
-
-## Reporting a problem
-
-Do not send your media file. It is not needed, and it is usually too large.
-Run this command instead:
-
-    $ knowit --bug-report "/path/to/your/video.mkv"
-    Bug report written to knowit-report.yml
-
-Attach `knowit-report.yml` to an issue at
-<https://github.com/ratoaq2/knowit/issues>.
-
-The report contains:
-
-- the knowit version, and where knowit is installed from
-- the Python version, the operating system, and the text encodings in use
-- the location and version of MediaInfo, ffprobe, mkvmerge and enzyme
-- the non-ascii symbols of the file path, with their Unicode names, and its text encoding facts
-- the raw output of every installed provider for that file
-- the values knowit parsed from that output, or the error it failed with
-
-Titles, file names and free-text tags are masked. Letters and digits of every
-script are masked. Symbols, such as `–` or `™`, are kept, because they are often
-the cause of the problem. Technical tags, such as the track language, are kept.
-Use `--no-redact` to keep the original text.
-
-If knowit is bundled in another application, such as Bazarr or Medusa, run the
-command with the same Python that runs that application:
-
-    $ python -m knowit --bug-report "/path/to/your/video.mkv"
-
-If a codec, a profile or another value is not known by knowit, use `--report`
-instead. It accepts a directory and lists every value knowit does not know:
-
-    $ knowit --report /path/to/your/media
-
-### Problems with a file name
-
-Many problems come from the name of the file, not from its content: a superscript,
-a fraction, an accent, or a character the file system encoding cannot represent.
-For those, only the name is needed:
-
-    $ knowit --check-name "The Accountant² (2025).mkv"
-
-knowit writes a small generated Matroska file under that name, and also under a
-plain ascii name. It then compares the two results:
-
-    result:
-      mediainfo: ok: the name is handled correctly
-      ffmpeg: ok: the name is handled correctly
-      mkvmerge: ok: the name is handled correctly
-      enzyme: fails with this name only: the name is the problem
-
-A provider that fails only with your name has a name handling problem. A provider
-that fails with both names has a problem with the file content instead, and the
-name is not the cause.
-
-The generated sample holds one audio track, so all four providers read it. If a
-provider reports a failure for both names on your system, that provider cannot
-read the sample at all, and its line says nothing about your file name.
-
-Add a file to use your own media as the sample:
-
-    $ knowit --check-name "The Accountant² (2025).mkv" /path/to/any/video.mkv
-
-## Helping to improve knowit
-
-knowit is more correct when it sees many different files. You can send the
-output of the providers for your whole library. Your media is not needed:
-
-    $ knowit --collect /path/to/your/media
-
-This writes `knowit-collect.jsonl.gz`. It uses all installed providers. Use
-`-p` to use only one. Titles, file names and free-text tags are masked, as in a
-bug report. Use `-o` to write to a different file.
-
-A large library takes some time. You can stop the scan with Ctrl+C. Run the same
-command again to continue: files that did not change are not read again.
-
-Add `--deep` to also read the first video frames with ffprobe. This finds HDR10+
-and Dolby Vision data, but it is slower.
-
-At the end, knowit shows a summary with the values it does not know. When a
-file becomes too large to attach to an issue, knowit continues in a new file
-(`knowit-collect.part2.jsonl.gz`, and so on). Attach all the files to an issue at
-<https://github.com/ratoaq2/knowit/issues>.
+To try knowit without installing it, use `uvx knowit movie.mkv`.
 
 ## Installation
 
-KnowIt can be installed as a regular python module by running:
+### Install knowit
 
-    $ [sudo] pip install knowit
+Use one of these commands:
 
-For a better isolation with your system you should use a dedicated
-virtualenv or install for your user only using the `--user` flag.
+| Command | When to use it |
+| --- | --- |
+| `uv tool install "knowit[pint]"` | Recommended. [uv](https://docs.astral.sh/uv/getting-started/installation/) also installs Python if necessary. |
+| `pipx install "knowit[pint]"` | You already use [pipx](https://pipx.pypa.io/). |
+| `pip install knowit` | You want to use knowit as a Python library. |
 
-## External dependencies
+The `pint` extra adds units to the values, for example `31.76 MB` or `1024 pixel`. Without it, knowit
+shows plain numbers.
 
-KnowIt can use MediaInfo, ffprobe (FFmpeg) or mkvmerge (MKVToolNix)
+To upgrade, use `uv tool upgrade knowit` or `pipx upgrade knowit`.
 
-KnowIt supports MKV regardless if MediaInfo, FFmpeg or MKVToolNix are
-installed.
+### Install a provider
 
-MediaInfo, FFmpeg or MKVToolNix increases the number of supported
-formats and the number of extracted information.
+A provider is the program that knowit uses to read the file. knowit uses the first installed provider in
+this order:
 
-MediaInfo is the default provider. Visit their
-[website](http://mediaarea.net/MediaInfo) and install the proper package
-for your system.
+| Provider | Program | Files | Notes |
+| --- | --- | --- | --- |
+| `mediainfo` | [MediaInfo](https://mediaarea.net/MediaInfo) | All video files | Default. Gives the most information. |
+| `ffmpeg` | ffprobe, from [FFmpeg](https://ffmpeg.org/download.html) | All video files | |
+| `mkvmerge` | mkvmerge, from [MKVToolNix](https://mkvtoolnix.download/downloads.html) | `.mkv`, `.mka`, `.mks` | |
+| `enzyme` | Included in knowit | `.mkv` | Gives less information. |
 
-ffprobe (FFmpeg) can be downloaded
-[here](https://ffmpeg.org/download.html)
+On most systems, knowit installs the MediaInfo library with the
+[pymediainfo](https://github.com/sbraz/pymediainfo) package. You do not need to install more programs.
 
-mkvmerge (MKVToolNix) can be downloaded
-[here](https://mkvtoolnix.download/downloads.html)
+If your system has no MediaInfo library, or if you want other providers, install the programs:
+
+**Ubuntu, Debian, and WSL**
+
+```bash
+sudo apt-get install mediainfo ffmpeg mkvtoolnix
+```
+
+**Windows** (with [Chocolatey](https://chocolatey.org/))
+
+```bash
+choco install mediainfo ffmpeg mkvtoolnix
+```
+
+**macOS** (with [Homebrew](https://brew.sh/))
+
+```bash
+brew install media-info ffmpeg mkvtoolnix
+```
+
+To see which providers knowit finds, run `knowit --version`.
+
+### Docker
+
+The [Docker image](https://hub.docker.com/r/ratoaq2/knowit) contains knowit, MediaInfo, FFmpeg, and
+MKVToolNix:
+
+```bash
+docker run -it --rm -v /medias:/medias ratoaq2/knowit /medias/movie.mkv
+```
+
+## Usage
+
+Read a video with a specific provider:
+
+```bash
+knowit -p ffmpeg movie.mkv
+```
+
+Show the result in YAML:
+
+```bash
+knowit -y movie.mkv
+```
+
+A profile changes how knowit shows the values. The same file with two profiles:
+
+```text
+$ knowit -y -P human movie.mkv        $ knowit -y -P technical movie.mkv
+  duration: 46 seconds                  duration: '0:00:46.665000'
+  size: 31.76 MB                        size: 30.291 MiB
+  bit_rate: 5.4 Mbps                    bit_rate: 5.193 Mibps
+```
+
+### Main options
+
+| Option | What it does |
+| --- | --- |
+| `-p`, `--provider` | Use this provider: `mediainfo`, `ffmpeg`, `mkvmerge`, or `enzyme`. |
+| `-y`, `--yaml` | Show the result in YAML. The default is JSON. |
+| `-P`, `--profile` | Show the values with this profile: `default`, `human`, `technical`, or `code`. |
+| `-N`, `--no-units` | Show the values without units. |
+| `--mediainfo`, `--ffmpeg`, `--mkvmerge` | Look for the program in this folder. |
+| `--report` | Read a folder and list the values that knowit does not know. |
+| `--bug-report` | Write a file to attach to an issue. See [Report a problem](#report-a-problem). |
+| `--version` | Show the knowit version and the providers that knowit finds. |
+
+Run `knowit --help` for all options.
+
+### Python API
+
+```python
+from knowit import know
+
+info = know('/medias/movie.mkv')
+print(info['video'][0]['codec'])  # H.264
+
+info = know('/medias/movie.mkv', {'provider': 'ffmpeg', 'profile': 'code'})
+```
+
+`know` returns a `dict`. It raises `KnowitException` when knowit cannot read the file.
+
+## Report a problem
+
+Do not send your media file. Run this command instead, and attach `knowit-report.yml` to an
+[issue](https://github.com/ratoaq2/knowit/issues):
+
+```bash
+knowit --bug-report "/path/to/your/video.mkv"
+```
+
+The report contains the output of every provider. Titles, file names, and free-text tags are masked.
+
+When the problem is the name of the file, use `knowit --check-name "The Accountant² (2025).mkv"`. It
+tells you which provider fails because of the name.
+
+[Troubleshooting](https://github.com/ratoaq2/knowit/blob/main/docs/troubleshooting.md) gives all the
+details.
+
+## Help to improve knowit
+
+knowit is more correct when it sees many different files. Run this command on your library, and attach
+the files that it writes to an [issue](https://github.com/ratoaq2/knowit/issues):
+
+```bash
+knowit --collect /path/to/your/media
+```
+
+Your media is not needed. Titles and file names are masked. See
+[Help to improve knowit](https://github.com/ratoaq2/knowit/blob/main/docs/troubleshooting.md#help-to-improve-knowit).
+
+## Used by
+
+- [Subliminal](https://github.com/Diaoul/subliminal)
+- [Bazarr](https://github.com/morpheus65535/bazarr)
+- [Medusa](https://github.com/pymedusa/Medusa)
+
+## FAQ
+
+**Which provider should I use?**
+Use MediaInfo if you can. It gives the most information. If knowit gives a wrong value, try another
+provider with `-p`, and [report the problem](#report-a-problem).
+
+**Which files does knowit read?**
+With MediaInfo or ffprobe, knowit reads all common video files, for example `.mkv`, `.mp4`, `.avi`, and
+`.ts`. With only mkvmerge or enzyme, knowit reads only Matroska files (`.mkv`).
+
+**Does knowit send my files or file names anywhere?**
+No. knowit reads the files on your computer. It does not use the network. A bug report or a collect file
+leaves your computer only when you attach it to an issue.
