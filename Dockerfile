@@ -29,7 +29,7 @@ RUN apt-get update \
 
 COPY --from=builder /app/dist /usr/src/dist
 
-RUN pip install --no-cache-dir /usr/src/dist/knowit-*.whl
+RUN pip install --no-cache-dir "$(ls /usr/src/dist/knowit-*.whl)[pint]"
 
 WORKDIR /
 
