@@ -5,8 +5,8 @@
   </picture>
 </h1>
 
-knowit reads the metadata of video files with MediaInfo, ffprobe, mkvmerge, or enzyme, and gives it in one
-format.
+knowit reads the metadata of video files: codecs, resolution, HDR, audio channels, languages, and
+subtitles. It gives the same format for MediaInfo, ffprobe, mkvmerge, and enzyme.
 
 [![PyPI version](https://img.shields.io/pypi/v/knowit.svg)](https://pypi.org/project/knowit/)
 [![Python versions](https://img.shields.io/pypi/pyversions/knowit.svg)](https://pypi.org/project/knowit/)
