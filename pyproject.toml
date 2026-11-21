@@ -73,7 +73,7 @@ build-backend = "hatchling.build"
 packages = ["knowit"]
 
 [tool.hatch.build.targets.sdist]
-exclude = ["scripts/brand"]
+exclude = ["scripts/brand", "docs/images/demo.gif"]
 
 [tool.ruff]
 line-length = 120

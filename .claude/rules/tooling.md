@@ -15,3 +15,5 @@ same checks as CI. `.python-version` is the newest version of the CI matrix. `do
 
 `scripts/brand.py` makes the logo, the icon, and the social card in `docs/images/`. Its docstring tells how to
 run it.
+
+`scripts/demo.sh` records `docs/images/demo.gif` from `scripts/demo.tape`. The `demo-gif` skill tells how.
