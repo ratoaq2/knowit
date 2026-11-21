@@ -1,7 +1,7 @@
 [project]
 name = "knowit"
 version = "0.7.2-dev"
-description = "Know your media files better"
+description = "Know your media"
 authors = [
     { name = "Rato" },
 ]
@@ -71,6 +71,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["knowit"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["scripts/brand", "docs/images/demo.gif"]
 
 [tool.ruff]
 line-length = 120

@@ -9,3 +9,4 @@ paths:
 Other applications (Bazarr, Medusa, subliminal) call knowit as a library. The public names are `know()`,
 `dependencies()`, `initialize()`, and `KnowitException`. Do not remove or rename them, and do not change
 their signatures, without a major version. The contract is in "Public API" in `docs/architecture.md`.
+"Python API" in `docs/usage.md` lists the keys of the options `dict`. Update it when a key changes.

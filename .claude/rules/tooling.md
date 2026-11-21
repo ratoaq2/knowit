@@ -12,3 +12,8 @@ paths:
 These files define the commands and checks. When you change one, make sure that the commands in
 `CLAUDE.md` and the setup in `CONTRIBUTING.md` are still correct, and that `scripts/test.sh` still runs the
 same checks as CI. `.python-version` is the newest version of the CI matrix. `docs/typing.md` explains the mypy settings in `pyproject.toml`.
+
+`scripts/brand.py` makes the logo, the icon, and the social card in `docs/images/`. Its docstring tells how to
+run it.
+
+`scripts/demo.sh` records `docs/images/demo.gif` from `scripts/demo.tape`. The `demo-gif` skill tells how.
