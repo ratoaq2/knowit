@@ -1,4 +1,4 @@
-"""Know your media files better."""
+"""Know your media."""
 
 from importlib import metadata
 
