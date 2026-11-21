@@ -339,7 +339,7 @@ def build_report(
     context = dict(context or {})
     report: dict[str, typing.Any] = {
         'knowit_bug_report': REPORT_VERSION,
-        'generated_at': datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat(),
+        'generated_at': datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat(),
         'knowit_version': __version__,
         'anonymized': anonymize,
     }

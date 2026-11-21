@@ -144,7 +144,7 @@ def build_header(
     header: dict[str, typing.Any] = {
         'knowit_collect': COLLECT_VERSION,
         'knowit_version': __version__,
-        'generated_at': datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat(),
+        'generated_at': datetime.datetime.now(datetime.UTC).replace(microsecond=0).isoformat(),
         'anonymized': anonymize,
         'deep': deep,
         'providers': selected_providers(context),

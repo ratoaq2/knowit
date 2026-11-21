@@ -23,10 +23,10 @@ The knowit name, logo, and icon are not covered by the MIT license of this repos
 """
 
 import math
+import tomllib
 from pathlib import Path
 
 import resvg_py
-import tomllib
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen

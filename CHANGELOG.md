@@ -6,6 +6,7 @@ The notes for older versions are in the [GitHub releases](https://github.com/rat
 
 - knowit has a logo and a new tagline: "Know your media". The README is clearer for new users, and the new
   [usage details](docs/usage.md) page gives all the options, the profiles, and the Python API.
+- knowit now supports Python 3.15. Python 3.10 is not supported anymore.
 
 ## 0.7.1
 
