@@ -63,3 +63,4 @@ Other applications, for example Bazarr, Medusa, and subliminal, use knowit as a 
 are `know()`, `dependencies()`, `initialize()`, and `KnowitException`, all exported from `knowit/api.py`.
 `know()` returns a mapping of metadata, or `{}` when no provider can read the file. Do not remove or
 rename these names, and do not change their signatures, without a major version.
+[Usage](usage.md#python-api) gives the user view: the options and examples.
