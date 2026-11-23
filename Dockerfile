@@ -1,4 +1,4 @@
-FROM python:3.14-slim AS builder
+FROM python:3.15-slim AS builder
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
@@ -13,7 +13,7 @@ COPY knowit/ /app/knowit/
 RUN uv build --wheel
 
 
-FROM python:3.14-slim
+FROM python:3.15-slim
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
